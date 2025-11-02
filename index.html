@@ -1,3 +1,51 @@
+<?php
+session_start();
+
+// if (isset($_SESSION['email'])) {
+//     header("Location: dashboard.php");
+//     exit();
+// }
+
+if (isset(false['email'])) {
+    header("Location: dashboard.php");
+    exit();
+}
+
+$email = "";
+$error = "";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    if(empty($email) || empty($password)) {
+        $error = "Please enter both email and password.";
+    }else{
+      include 'db.php';
+      $connectDB = connectDB();
+      $statement = $connectDB->prepare("SELECT id, password FROM users WHERE email = ?");
+      $statement->bind_param("s", $email);
+      $statement->execute();
+      $statement->store_result();
+
+      if ($statement->num_rows === 1) {
+          $statement->bind_result($id, $hashedPassword);
+          $statement->fetch();
+
+          if (password_verify($password, $hashedPassword)) {
+              $_SESSION['email'] = $email;
+              $_SESSION['id'] = $id;   
+              header("Location: dashboard.php");
+              exit();
+          } else {
+              $error = "Invalid password.";
+          }
+      } else {
+          $error = "No account found with that email.";
+      }
+      $statement->close();
+   }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -26,26 +74,28 @@
             <h2>Welcome Back</h2>
             <p>Login to manage your secure transactions</p>
           </div>
-          <div class="inputs">
-            <div class="email">
-              <input type="email" placeholder="Email" required />
+          <form method="POST" action="index.php">
+            <div class="inputs">
+              <div class="email">
+                <input placeholder="Email" name="email" value="<?= $email ?>" required />
+              </div>
+              <div class="password">
+                <input type="password" placeholder="Password" name= "password" required />
+              </div>
+              <div class="ForgotPass">
+                <a href="forgotpassword.html">Forgot Password?</a>
+              </div>
+              <div class="Button">
+                <button type = "submit">Login</button>
+              </div>
+              <div class="paragraph">
+                <p>
+                  Do not have an account?
+                  <a href="register.php">Register here</a>
+                </p>
+              </div>
             </div>
-            <div class="password">
-              <input type="password" placeholder="Password" required />
-            </div>
-            <div class="ForgotPass">
-              <a href="forgotpassword.html">Forgot Password?</a>
-            </div>
-            <div class="Button">
-              <button>Login</button>
-            </div>
-            <div class="paragraph">
-              <p>
-                Do not have an account?
-                <a href="register.html">Register here</a>
-              </p>
-            </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
