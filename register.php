@@ -1,0 +1,166 @@
+<?php
+session_start();
+
+// if (isset($_SESSION['email'])) {
+//     header("Location: dashboard.php");
+//     exit();
+// }
+
+if (isset(false['email'])) {
+  header("Location: dashboard.php");
+  exit();
+}
+
+$firstName = "";
+$lastName = "";
+$email = "";
+$password = "";
+$confirmPassword = "";
+
+$nameError = "";
+$emailError = "";
+$passwordError = "";
+$confirmPasswordError = "";
+
+$error = false;
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $firstName = $_POST['firstName'];
+  $lastName = $_POST['lastName'];
+  $email = $_POST['email'];
+  $password = $_POST['password'];
+  $confirmPassword = $_POST['confirmPassword'];
+
+  if (empty($firstName and $lastName)) {
+    $error = true;
+    $nameError = "*First and last name is required.";
+  }
+
+  if (empty($email)) {
+    $error = true;
+    $emailError = "*Email is required.";
+  } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $error = true;
+    $emailError = "*Invalid email format.";
+  }
+
+  include 'db.php';
+  $connectDB = connectDB();
+  $statement = $connectDB->prepare("SELECT id FROM users WHERE email = ?");
+  $statement->bind_param("s", $email);
+  $statement->execute();
+
+  $statement->store_result();
+  if ($statement->num_rows > 0) {
+    $error = true;
+    $emailError = "*Email is already registered.";
+  }
+  $statement->close();
+
+  if (empty($password)) {
+    $error = true;
+    $passwordError = "Password is required.";
+  } elseif (strlen($password) < 6) {
+    $error = true;
+    $passwordError = "*Password must be at least 6 characters long.";
+  }
+  if ($confirmPassword !== $password) {
+    $error = true;
+    $confirmPasswordError = "*Passwords do not match.";
+  }
+
+  if (!$error) {
+    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+    $statement = $connectDB->prepare("INSERT INTO users (firstName, lastName, email, password) VALUES ( ?, ?, ?, ?)");
+    $statement->bind_param("ssss", $firstName, $lastName, $email, $hashedPassword);
+
+    if ($statement->execute()) {
+      echo "<script>
+        alert('Account created, you can now login.');
+        window.location.href = 'index.php';
+      </script>";
+      exit();
+
+    } else {
+      echo "Error: " . $statement->error;
+    }
+    $insertID = $statement->insert_id;
+    $statement->close();
+
+    $_SESSION['id'] = $insertID;
+    $_SESSION['firstName'] = $firstName;
+    $_SESSION['lastName'] = $lastName;
+    $_SESSION['email'] = $email;
+    header("Location: index.php");
+    exit();
+  }
+}
+?>
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Banking</title>
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+  <div class="page">
+    <div class="left">
+      <div class="quote">
+        <h1>Empowering your</h1>
+        <h1>digital banking</h1>
+        <h1>experience</h1>
+        <p>Secure. Seamless. Smart</p>
+        <div class="img">
+          <img class="card" src="images/card.png" alt="" />
+          <img class="atm" src="images/atm.png" alt="" />
+        </div>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="container">
+        <div class="header">
+          <h2>Create Your Account</h2>
+          <p>Start your journey with secure and fast transactions</p>
+        </div>
+        <form method="POST" action="register.php">
+          <div class="inputs">
+            <div class="name">
+              <input placeholder="First Name" name="firstName" value="<?= $firstName ?>" required />
+              <input type="text" placeholder="Last Name" name="lastName" value="<?= $lastName ?>" required />
+            </div>
+            <div class="email">
+              <input placeholder="Email" name="email" value="<?= $email ?>" required />
+            </div>
+            <div class="password">
+              <input type="password" placeholder="Password" name="password" required />
+              <input type="password" placeholder="Confirm Password" name="confirmPassword" required />
+              <span class="error"><?= $nameError ?></span>
+              <span class="error"><?= $emailError ?></span>
+              <span class="error"><?= $passwordError ?></span>
+              <span class="error"><?= $confirmPasswordError ?></span>
+            </div>
+            <div class="ForgotPass">
+              <a href="forgotpassword.html">Forgot Password?</a>
+            </div>
+            <div class="Button">
+              <button type="submit">Register</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="paragraph">
+        <p>Already have an account? <a href="index.php">Login here</a></p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

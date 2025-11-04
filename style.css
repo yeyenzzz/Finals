@@ -1,0 +1,185 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  background-color: #b8cbf2;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
+.page {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  background-color: #c7d8f8;
+  padding: 75px;
+  border-radius: 20px;
+}
+.left {
+  display: flex;
+  flex-direction: column;
+}
+
+.qoute {
+  position: absolute;
+}
+
+.left p {
+  position: absolute;
+  z-index: 1;
+  margin-top: 25px;
+  margin-bottom: px;
+}
+
+.left h1 {
+  font-family: "Poppins", sans-serif;
+  color: #00226f;
+}
+
+.img {
+  position: relative;
+  width: 400px;
+  height: 300px;
+  margin-top: 40px;
+}
+
+.card {
+  position: absolute;
+  width: 230px;
+  left: 130px;
+  top: 100px;
+  transform: rotate(-5deg);
+  z-index: 2;
+  animation: float 5s ease-in-out infinite;
+}
+
+.atm {
+  position: absolute;
+  width: 600px;
+  left: 130px;
+  bottom: 1px;
+  z-index: 1;
+}
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 250px;
+}
+.container {
+  width: 100%;
+  max-width: 450px;
+  background-color: #f9fafd;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 14px 28px rgb(63, 63, 63);
+}
+
+.paragraph {
+  margin-top: 20px;
+  text-align: center;
+}
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  gap: 15px;
+}
+
+.header h2 {
+  color: #00226f;
+}
+.name {
+  display: flex;
+  flex-direction: row;
+  gap: 3px;
+}
+.name input {
+  flex: 1;
+  width: 100%;
+  border-radius: 7px;
+  border: 2px solid black;
+  font-size: 14px;
+  padding: 14px;
+}
+
+.email input,
+.password input {
+  width: 100%;
+  border-radius: 7px;
+  border: 2px solid black;
+  font-size: 14px;
+  padding: 14px;
+}
+
+input {
+  margin-bottom: 14px;
+}
+
+input:focus {
+  border: 2px solid #0464ff;
+  outline: none;
+  box-shadow: 0 0 8px 2px rgba(4, 100, 255, 0.5);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.ForgotPass {
+  text-align: right;
+  margin-bottom: 25px;
+}
+
+a {
+  text-decoration: none;
+  color: #0464ff;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.Button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button {
+  width: 100%;
+  max-width: 150px;
+  font-size: 14px;
+  border: none;
+  border-radius: 7px;
+  background-color: #00226f;
+  padding: 7px;
+  transition: background-color 0.3s, letter-spacing 0.5s;
+  color: #ffffff;
+}
+
+button:hover {
+  background-color: hsl(220, 92%, 38%);
+  letter-spacing: 1px;
+}
+
+.error {
+  font-size: 14px;
+  color: red;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-50px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
