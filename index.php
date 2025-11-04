@@ -86,7 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <span class="error"><?= $error ?></span>
             </div>
             <div class="ForgotPass">
-              <a href="forgotpassword.html">Forgot Password?</a>
+              <a href="#" onclick="openModal()">Forgot Password?</a>
+
             </div>
             <div class="Button">
               <button type="submit">Login</button>
@@ -101,7 +102,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
       </div>
     </div>
+    <div id="forgotModal" class="modal">
+      <div class="modal-content">
+        <h2>Reset Password</h2>
+        <p>Enter your email to reset your password</p>
+        <form method="POST" action="forgotpassword.php">
+          <input type="email" name="forgotEmail" placeholder="Email" required />
+          <div class="Button">
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+        <button class="close-btn" onclick="closeModal()">Close</button>
+      </div>
+    </div>
   </div>
+  <script src="script.js"></script>
 </body>
 
 </html>

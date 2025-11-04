@@ -147,20 +147,93 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <span class="error"><?= $passwordError ?></span>
               <span class="error"><?= $confirmPasswordError ?></span>
             </div>
-            <div class="ForgotPass">
-              <a href="forgotpassword.html">Forgot Password?</a>
+            <div class="TermsConditions">
+              <input type="checkbox" class="checkbox">
+              <label>I agree to the <a href="#" onclick="openModal2()">Terms & Conditions</a></label>
             </div>
             <div class="Button">
               <button type="submit">Register</button>
             </div>
+            <div class="paragraph">
+              <p>Already have an account? <a href="index.php">Login here</a></p>
+            </div>
           </div>
         </form>
       </div>
-      <div class="paragraph">
-        <p>Already have an account? <a href="index.php">Login here</a></p>
+    </div>
+    <div id="TermsModal" class="modal">
+      <div class="modal-content">
+        <h2>Terms & Conditions</h2>
+        <div class="scrollable">
+          <p>
+            Last Updated: November 4, 2025<br><br>
+            Welcome to EtapPay. By using this website, you agree to follow and be bound by the following Terms and
+            Conditions. Please read them carefully before using our service.<br><br>
+            1. Acceptance of Terms<br><br>
+            By registering for or using the EtapPay website, you accept these Terms and Conditions and agree to comply
+            with them. If you do not agree, please do not use the website.<br><br>
+            2. Eligibility<br><br>
+            To use our online banking service, you must:<br>
+            -Be at least 18 years old or have parental consent.<br>
+            -Have an active account with EtapPay.<br>
+            -Provide true and complete information during registration.<br><br>
+            3. User Responsibilities<br><br>
+            You agree to:<br>
+            -Keep your username, password, and other login details private and secure.<br>
+            -Inform us immediately if you suspect unauthorized access to your account.<br>
+            -Use the online banking system for lawful and legitimate purposes only.<br>
+            -You are responsible for all activities that occur under your account.<br><br>
+            4. Access and Availability<br><br>
+            We aim to keep our online banking service available 24/7. However, EtapPay does not guarantee continuous or
+            error-free access. The website may be temporarily unavailable due to maintenance, updates, or technical
+            issues.<br><br>
+            5. Transactions<br><br>
+            All transactions made through this online banking system are final once confirmed. Please review all details
+            carefully before completing any transaction. EtapPay is not responsible for losses caused by incorrect
+            information entered by users.<br><br>
+            6. Fees and Charges<br><br>
+            Some services or transactions may include fees. Users will be informed of any applicable charges before
+            confirming their transaction.<br><br>
+            7. Security<br><br>
+            We use security measures to protect user information. However, you understand that no online system is
+            completely secure. You agree to use the service at your own risk and to protect your login
+            credentials.<br><br>
+            8. Prohibited Activities<br><br>
+            You must not:<br>
+            -Attempt to gain unauthorized access to the system.<br>
+            -Use the platform for illegal or fraudulent activities.<br>
+            -Interfere with the security or operation of the website.<br><br>
+            9. Limitation of Liability<br><br>
+            EtapPay will not be responsible for:<br>
+            -Losses resulting from unauthorized access caused by user negligence.<br>
+            -Service interruptions, delays, or errors.<br>
+            -Any indirect or accidental damages.<br><br>
+            10. Privacy<br><br>
+            Your personal information will be handled according to our Privacy Policy. By using this website, you agree
+            to the collection and use of your data as described in that policy.<br><br>
+            11. Changes to Terms<br><br>
+            EtapPay reserves the right to update these Terms and Conditions at any time. Changes will take effect once
+            posted on this website. Continued use of the service means you accept the updated terms.<br><br>
+            12. Termination<br><br>
+            We may suspend or terminate your account if you violate these Terms or if suspicious or illegal activity is
+            detected.<br><br>
+            13. Governing Law<br><br>
+            These Terms are governed by the laws of the Republic of the Philippines. Any disputes will be handled by the
+            appropriate courts within the Philippines.<br><br>
+            14. Contact Information<br><br>
+            If you have any questions or concerns, please contact us at:<br>
+            EtapPay<br>
+            Email: support@EtapPay.com<br>
+            Phone: +63 912 345 6789<br>
+            Address: Manila, Philippines<br>
+          </p>
+        </div>
+        <button class="close-btn" onclick="closeModal2()">Close</button>
       </div>
     </div>
   </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 
 </html>

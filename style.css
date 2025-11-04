@@ -13,6 +13,9 @@ body {
 }
 
 .page {
+  width: 100%;
+  max-width: 1300px;
+  height: 700px;
   display: flex;
   align-items: center;
   gap: 50px;
@@ -73,8 +76,7 @@ body {
   margin-left: 250px;
 }
 .container {
-  width: 100%;
-  max-width: 450px;
+  width: 450px;
   background-color: #f9fafd;
   padding: 40px;
   border-radius: 15px;
@@ -135,6 +137,14 @@ input:focus {
   margin-bottom: 25px;
 }
 
+.TermsConditions {
+  margin-bottom: 25px;
+}
+
+.checkbox {
+  cursor: pointer;
+}
+
 a {
   text-decoration: none;
   color: #0464ff;
@@ -160,6 +170,7 @@ button {
   padding: 7px;
   transition: background-color 0.3s, letter-spacing 0.5s;
   color: #ffffff;
+  cursor: pointer;
 }
 
 button:hover {
@@ -181,5 +192,94 @@ button:hover {
   }
   100% {
     transform: translateY(0px);
+  }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+}
+
+.modal-content {
+  background-color: #f9fafd;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  animation: popUp 0.3s ease;
+}
+
+.modal-content h2 {
+  color: #00226f;
+  margin-bottom: 15px;
+}
+
+.modal-content p {
+  margin-bottom: 20px;
+}
+
+.modal-content input {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 7px;
+  border: 2px solid black;
+  font-size: 14px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.modal-content button {
+  width: 100%;
+  max-width: 150px;
+  font-size: 14px;
+  border: none;
+  border-radius: 7px;
+  background-color: #00226f;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.modal-content button:hover {
+  background-color: hsl(220, 92%, 38%);
+}
+
+.close-btn {
+  margin-top: 20px;
+  background-color: #aaa;
+}
+
+.close-btn:hover {
+  background-color: #888;
+}
+
+.scrollable {
+  max-height: 300px;
+  overflow-y: auto;
+  text-align: left;
+  margin-top: 10px;
+  padding-right: 10px;
+}
+
+@keyframes popUp {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
   }
 }

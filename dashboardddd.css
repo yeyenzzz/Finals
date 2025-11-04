@@ -62,6 +62,10 @@ li:hover {
   transform: scale(1.05);
 }
 
+.logout {
+  margin-top: 150px;
+}
+
 .contents {
   display: flex;
   flex-direction: column;
@@ -89,7 +93,7 @@ button {
 }
 
 button:hover {
-  background-color: aliceblue;
+  background-color: rgb(117, 165, 207);
   letter-spacing: 1px;
 }
 
