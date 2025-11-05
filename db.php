@@ -1,9 +1,10 @@
 <?php
-function connectDB() {
+function connectDB()
+{
     $servername = "localhost";
     $username = "root";
     $password = "";
-    $dbname = "onlinebankingdb"; 
+    $dbname = "onlinebankingdb";
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
     // Check connection

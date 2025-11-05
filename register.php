@@ -6,10 +6,6 @@ session_start();
 //     exit();
 // }
 
-if (isset(false['email'])) {
-  header("Location: dashboard.php");
-  exit();
-}
 
 $firstName = "";
 $lastName = "";
@@ -106,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Online Banking</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css" />
 
 </head>
 
@@ -137,7 +133,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <input type="text" placeholder="Last Name" name="lastName" value="<?= $lastName ?>" required />
             </div>
             <div class="email">
-              <input placeholder="Email" name="email" value="<?= $email ?>" required />
+              <input type="email" placeholder="Email" name="email" value="<?= $email ?>" required />
             </div>
             <div class="password">
               <input type="password" placeholder="Password" name="password" required />
@@ -148,7 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <span class="error"><?= $confirmPasswordError ?></span>
             </div>
             <div class="TermsConditions">
-              <input type="checkbox" class="checkbox">
+              <input type="checkbox" class="checkbox" required>
               <label>I agree to the <a href="#" onclick="openModal2()">Terms & Conditions</a></label>
             </div>
             <div class="Button">
