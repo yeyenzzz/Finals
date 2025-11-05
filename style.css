@@ -63,8 +63,8 @@ body {
 
 .atm {
   position: absolute;
-  width: 680px;
-  top: -80px;
+  width: 600px;
+  top: -40px;
   left: 100px;
   z-index: 1;
 }
