@@ -256,15 +256,6 @@ button:hover {
   background-color: hsl(220, 92%, 38%);
 }
 
-.close-btn {
-  margin-top: 20px;
-  background-color: #aaa;
-}
-
-.close-btn:hover {
-  background-color: #888;
-}
-
 .scrollable {
   max-height: 300px;
   overflow-y: auto;

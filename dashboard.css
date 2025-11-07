@@ -1,0 +1,280 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+}
+
+.whole {
+  display: flex;
+  flex-direction: row;
+}
+
+.nav-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 200px;
+  height: 100vh;
+  gap: 30px;
+}
+
+.Logo {
+  padding: 20px;
+  margin: 10px;
+}
+
+.Dashboard,
+.Account,
+.Loan,
+.Cards,
+.Inbox,
+.Settings {
+  padding: 10px 20px 10px 20px;
+  width: 150px;
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+
+.Dashboard:hover {
+  background-color: skyblue;
+  color: white;
+}
+
+.Inbox:hover {
+  background-color: skyblue;
+  color: white;
+}
+
+.Loan:hover {
+  background-color: skyblue;
+  color: white;
+}
+
+.Account:hover {
+  background-color: skyblue;
+  color: white;
+}
+.Cards:hover {
+  background-color: skyblue;
+  color: white;
+}
+.Settings:hover {
+  background-color: skyblue;
+  color: white;
+}
+
+.active {
+  background-color: skyblue;
+  color: white;
+  border-radius: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: #6eb9f1;
+  font-weight: bold;
+}
+
+.page {
+  width: 100%;
+  background-color: #eeeeee;
+}
+
+.profile {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
+  background-color: white;
+  padding: 20px 50px 20px 20px;
+  margin-bottom: 5px;
+  gap: 20px;
+}
+
+.profile i {
+  padding: 10px;
+  border-radius: 50%;
+  transition: all 0.3s;
+  color: #0c2b4e;
+}
+
+.profile i:hover {
+  background-color: #6eb9f1;
+  color: white;
+}
+
+.greet {
+  display: flex;
+  flex-direction: row;
+  background-color: #313647;
+  border-radius: 17px;
+  margin: 8px;
+  padding: 40px;
+}
+
+.greet h1 {
+  color: white;
+}
+
+.cards {
+  position: relative;
+  width: 100px;
+  height: 150px;
+  margin-left: 300px;
+}
+
+.card-design {
+  position: absolute;
+  width: 100px;
+  height: 150px;
+  border-radius: 10px;
+}
+
+#card1 {
+  z-index: 3;
+  width: 100px;
+  height: 150px;
+  background-color: #6eb9f1;
+}
+
+#card2 {
+  z-index: 2;
+  background-color: rgb(0, 0, 255);
+  animation: card2 1s ease-in-out forwards;
+}
+
+#card3 {
+  z-index: 1;
+  background-color: black;
+  animation: card3 1s ease-in-out forwards;
+}
+
+@keyframes card2 {
+  0% {
+    right: 0;
+    transform: rotate(0deg);
+  }
+  100% {
+    right: 17px;
+    transform: rotate(-25deg);
+  }
+}
+
+@keyframes card3 {
+  0% {
+    left: 0;
+    transform: rotate(0deg);
+  }
+  100% {
+    left: 17px;
+    transform: rotate(25deg);
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+  gap: 10px;
+}
+
+.balance {
+  width: 100%;
+  background-color: white;
+  height: 250px;
+  border-radius: 20px;
+  padding: 20px;
+}
+.transaction {
+  width: 100%;
+  background-color: white;
+  height: 250px;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+}
+
+.modal-content {
+  background-color: #f9fafd;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+  animation: popUp 0.3s ease;
+}
+
+.modal-content h2 {
+  color: #00226f;
+  margin-bottom: 15px;
+}
+
+.modal-content p {
+  margin-bottom: 20px;
+}
+
+.modal-content input {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 7px;
+  border: 2px solid black;
+  font-size: 14px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.modal-content button {
+  width: 100%;
+  max-width: 150px;
+  font-size: 14px;
+  border: none;
+  border-radius: 7px;
+  background-color: #00226f;
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.close-btn {
+  margin-top: 20px;
+  background-color: #aaa;
+}
+
+.close-btn:hover {
+  background-color: #888;
+}
+
+.confirm-btn:hover {
+  background-color: red;
+}
+
+@keyframes popUp {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
