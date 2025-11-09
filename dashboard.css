@@ -119,6 +119,12 @@ a {
 
 .greet h1 {
   color: white;
+  margin-bottom: 20px;
+}
+
+.greet p {
+  color: white;
+  font-size: 17px;
 }
 
 .cards {

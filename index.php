@@ -110,9 +110,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <input type="email" name="forgotEmail" placeholder="Email" required />
           <div class="Button">
             <button type="submit">Submit</button>
+            <button class="close-btn" onclick="closeModal()">Close</button>
           </div>
         </form>
-        <button class="close-btn" onclick="closeModal()">Close</button>
+
       </div>
     </div>
   </div>

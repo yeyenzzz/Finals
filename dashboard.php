@@ -52,7 +52,10 @@
                 <a href="#"><i class="bi bi-bell-fill" title="Notification" style="font-size: 25px; color;"></i></a>
             </div>
             <div class="greet">
-                <h1>Welcome back</h1>
+                <div>
+                    <h1>Welcome back</h1>
+                    <p>Monitor your balance, review transactions, and manage your finances effortlessly.</p>
+                </div>
                 <div class="cards">
                     <div class="card-design" id="card1"></div>
                     <div class="card-design" id="card2"></div>
