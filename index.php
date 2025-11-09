@@ -1,18 +1,14 @@
 <?php
 session_start();
 
-// if (isset($_SESSION['email'])) {
-//     header("Location: dashboard.php");
-//     exit();
-// }
-
-if (isset(false['email'])) {
-  header("Location: dashboard.php");
-  exit();
+if (isset($_SESSION['email'])) {
+    header("Location: dashboard.php");
+    exit();
 }
 
 $email = "";
 $error = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $email = $_POST['email'];
   $password = $_POST['password'];
@@ -22,18 +18,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   } else {
     include 'db.php';
     $connectDB = connectDB();
-    $statement = $connectDB->prepare("SELECT id, password FROM users WHERE email = ?");
+    $statement = $connectDB->prepare("SELECT id, firstName, password FROM users WHERE email = ?");
     $statement->bind_param("s", $email);
     $statement->execute();
     $statement->store_result();
 
     if ($statement->num_rows === 1) {
-      $statement->bind_result($id, $hashedPassword);
+          $statement->bind_result($id, $firstName, $hashedPassword);
       $statement->fetch();
 
       if (password_verify($password, $hashedPassword)) {
         $_SESSION['email'] = $email;
         $_SESSION['id'] = $id;
+        $_SESSION['firstName'] = $firstName;
         header("Location: dashboard.php");
         exit();
       } else {

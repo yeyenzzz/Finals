@@ -1,3 +1,23 @@
+<?php
+session_start();
+
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+    $_SESSION = array();
+    session_destroy();
+    header("Location: index.php");
+    exit();
+}
+
+if (!isset($_SESSION['email'])) {
+    header("Location: index.php");
+    exit();
+}
+
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -53,7 +73,7 @@
             </div>
             <div class="greet">
                 <div>
-                    <h1>Welcome back</h1>
+                    <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
                     <p>Monitor your balance, review transactions, and manage your finances effortlessly.</p>
                 </div>
                 <div class="cards">
@@ -80,11 +100,19 @@
                     Logout your accout?
                 </p>
             </div>
-            <button class="confirm-btn" onclick="confirmLogout()">Logout</button>
+           <button onclick="window.location.href='?action=logout'">Logout</button>
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
     <script src="script.js"></script>
+    <script type="text/javascript">
+function preventBack() {
+    window.history.forward();
+}
+setTimeout(preventBack, 0);
+window.onunload = function() { null };
+</script>
+
 </body>
 
 </html>
