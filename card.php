@@ -46,12 +46,12 @@ header("Pragma: no-cache");
                     <i class="bi bi-arrow-left-right"></i> Transfer
                 </div>
             </a>
-            <a href="card.php">
+            <a href="card.php" class="active">
                 <div class="Cards">
                     <i class="bi bi-credit-card"></i> Cards
                 </div>
             </a>
-            <a href="loan.php" class="active">
+            <a href="loan4.php">
                 <div class="Loan">
                     <i class="bi bi-cash"></i> Loan
                 </div>
@@ -76,38 +76,21 @@ header("Pragma: no-cache");
             </div>
             <div class="transfer">
                 <div class="content">
-                    <h1>Loan Application</h1>
-                    <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
+                    <h1>Credit Card</h1>
+                    <div class="applycard"><img src="images/credit-card.png" alt="" class="credit-card "></div>
+                    <p>Don't have a credit card yet? Apply now with just a few simple</p>
+                    <p>requirements and start enjoying the benefits today!</p>
                     <div class="inputs">
+                        <div class="Personal" style="margin-top: 20px;">
+                            <h3><i class="bi bi-check-circle-fill" style="color: #00226f;"></i> Fast and easy
+                                application</h3>
+                            <p>Submit your documents online and get updates straight from your device</p><br>
+                            <h3><i class="bi bi-check-circle-fill" style="color: #00226f;"></i> Full transparency</h3>
+                            <p>See all fees and terms before you accept your credit card offer</p>
+                        </div>
                         <div class="Personal">
-                            <h1>| Summary</h1>
                         </div>
-                        <div class="Personal"> Full Name<input type="text" placeholder="Full Name" disbled></div>
-                        <div class="Personal"> Email Address<input type="text" placeholder="Email Address" disbled>
-                        </div>
-                        <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" disbled>
-                        </div>
-                        <div class="Personal"> Monthly Salary (₱)<input type="text" placeholder="Contact Number"
-                                disbled>
-                        </div>
-                        <div class="Personal">Upload Valid ID <input type="text" placeholder="Upload Valid ID" disbled>
-                        </div>
-                        <div class="Personal">Upload PaySlip (3 Months) <input type="text" placeholder="Upload Valid ID"
-                                disbled></div>
-                        <div class="Personal"> Loan Type <input type="text" placeholder="Select Loan Type" disabled>
-                        </div>
-                        <div class="Personal"> Desired Loan Amount (₱)<input type="text"
-                                placeholder="Desired Loan Amount" disbled></div>
-                        <div class="Personal"> Loan Term (Months)<input type="text" placeholder="Select Loan Term"
-                                disabled>
-                        </div>
-                        <div class="Personal"> Payment Frequency<input type="text"
-                                placeholder="Select Payment Frequency" disabled></div>
-                        <div class="Personal"> Payment Type<input type="text" placeholder="Select Payment Type"
-                                disabled></div>
-                        <div class="next_prev">
-                            <a href="loan2.php"><button class="prev-btn">Previous</button></a>
-                            <a href="#"><button class="next-btn">Submit</button></a>
+                        <div class="next_prev"><a href="card2.php"><button class="next-btn">Apply</button></a>
                         </div>
                     </div>
                 </div>

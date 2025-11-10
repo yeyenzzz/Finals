@@ -46,12 +46,12 @@ header("Pragma: no-cache");
                     <i class="bi bi-arrow-left-right"></i> Transfer
                 </div>
             </a>
-            <a href="card.php">
+            <a href="card.php" class="active">
                 <div class="Cards">
                     <i class="bi bi-credit-card"></i> Cards
                 </div>
             </a>
-            <a href="loan.php" class="active">
+            <a href="loan.php">
                 <div class="Loan">
                     <i class="bi bi-cash"></i> Loan
                 </div>
@@ -76,43 +76,37 @@ header("Pragma: no-cache");
             </div>
             <div class="transfer">
                 <div class="content">
-                    <h1>Loan Application</h1>
+                    <h1>Credit Card</h1>
                     <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
                     <div class="inputs">
                         <div class="Personal">
                             <h1>| Summary</h1>
                         </div>
-                        <div class="Personal"> Full Name<input type="text" placeholder="Full Name" disbled></div>
-                        <div class="Personal"> Email Address<input type="text" placeholder="Email Address" disbled>
+                        <div class="Personal"> Full Name<input type="text" placeholder="Full Name" disabled></div>
+                        <div class="Personal"> Age (21+)<input type="text" placeholder="Age" disabled></div>
+                        <div class="Personal"> Email Address<input type="text" placeholder="Email Address" disabled>
                         </div>
-                        <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" disbled>
+                        <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" disabled>
+                        </div>
+                        <div class="Personal"> Address<input type="text" placeholder="Address" disabled>
                         </div>
                         <div class="Personal"> Monthly Salary (₱)<input type="text" placeholder="Contact Number"
-                                disbled>
-                        </div>
-                        <div class="Personal">Upload Valid ID <input type="text" placeholder="Upload Valid ID" disbled>
-                        </div>
-                        <div class="Personal">Upload PaySlip (3 Months) <input type="text" placeholder="Upload Valid ID"
-                                disbled></div>
-                        <div class="Personal"> Loan Type <input type="text" placeholder="Select Loan Type" disabled>
-                        </div>
-                        <div class="Personal"> Desired Loan Amount (₱)<input type="text"
-                                placeholder="Desired Loan Amount" disbled></div>
-                        <div class="Personal"> Loan Term (Months)<input type="text" placeholder="Select Loan Term"
                                 disabled>
                         </div>
-                        <div class="Personal"> Payment Frequency<input type="text"
-                                placeholder="Select Payment Frequency" disabled></div>
-                        <div class="Personal"> Payment Type<input type="text" placeholder="Select Payment Type"
+                        <div class="Personal">Upload Valid ID <input type="text" placeholder="Upload Valid ID" disabled>
+                        </div>
+                        <div class="Personal">Upload PaySlip (3 Months) <input type="text" placeholder="Upload Valid ID"
                                 disabled></div>
+
                         <div class="next_prev">
-                            <a href="loan2.php"><button class="prev-btn">Previous</button></a>
+                            <a href="card2.php"><button class="prev-btn">Previous</button></a>
                             <a href="#"><button class="next-btn">Submit</button></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     </div>
     <div id="logoutModal" class="modal">

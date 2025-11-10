@@ -95,7 +95,10 @@ header("Pragma: no-cache");
                         <div class="Personal">Upload PaySlip (3 Months) <input type="file" placeholder="Upload Valid ID"
                                 required></div>
 
-                        <div class="next_prev"><a href="loan2.php"><button class="next-btn">Next</button></a> </div>
+                        <div class="next_prev">
+                            <a href="loan4.php"><button class="prev-btn">Cancel</button></a>
+                            <a href="loan2.php"><button class="next-btn">Next</button></a>
+                        </div>
                     </div>
                 </div>
             </div>
