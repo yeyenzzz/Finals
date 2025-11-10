@@ -85,41 +85,40 @@ header("Pragma: no-cache");
                     <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
                     <div class="inputs">
                         <div class="Personal">
-                            <h1>| 2. WALA PA TO</h1>
+                            <h1>| Summary</h1>
                         </div>
-                        <div class="Personal"> Loan Type <select>
-                                <option value="" disabled selected class="disabled">Select Loan Type</option>
-                                <option value="Business Loan">Business Loan</option>
-                                <option value="Personal Loan">Personal Loan</option>
-                                <option value="Educational Loan">Educational Loan</option>
-                            </select></div>
-                        <div class="Personal"> Desired Loan Amount (₱)<input type="number"
-                                placeholder="Desired Loan Amount" required></div>
-                        <div class="Personal"> Loan Term (Months)<select>
-                                <option value="" disabled selected class="disabled">Select Loan Term</option>
-                                <option value="12">12 months</option>
-                                <option value="24">24 months</option>
-                                <option value="36">36 months</option>
-                            </select></div>
-                        <div class="Personal"> Payment Frequency<select>
-                                <option value="" disabled selected class="disabled">Select Payment Frequency</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="Bi-weekly">Bi-weekly</option>
-                                <option value="Quarterly">Quarterly</option>
-                            </select></div>
-                        <div class="Personal"> Payment Type<select>
-                                <option value="" disabled selected class="disabled">Select Payment Type</option>
-                                <option value="Manual">Manual Payment</option>
-                                <option value="Automatic">Automatic Payment (Auto Debit/Auto Pay)</option>
-                            </select></div>
+                        <div class="Personal"> Full Name<input type="text" placeholder="Full Name" disbled></div>
+                        <div class="Personal"> Email Address<input type="text" placeholder="Email Address" disbled>
+                        </div>
+                        <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" disbled>
+                        </div>
+                        <div class="Personal"> Monthly Salary (₱)<input type="text" placeholder="Contact Number"
+                                disbled>
+                        </div>
+                        <div class="Personal">Upload Valid ID <input type="text" placeholder="Upload Valid ID" disbled>
+                        </div>
+                        <div class="Personal">Upload PaySlip (3 Months) <input type="text" placeholder="Upload Valid ID"
+                                disbled></div>
+                        <div class="Personal"> Loan Type <input type="text" placeholder="Select Loan Type" disabled>
+                        </div>
+                        <div class="Personal"> Desired Loan Amount (₱)<input type="text"
+                                placeholder="Desired Loan Amount" disbled></div>
+                        <div class="Personal"> Loan Term (Months)<input type="text" placeholder="Select Loan Term"
+                                disabled>
+                        </div>
+                        <div class="Personal"> Payment Frequency<input type="text"
+                                placeholder="Select Payment Frequency" disabled></div>
+                        <div class="Personal"> Payment Type<input type="text" placeholder="Select Payment Type"
+                                disabled></div>
                         <div class="next_prev">
-                            <a href="loan.php"><button class="prev-btn">Previous</button></a>
-                            <a href="loan3.php"><button class="next-btn">Next</button></a>
+                            <a href="loan2.php"><button class="prev-btn">Previous</button></a>
+                            <a href="#"><button class="next-btn">Submit</button></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <div id="logoutModal" class="modal">
         <div class="modal-content">

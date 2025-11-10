@@ -1,11 +1,6 @@
 <?php
 session_start();
 
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-header("Expires: 0");
-
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     $_SESSION = array();
     session_destroy();
@@ -46,17 +41,17 @@ header("Pragma: no-cache");
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
-            <a href="transfer.php" class="active">
+            <a href="transfer.php">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer
                 </div>
             </a>
-            <a href="card.php">
+            <a href="card.php" class="active">
                 <div class="Cards">
                     <i class="bi bi-credit-card"></i> Cards
                 </div>
             </a>
-            <a href="loan4.php">
+            <a href="loan.php">
                 <div class="Loan">
                     <i class="bi bi-cash"></i> Loan
                 </div>
@@ -81,17 +76,38 @@ header("Pragma: no-cache");
             </div>
             <div class="transfer">
                 <div class="content">
-                    <h1>Transfer Funds</h1>
+                    <h1>Credit Card</h1>
+                    <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
                     <div class="inputs">
-                        <div class="Personal"> Send to<input type="text" placeholder="Phone number" required></div>
-                        <div class="Personal"> Amount(₱)<input type="number" placeholder="Amount" required></div>
-                        <div class="Personal"> Message (Optional)<input type="text" placeholder="Message for recipient">
+                        <div class="Personal">
+                            <h1>| Credit Card Application</h1>
                         </div>
-                        <div class="next_prev"><button class="review-btn">Review</button></div>
+                        <div class="Personal"> Full Name<input type="text" placeholder="Full Name" required></div>
+                        <div class="Personal"> Age (21+)<input type="Number" placeholder="Age" required></div>
+                        <div class="Personal"> Email Address<input type="email" placeholder="Email Address" required>
+                        </div>
+                        <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" required>
+                        </div>
+                        <div class="Personal"> Address<input type="text" placeholder="Address" required>
+                        </div>
+                        <div class="Personal"> Monthly Salary (₱)<input type="number" placeholder="Contact Number"
+                                required>
+                        </div>
+                        <div class="Personal">Upload Valid ID <input type="file" placeholder="Upload Valid ID" required>
+                        </div>
+                        <div class="Personal">Upload PaySlip (3 Months) <input type="file" placeholder="Upload Valid ID"
+                                required></div>
+
+                        <div class="next_prev">
+                            <a href="card.php"><button class="prev-btn">Cancel</button></a>
+                            <a href="card3.php"><button class="next-btn">Next</button></a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
     <div id="logoutModal" class="modal">
         <div class="modal-content">
@@ -106,12 +122,12 @@ header("Pragma: no-cache");
         </div>
     </div>
     <script src="script.js"></script>
-    <script>
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
-                window.location.reload();
-            }
-        });
+    <script type="text/javascript">
+        function preventBack() {
+            window.history.forward();
+        }
+        setTimeout(preventBack, 0);
+        window.onunload = function () { null };
     </script>
 
 </body>

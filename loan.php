@@ -100,31 +100,34 @@ header("Expires: 0");
                             <div class="Personal">Upload PaySlip (3 Months) <input type="file" placeholder="Upload Valid ID"
                                     required></div>
 
-                            <div class="next_prev"><a href="loan2.php"><button class="next-btn">Next</button></a> </div>
+                        <div class="next_prev">
+                            <a href="loan4.php"><button class="prev-btn">Cancel</button></a>
+                            <a href="loan2.php"><button class="next-btn">Next</button></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="logoutModal" class="modal">
-            <div class="modal-content">
-                <h2>Logout</h2>
-                <div class="scrollable">
-                    <p>
-                        Logout your accout?
-                    </p>
-                </div>
-                <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
-                <button class="close-btn" onclick="closeModal3()">Close</button>
+    </div>
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h2>Logout</h2>
+            <div class="scrollable">
+                <p>
+                    Logout your accout?
+                </p>
             </div>
+            <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
+            <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
-        <script src="script.js"></script>
-    <script>
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
-                window.location.reload();
-            }
-        });
+    </div>
+    <script src="script.js"></script>
+    <script type="text/javascript">
+        function preventBack() {
+            window.history.forward();
+        }
+        setTimeout(preventBack, 0);
+        window.onunload = function () { null };
     </script>
 
 

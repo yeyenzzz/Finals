@@ -252,6 +252,10 @@ button:hover {
   letter-spacing: 1px;
 }
 
+.credit-card {
+  width: 175px;
+}
+
 .cards {
   position: relative;
   width: 100px;

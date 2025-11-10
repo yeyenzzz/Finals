@@ -1,11 +1,6 @@
 <?php
 session_start();
 
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-header("Expires: 0");
-
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     $_SESSION = array();
     session_destroy();
@@ -46,7 +41,7 @@ header("Pragma: no-cache");
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
-            <a href="transfer.php" class="active">
+            <a href="transfer.php">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer
                 </div>
@@ -56,7 +51,7 @@ header("Pragma: no-cache");
                     <i class="bi bi-credit-card"></i> Cards
                 </div>
             </a>
-            <a href="loan4.php">
+            <a href="loan4.php" class="active">
                 <div class="Loan">
                     <i class="bi bi-cash"></i> Loan
                 </div>
@@ -81,17 +76,31 @@ header("Pragma: no-cache");
             </div>
             <div class="transfer">
                 <div class="content">
-                    <h1>Transfer Funds</h1>
+                    <h1>Loan Application</h1>
+                    <div class="applycard"><img src="images/save.png" alt="" class="credit-card "></div>
+                    <p> Need extra funds? Apply for a loan today with simple </p>
+                    <p>requirements and flexible payment options!</p>
                     <div class="inputs">
-                        <div class="Personal"> Send to<input type="text" placeholder="Phone number" required></div>
-                        <div class="Personal"> Amount(₱)<input type="number" placeholder="Amount" required></div>
-                        <div class="Personal"> Message (Optional)<input type="text" placeholder="Message for recipient">
+                        <div class="Personal" style="margin-top: 20px;">
+                            <h3><i class="bi bi-check-circle-fill" style="color: #00226f;"></i> Quick approval process
+                            </h3>
+                            <p>Get your application reviewed fast so you can access funds right when you need them.</p>
+                            <br>
+                            <h3><i class="bi bi-check-circle-fill" style="color: #00226f;"></i> Flexible repayment
+                                options</h3>
+                            <p>Choose a payment plan that fits your budget and lifestyle.</p><br>
+                            <h3><i class="bi bi-check-circle-fill" style="color: #00226f;"></i> Transparent terms</h3>
+                            <p>Know exactly what you’re signing up for — no hidden fees or surprises.</p>
                         </div>
-                        <div class="next_prev"><button class="review-btn">Review</button></div>
+                        <div class="Personal">
+                        </div>
+                        <div class="next_prev"><a href="loan.php"><button class="next-btn">Apply</button></a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <div id="logoutModal" class="modal">
         <div class="modal-content">
@@ -106,12 +115,12 @@ header("Pragma: no-cache");
         </div>
     </div>
     <script src="script.js"></script>
-    <script>
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
-                window.location.reload();
-            }
-        });
+    <script type="text/javascript">
+        function preventBack() {
+            window.history.forward();
+        }
+        setTimeout(preventBack, 0);
+        window.onunload = function () { null };
     </script>
 
 </body>
