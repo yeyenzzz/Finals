@@ -138,41 +138,6 @@ a {
   font-size: 17px;
 }
 
-.cards {
-  position: relative;
-  width: 100px;
-  height: 150px;
-  margin-left: 250px;
-}
-
-.card-design {
-  position: absolute;
-  width: 130px;
-  height: 175px;
-  border-radius: 10px;
-  bottom: 1px;
-}
-
-#card1 {
-  z-index: 3;
-  background-image: url(images/card3.png);
-  background-size: cover;
-}
-
-#card2 {
-  z-index: 2;
-  background-image: url(images/card2.png);
-  background-size: cover;
-  animation: card2 1s ease-in-out forwards;
-}
-
-#card3 {
-  z-index: 1;
-  background-image: url(images/card1.png);
-  background-size: cover;
-  animation: card3 1s ease-in-out forwards;
-}
-
 .content {
   display: flex;
   flex-direction: column;
@@ -287,25 +252,64 @@ button:hover {
   letter-spacing: 1px;
 }
 
-@keyframes card2 {
-  0% {
-    right: 0;
-    transform: rotate(0deg);
+.cards {
+  position: relative;
+  width: 100px;
+  height: 150px;
+  margin-left: 250px;
+}
+
+.card-design {
+  position: absolute;
+  width: 130px;
+  height: 175px;
+  border-radius: 10px;
+  bottom: 1px;
+  background-size: cover;
+}
+
+#card1 {
+  z-index: 3;
+  background-image: url(images/card3.png);
+  animation: card1Anim 1s ease-in-out forwards;
+}
+
+#card2 {
+  z-index: 2;
+  background-image: url(images/card2.png);
+  animation: card2Anim 1s ease-in-out forwards;
+}
+
+#card3 {
+  z-index: 1;
+  background-image: url(images/card1.png);
+  animation: card3Anim 1s ease-in-out forwards;
+}
+
+@keyframes card1Anim {
+  from {
+    transform: translateX(0px) rotate(0deg);
   }
-  100% {
-    right: 17px;
-    transform: rotate(-25deg);
+  to {
+    transform: translateX(25px) rotate(12deg);
   }
 }
 
-@keyframes card3 {
-  0% {
-    left: 0;
-    transform: rotate(0deg);
+@keyframes card2Anim {
+  from {
+    transform: translateX(0px) rotate(0deg);
   }
-  100% {
-    left: 17px;
-    transform: rotate(25deg);
+  to {
+    transform: translateX(-12px) rotate(-7deg);
+  }
+}
+
+@keyframes card3Anim {
+  from {
+    transform: translateX(0px) rotate(0deg);
+  }
+  to {
+    transform: translateX(-50px) translateY(10px) rotate(-25deg);
   }
 }
 
