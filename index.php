@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->bind_result($id, $firstName, $hashedPassword, $isVerified);
             $stmt->fetch();
 
-                        /* ✅ If not verified → block login */
+            // If not verified → block login 
             if ($isVerified == 0) {
                 $_SESSION['login_error'] = "*Please verify your email before logging in.";
                 $_SESSION['login_email'] = $email;
