@@ -2,8 +2,8 @@
 session_start();
 
 if (isset($_SESSION['email'])) {
-    header("Location: dashboard.php");
-    exit();
+  header("Location: dashboard.php");
+  exit();
 }
 
 $email = "";
@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $statement->store_result();
 
     if ($statement->num_rows === 1) {
-          $statement->bind_result($id, $firstName, $hashedPassword);
+      $statement->bind_result($id, $firstName, $hashedPassword);
       $statement->fetch();
 
       if (password_verify($password, $hashedPassword)) {
@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Online Banking</title>
+  <title>eTapPay</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -70,6 +70,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="wrap">
       <div class="container">
         <div class="header">
+          <div class="logo">
+            <img src="images/logo.png" alt="" class="logo">
+            <h3>eTapPay</h3>
+          </div>
           <h2>Welcome Back</h2>
           <p>Login to manage your secure transactions</p>
         </div>

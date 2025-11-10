@@ -2,8 +2,8 @@
 session_start();
 
 if (isset($_SESSION['email'])) {
-    header("Location: dashboard.php");
-    exit();
+  header("Location: dashboard.php");
+  exit();
 }
 
 $firstName = "";
@@ -100,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Online Banking</title>
+  <title>eTapPay</title>
   <link rel="stylesheet" href="style.css" />
 
 </head>
@@ -122,6 +122,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="wrap">
       <div class="container">
         <div class="header">
+          <div class="logo">
+            <img src="images/logo.png" alt="" class="logo">
+            <h3>eTapPay</h3>
+          </div>
           <h2>Create Your Account</h2>
           <p>Start your journey with secure and fast transactions</p>
         </div>

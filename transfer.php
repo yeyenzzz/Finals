@@ -18,26 +18,6 @@ header("Pragma: no-cache");
 ?>
 
 
-<?php
-session_start();
-
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-    $_SESSION = array();
-    session_destroy();
-    header("Location: index.php");
-    exit();
-}
-
-if (!isset($_SESSION['email'])) {
-    header("Location: index.php");
-    exit();
-}
-
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,12 +36,12 @@ header("Pragma: no-cache");
                 <img src="images/logo.png" alt="" class="logo">
                 <h3>eTapPay</h3>
             </div>
-            <a href="dashboard.php" class="active">
+            <a href="dashboard.php">
                 <div class="Dashboard">
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
-            <a href="transfer.php">
+            <a href="transfer.php" class="active">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer
                 </div>
@@ -94,24 +74,16 @@ header("Pragma: no-cache");
                 <a href="#"><i class="bi bi-person-circle" title="Profile" style="font-size: 25px; color;"></i></a>
                 <a href="#"><i class="bi bi-bell-fill" title="Notification" style="font-size: 25px; color;"></i></a>
             </div>
-            <div class="greet">
-                <div>
-                    <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
-                    <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
-                    <p>Monitor your balance, review transactions, and manage your finances effortlessly.</p>
-                </div>
-                <div class="cards">
-                    <div class="card-design" id="card1"></div>
-                    <div class="card-design" id="card2"></div>
-                    <div class="card-design" id="card3"></div>
-                </div>
-            </div>
-            <div class="section">
-                <div class="balance">
-                    <h3>Account Balance</h3>
-                </div>
-                <div class="transaction">
-                    <h3>Transactions</h3>
+            <div class="transfer">
+                <div class="content">
+                    <h1>Transfer Funds</h1>
+                    <div class="inputs">
+                        <div class="Personal"> Send to<input type="text" placeholder="Phone number" required></div>
+                        <div class="Personal"> Amount(₱)<input type="number" placeholder="Amount" required></div>
+                        <div class="Personal"> Message (Optional)<input type="text" placeholder="Message for recipient">
+                        </div>
+                        <div class="next_prev"><button class="review-btn">Review</button></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,7 +97,6 @@ header("Pragma: no-cache");
                 </p>
             </div>
             <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
-           <button onclick="window.location.href='?action=logout'">Logout</button>
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
@@ -137,14 +108,6 @@ header("Pragma: no-cache");
         setTimeout(preventBack, 0);
         window.onunload = function () { null };
     </script>
-
-    <script type="text/javascript">
-function preventBack() {
-    window.history.forward();
-}
-setTimeout(preventBack, 0);
-window.onunload = function() { null };
-</script>
 
 </body>
 

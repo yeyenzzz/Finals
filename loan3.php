@@ -18,26 +18,6 @@ header("Pragma: no-cache");
 ?>
 
 
-<?php
-session_start();
-
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-    $_SESSION = array();
-    session_destroy();
-    header("Location: index.php");
-    exit();
-}
-
-if (!isset($_SESSION['email'])) {
-    header("Location: index.php");
-    exit();
-}
-
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,7 +36,7 @@ header("Pragma: no-cache");
                 <img src="images/logo.png" alt="" class="logo">
                 <h3>eTapPay</h3>
             </div>
-            <a href="dashboard.php" class="active">
+            <a href="dashboard.php">
                 <div class="Dashboard">
                     <i class="bi bi-house"></i> Dashboard
                 </div>
@@ -71,7 +51,7 @@ header("Pragma: no-cache");
                     <i class="bi bi-credit-card"></i> Cards
                 </div>
             </a>
-            <a href="loan.php">
+            <a href="loan.php" class="active">
                 <div class="Loan">
                     <i class="bi bi-cash"></i> Loan
                 </div>
@@ -94,24 +74,44 @@ header("Pragma: no-cache");
                 <a href="#"><i class="bi bi-person-circle" title="Profile" style="font-size: 25px; color;"></i></a>
                 <a href="#"><i class="bi bi-bell-fill" title="Notification" style="font-size: 25px; color;"></i></a>
             </div>
-            <div class="greet">
-                <div>
-                    <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
-                    <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
-                    <p>Monitor your balance, review transactions, and manage your finances effortlessly.</p>
-                </div>
-                <div class="cards">
-                    <div class="card-design" id="card1"></div>
-                    <div class="card-design" id="card2"></div>
-                    <div class="card-design" id="card3"></div>
-                </div>
-            </div>
-            <div class="section">
-                <div class="balance">
-                    <h3>Account Balance</h3>
-                </div>
-                <div class="transaction">
-                    <h3>Transactions</h3>
+            <div class="transfer">
+                <div class="content">
+                    <h1>Loan Application</h1>
+                    <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
+                    <div class="inputs">
+                        <div class="Personal">
+                            <h1>| 2. WALA PA TO</h1>
+                        </div>
+                        <div class="Personal"> Loan Type <select>
+                                <option value="" disabled selected class="disabled">Select Loan Type</option>
+                                <option value="Business Loan">Business Loan</option>
+                                <option value="Personal Loan">Personal Loan</option>
+                                <option value="Educational Loan">Educational Loan</option>
+                            </select></div>
+                        <div class="Personal"> Desired Loan Amount (₱)<input type="number"
+                                placeholder="Desired Loan Amount" required></div>
+                        <div class="Personal"> Loan Term (Months)<select>
+                                <option value="" disabled selected class="disabled">Select Loan Term</option>
+                                <option value="12">12 months</option>
+                                <option value="24">24 months</option>
+                                <option value="36">36 months</option>
+                            </select></div>
+                        <div class="Personal"> Payment Frequency<select>
+                                <option value="" disabled selected class="disabled">Select Payment Frequency</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Bi-weekly">Bi-weekly</option>
+                                <option value="Quarterly">Quarterly</option>
+                            </select></div>
+                        <div class="Personal"> Payment Type<select>
+                                <option value="" disabled selected class="disabled">Select Payment Type</option>
+                                <option value="Manual">Manual Payment</option>
+                                <option value="Automatic">Automatic Payment (Auto Debit/Auto Pay)</option>
+                            </select></div>
+                        <div class="next_prev">
+                            <a href="loan.php"><button class="prev-btn">Previous</button></a>
+                            <a href="loan3.php"><button class="next-btn">Next</button></a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,7 +125,6 @@ header("Pragma: no-cache");
                 </p>
             </div>
             <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
-           <button onclick="window.location.href='?action=logout'">Logout</button>
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
@@ -137,14 +136,6 @@ header("Pragma: no-cache");
         setTimeout(preventBack, 0);
         window.onunload = function () { null };
     </script>
-
-    <script type="text/javascript">
-function preventBack() {
-    window.history.forward();
-}
-setTimeout(preventBack, 0);
-window.onunload = function() { null };
-</script>
 
 </body>
 
