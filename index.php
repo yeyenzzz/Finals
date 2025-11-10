@@ -1,48 +1,79 @@
 <?php
 session_start();
 
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
 if (isset($_SESSION['email'])) {
-  header("Location: dashboard.php");
-  exit();
+    header("Location: dashboard.php");
+    exit();
 }
+
 
 $email = "";
+if (isset($_SESSION['login_email'])) {
+    $email = $_SESSION['login_email'];
+    unset($_SESSION['login_email']); 
+}
 $error = "";
+if (isset($_SESSION['login_error'])) {
+    $error = $_SESSION['login_error'];
+    unset($_SESSION['login_error']);
+}
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  $email = $_POST['email'];
-  $password = $_POST['password'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-  if (empty($email) || empty($password)) {
-    $error = "*Please enter both email and password.";
-  } else {
-    include 'db.php';
-    $connectDB = connectDB();
-    $statement = $connectDB->prepare("SELECT id, firstName, password FROM users WHERE email = ?");
-    $statement->bind_param("s", $email);
-    $statement->execute();
-    $statement->store_result();
-
-    if ($statement->num_rows === 1) {
-      $statement->bind_result($id, $firstName, $hashedPassword);
-      $statement->fetch();
-
-      if (password_verify($password, $hashedPassword)) {
-        $_SESSION['email'] = $email;
-        $_SESSION['id'] = $id;
-        $_SESSION['firstName'] = $firstName;
-        header("Location: dashboard.php");
+    if (empty($email) || empty($password)) {
+        $_SESSION['login_error'] = "*Please enter both email and password.";
+        $_SESSION['login_email'] = $email;
+        header("Location: " . $_SERVER['PHP_SELF']);
         exit();
-      } else {
-        $error = "*Invalid password.";
-      }
     } else {
-      $error = "*No account found with that email.";
+        include 'db.php';
+        $connectDB = connectDB();
+        $stmt = $connectDB->prepare("SELECT id, firstName, password, is_verified FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->num_rows === 1) {
+            $stmt->bind_result($id, $firstName, $hashedPassword, $isVerified);
+            $stmt->fetch();
+
+                        /* ✅ If not verified → block login */
+            if ($isVerified == 0) {
+                $_SESSION['login_error'] = "*Please verify your email before logging in.";
+                $_SESSION['login_email'] = $email;
+                $stmt->close();
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
+
+
+            if (password_verify($password, $hashedPassword)) {              
+                $_SESSION['email'] = $email;
+                $_SESSION['id'] = $id;
+                $_SESSION['firstName'] = $firstName;
+                header("Location: dashboard.php");
+                exit();
+            } else {
+                $_SESSION['login_error'] = "*Invalid password.";
+                $_SESSION['login_email'] = $email; 
+            }
+        } else {
+            $_SESSION['login_error'] = "*No account found with that email.";
+        }
+        $stmt->close();
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
     }
-    $statement->close();
-  }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -80,7 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form method="POST" action="index.php">
           <div class="inputs">
             <div class="email">
-              <input placeholder="Email" name="email" value="<?= $email ?>" required />
+              <input placeholder="Email" name="email" value="<?php echo htmlspecialchars($email); ?>" required />
             </div>
             <div class="password">
               <input type="password" placeholder="Password" name="password" required />
@@ -119,6 +150,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
   </div>
   <script src="script.js"></script>
+  <script>
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+        window.location.reload();
+      }
+    });
+  </script>
+
 </body>
 
 </html>

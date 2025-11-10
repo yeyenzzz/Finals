@@ -1,40 +1,25 @@
 <?php
-session_start();
+session_start();    
+// Force no caching
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
 
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     $_SESSION = array();
     session_destroy();
-    header("Location: index.php");
+    header("Location: index.php", true, 303);
+
     exit();
 }
 
 if (!isset($_SESSION['email'])) {
-    header("Location: index.php");
+    header("Location: index.php", true, 303);
+
     exit();
 }
 
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
-?>
-
-
-<?php
-session_start();
-
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-    $_SESSION = array();
-    session_destroy();
-    header("Location: index.php");
-    exit();
-}
-
-if (!isset($_SESSION['email'])) {
-    header("Location: index.php");
-    exit();
-}
-
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
 ?>
 
 
@@ -97,7 +82,6 @@ header("Pragma: no-cache");
             <div class="greet">
                 <div>
                     <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
-                    <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
                     <p>Monitor your balance, review transactions, and manage your finances effortlessly.</p>
                 </div>
                 <div class="cards">
@@ -125,26 +109,17 @@ header("Pragma: no-cache");
                 </p>
             </div>
             <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
-           <button onclick="window.location.href='?action=logout'">Logout</button>
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
     <script src="script.js"></script>
-    <script type="text/javascript">
-        function preventBack() {
-            window.history.forward();
-        }
-        setTimeout(preventBack, 0);
-        window.onunload = function () { null };
+    <script>
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                window.location.reload();
+            }
+        });
     </script>
-
-    <script type="text/javascript">
-function preventBack() {
-    window.history.forward();
-}
-setTimeout(preventBack, 0);
-window.onunload = function() { null };
-</script>
 
 </body>
 
