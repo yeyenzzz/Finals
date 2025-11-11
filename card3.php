@@ -46,6 +46,11 @@ header("Pragma: no-cache");
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
+            <a href="account.php">
+                <div class="Account">
+                    <i class="bi bi-person"></i> Account
+                </div>
+            </a>
             <a href="transfer.php">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer
@@ -56,7 +61,7 @@ header("Pragma: no-cache");
                     <i class="bi bi-credit-card"></i> Cards
                 </div>
             </a>
-            <a href="loan.php">
+            <a href="loan4.php">
                 <div class="Loan">
                     <i class="bi bi-cash"></i> Loan
                 </div>
@@ -64,11 +69,6 @@ header("Pragma: no-cache");
             <a href="inbox.php">
                 <div class="Inbox">
                     <i class="bi bi-envelope"></i> Inbox
-                </div>
-            </a>
-            <a href="settings.php">
-                <div class="Settings">
-                    <i class="bi bi-gear"></i> Settings
                 </div>
             </a>
         </div>
@@ -128,7 +128,7 @@ header("Pragma: no-cache");
     </div>
     <script src="script.js"></script>
     <script>
-        window.addEventListener('pageshow', function(event) {
+        window.addEventListener('pageshow', function (event) {
             if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
                 window.location.reload();
             }

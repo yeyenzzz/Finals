@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+// Force no caching
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
@@ -9,7 +10,7 @@ header("Expires: 0");
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     $_SESSION = array();
     session_destroy();
-    header("Location: index.php");
+    header("Location: index.php", true, 303);
     exit();
 }
 
@@ -18,8 +19,7 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
+
 ?>
 
 
@@ -61,12 +61,12 @@ header("Pragma: no-cache");
                     <i class="bi bi-credit-card"></i> Cards
                 </div>
             </a>
-            <a href="loan4.php" class="active">
+            <a href="loan4.php">
                 <div class="Loan">
                     <i class="bi bi-cash"></i> Loan
                 </div>
             </a>
-            <a href="inbox.php">
+            <a href="inbox.php" class="active">
                 <div class="Inbox">
                     <i class="bi bi-envelope"></i> Inbox
                 </div>
@@ -86,45 +86,18 @@ header("Pragma: no-cache");
             </div>
             <div class="transfer">
                 <div class="content">
-                    <h1>Loan Application</h1>
-                    <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
+                    <h1>All Inbox</h1>
+                    <div class="inbox">
+                        <a href="inbox.php" style="margin-right: 75px; padding: 7px;">All</a>
+                        <a href="updates.php" style="margin-right: 75px; padding: 7px;">Updates</a>
+                        <a href="transaction.php" style="padding: 7px;">Transactions</a>
+                    </div>
                     <div class="inputs">
-                        <div class="Personal">
-                            <h1>| 2. Loan Details</h1>
-                        </div>
-                        <div class="Personal"> Loan Type <select>
-                                <option value="" disabled selected class="disabled">Select Loan Type</option>
-                                <option value="Business Loan">Business Loan</option>
-                                <option value="Personal Loan">Personal Loan</option>
-                                <option value="Educational Loan">Educational Loan</option>
-                            </select></div>
-                        <div class="Personal"> Desired Loan Amount (₱)<input type="number"
-                                placeholder="Desired Loan Amount" required></div>
-                        <div class="Personal"> Loan Term (Months)<select>
-                                <option value="" disabled selected class="disabled">Select Loan Term</option>
-                                <option value="12">12 months</option>
-                                <option value="24">24 months</option>
-                                <option value="36">36 months</option>
-                            </select></div>
-                        <div class="Personal"> Payment Frequency<select>
-                                <option value="" disabled selected class="disabled">Select Payment Frequency</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="Bi-weekly">Bi-weekly</option>
-                                <option value="Quarterly">Quarterly</option>
-                            </select></div>
-                        <div class="Personal"> Payment Type<select>
-                                <option value="" disabled selected class="disabled">Select Payment Type</option>
-                                <option value="Manual">Manual Payment</option>
-                                <option value="Automatic">Automatic Payment (Auto Debit/Auto Pay)</option>
-                            </select></div>
-                        <div class="next_prev">
-                            <a href="loan.php"><button class="prev-btn">Previous</button></a>
-                            <a href="loan3.php"><button class="next-btn">Next</button></a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <div id="logoutModal" class="modal">
         <div class="modal-content">
@@ -139,13 +112,14 @@ header("Pragma: no-cache");
         </div>
     </div>
     <script src="script.js"></script>
-    <script>
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
-                window.location.reload();
-            }
-        });
+    <script type="text/javascript">
+        function preventBack() {
+            window.history.forward();
+        }
+        setTimeout(preventBack, 0);
+        window.onunload = function () { null };
     </script>
+
 
 </body>
 

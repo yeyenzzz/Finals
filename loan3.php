@@ -46,6 +46,11 @@ header("Pragma: no-cache");
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
+            <a href="account.php">
+                <div class="Account">
+                    <i class="bi bi-person"></i> Account
+                </div>
+            </a>
             <a href="transfer.php">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer
@@ -56,7 +61,7 @@ header("Pragma: no-cache");
                     <i class="bi bi-credit-card"></i> Cards
                 </div>
             </a>
-            <a href="loan.php" class="active">
+            <a href="loan4.php" class="active">
                 <div class="Loan">
                     <i class="bi bi-cash"></i> Loan
                 </div>
@@ -87,22 +92,22 @@ header("Pragma: no-cache");
                         <div class="Personal">
                             <h1>| Summary</h1>
                         </div>
-                        <div class="Personal"> Full Name<input type="text" placeholder="Full Name" disbled></div>
-                        <div class="Personal"> Email Address<input type="text" placeholder="Email Address" disbled>
+                        <div class="Personal"> Full Name<input type="text" placeholder="Full Name" disabled></div>
+                        <div class="Personal"> Email Address<input type="text" placeholder="Email Address" disabled>
                         </div>
-                        <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" disbled>
+                        <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" disabled>
                         </div>
                         <div class="Personal"> Monthly Salary (₱)<input type="text" placeholder="Contact Number"
-                                disbled>
+                                disabled>
                         </div>
-                        <div class="Personal">Upload Valid ID <input type="text" placeholder="Upload Valid ID" disbled>
+                        <div class="Personal">Upload Valid ID <input type="text" placeholder="Upload Valid ID" disabled>
                         </div>
                         <div class="Personal">Upload PaySlip (3 Months) <input type="text" placeholder="Upload Valid ID"
-                                disbled></div>
+                                disabled></div>
                         <div class="Personal"> Loan Type <input type="text" placeholder="Select Loan Type" disabled>
                         </div>
                         <div class="Personal"> Desired Loan Amount (₱)<input type="text"
-                                placeholder="Desired Loan Amount" disbled></div>
+                                placeholder="Desired Loan Amount" disabled></div>
                         <div class="Personal"> Loan Term (Months)<input type="text" placeholder="Select Loan Term"
                                 disabled>
                         </div>
@@ -134,7 +139,7 @@ header("Pragma: no-cache");
     </div>
     <script src="script.js"></script>
     <script>
-        window.addEventListener('pageshow', function(event) {
+        window.addEventListener('pageshow', function (event) {
             if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
                 window.location.reload();
             }

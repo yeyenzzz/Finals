@@ -1,5 +1,5 @@
 <?php
-session_start();    
+session_start();
 // Force no caching
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
@@ -44,6 +44,11 @@ if (!isset($_SESSION['email'])) {
             <a href="dashboard.php" class="active">
                 <div class="Dashboard">
                     <i class="bi bi-house"></i> Dashboard
+                </div>
+            </a>
+            <a href="account.php">
+                <div class="Account">
+                    <i class="bi bi-person"></i> Account
                 </div>
             </a>
             <a href="transfer.php">
@@ -114,7 +119,7 @@ if (!isset($_SESSION['email'])) {
     </div>
     <script src="script.js"></script>
     <script>
-        window.addEventListener('pageshow', function(event) {
+        window.addEventListener('pageshow', function (event) {
             if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
                 window.location.reload();
             }
