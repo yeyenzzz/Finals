@@ -14,8 +14,8 @@ require 'vendor/autoload.php';
 
 // Redirect if already logged in
 if (isset($_SESSION['email'])) {
-    header("Location: dashboard.php");
-    exit();
+  header("Location: dashboard.php");
+  exit();
 }
 
 // Initialize variables
@@ -37,84 +37,84 @@ include 'db.php';
 $connectDB = connectDB();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $firstName = trim($_POST['firstName']);
-    $lastName = trim($_POST['lastName']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $confirmPassword = $_POST['confirmPassword'];
+  $firstName = trim($_POST['firstName']);
+  $lastName = trim($_POST['lastName']);
+  $email = trim($_POST['email']);
+  $password = $_POST['password'];
+  $confirmPassword = $_POST['confirmPassword'];
 
-    // Validate names
-    if (empty($firstName) || empty($lastName)) {
-        $error = true;
-        $nameError = "*First and last name are required.";
+  // Validate names
+  if (empty($firstName) || empty($lastName)) {
+    $error = true;
+    $nameError = "*First and last name are required.";
+  }
+
+  // Validate email
+  if (empty($email)) {
+    $error = true;
+    $emailError = "*Email is required.";
+  } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $error = true;
+    $emailError = "*Invalid email format.";
+  } else {
+    // Check if email already exists
+    $stmt = $connectDB->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows > 0) {
+      $error = true;
+      $emailError = "*Email is already registered.";
     }
+    $stmt->close();
+  }
 
-    // Validate email
-    if (empty($email)) {
-        $error = true;
-        $emailError = "*Email is required.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = true;
-        $emailError = "*Invalid email format.";
-    } else {
-        // Check if email already exists
-        $stmt = $connectDB->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) {
-            $error = true;
-            $emailError = "*Email is already registered.";
-        }
-        $stmt->close();
-    }
+  // Validate password
+  if (empty($password)) {
+    $error = true;
+    $passwordError = "*Password is required.";
+  } elseif (strlen($password) < 6) {
+    $error = true;
+    $passwordError = "*Password must be at least 6 characters.";
+  }
 
-    // Validate password
-    if (empty($password)) {
-        $error = true;
-        $passwordError = "*Password is required.";
-    } elseif (strlen($password) < 6) {
-        $error = true;
-        $passwordError = "*Password must be at least 6 characters.";
-    }
+  // Validate confirm password
+  if ($confirmPassword !== $password) {
+    $error = true;
+    $confirmPasswordError = "*Passwords do not match.";
+  }
 
-    // Validate confirm password
-    if ($confirmPassword !== $password) {
-        $error = true;
-        $confirmPasswordError = "*Passwords do not match.";
-    }
+  // If no errors, insert user
+  if (!$error) {
+    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+    $verificationToken = bin2hex(random_bytes(16));
 
-    // If no errors, insert user
-    if (!$error) {
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-        $verificationToken = bin2hex(random_bytes(16));
+    $stmt = $connectDB->prepare("INSERT INTO users (firstName, lastName, email, password, verification_token) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $firstName, $lastName, $email, $hashedPassword, $verificationToken);
 
-        $stmt = $connectDB->prepare("INSERT INTO users (firstName, lastName, email, password, verification_token) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $firstName, $lastName, $email, $hashedPassword, $verificationToken);
+    if ($stmt->execute()) {
 
-        if ($stmt->execute()) {
+      $verificationLink = "http://localhost/Finals-main/verify.php?email=$email&token=$verificationToken";
 
-          $verificationLink = "http://localhost/Finals/verify.php?email=$email&token=$verificationToken";
+      $mail = new PHPMailer(true);
 
-          $mail = new PHPMailer(true);
-          
-          
-          $mail->isSMTP();
-          $mail->Host       = "smtp.gmail.com";
-          $mail->SMTPAuth   = true;
-          $mail->Username   = "etappay@gmail.com"; 
-          $mail->Password   = "nuzu piax cjsy gohx";   
-          $mail->SMTPSecure = "tls"; // TLS/SSL
-          $mail->Port       = 587;
 
-          // Sender + recipient
-          $mail->setFrom('etappay@gmail.com', 'eTapPay');
-          $mail->addAddress($email, $firstName);
+      $mail->isSMTP();
+      $mail->Host = "smtp.gmail.com";
+      $mail->SMTPAuth = true;
+      $mail->Username = "etappay@gmail.com";
+      $mail->Password = "nuzu piax cjsy gohx";
+      $mail->SMTPSecure = "tls"; // TLS/SSL
+      $mail->Port = 587;
 
-          // Email contents
-          $mail->isHTML(true);
-          $mail->Subject = "Verify Your EtapPay Account";
-          $mail->Body = "
+      // Sender + recipient
+      $mail->setFrom('etappay@gmail.com', 'eTapPay');
+      $mail->addAddress($email, $firstName);
+
+      // Email contents
+      $mail->isHTML(true);
+      $mail->Subject = "Verify Your EtapPay Account";
+      $mail->Body = "
               <p>Hi <strong>$firstName</strong>,</p>
               <p>Please verify your account by clicking the link below:</p>
               <p><a href='$verificationLink'>$verificationLink</a></p>
@@ -122,22 +122,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               <p>Thank you!</p>
           ";
 
-          $mail->AltBody = "Hi $firstName, Please confirm: $verificationLink";
+      $mail->AltBody = "Hi $firstName, Please confirm: $verificationLink";
 
-          $mail->send();
+      $mail->send();
 
-          echo "<script>
+      echo "<script>
               alert('Account created! Please check your email to verify.');
               window.location.href = 'index.php';
           </script>";
 
-          exit();
+      exit();
 
-        } else {
-            echo "Error: " . $stmt->error;
-        }
-        $stmt->close();
+    } else {
+      echo "Error: " . $stmt->error;
     }
+    $stmt->close();
+  }
 }
 ?>
 
@@ -282,14 +282,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   </div>
   <script src="script.js"></script>
   <script>
-// Prevent showing page after logout using JS (bfcache)
-window.addEventListener('pageshow', function(event) {
-    if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+    // Prevent showing page after logout using JS (bfcache)
+    window.addEventListener('pageshow', function (event) {
+      if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
         // Reload page to force session check
         window.location.reload();
-    }
-});
-</script>
+      }
+    });
+  </script>
 </body>
 
 </html>
