@@ -32,3 +32,13 @@ function closeModal3() {
 function confirmLogout() {
   window.location.href = "index.php";
 }
+
+const review = document.getElementById("reviewModal");
+
+function reviewModal() {
+  review.style.display = "flex";
+}
+
+function closereviewModal() {
+  review.style.display = "none";
+}

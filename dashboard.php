@@ -46,11 +46,6 @@ if (!isset($_SESSION['email'])) {
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
-            <a href="account.php">
-                <div class="Account">
-                    <i class="bi bi-person"></i> Account
-                </div>
-            </a>
             <a href="transfer.php">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer
@@ -93,6 +88,7 @@ if (!isset($_SESSION['email'])) {
                     <div class="card-design" id="card1"></div>
                     <div class="card-design" id="card2"></div>
                     <div class="card-design" id="card3"></div>
+                    <div class="card-design" id="card4"></div>
                 </div>
             </div>
             <div class="section">

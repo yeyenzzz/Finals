@@ -46,11 +46,6 @@ header("Pragma: no-cache");
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
-            <a href="account.php">
-                <div class="Account">
-                    <i class="bi bi-person"></i> Account
-                </div>
-            </a>
             <a href="transfer.php" class="active">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer
@@ -92,7 +87,7 @@ header("Pragma: no-cache");
                         <div class="Personal"> Amount(₱)<input type="number" placeholder="Amount" required></div>
                         <div class="Personal"> Message (Optional)<input type="text" placeholder="Message for recipient">
                         </div>
-                        <div class="next_prev"><button class="review-btn">Review</button></div>
+                        <div class="next_prev"><button class="review-btn" onclick="reviewModal()">Review</button></div>
                     </div>
                 </div>
             </div>
@@ -108,6 +103,21 @@ header("Pragma: no-cache");
             </div>
             <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
             <button class="close-btn" onclick="closeModal3()">Close</button>
+        </div>
+    </div>
+    <div id="reviewModal" class="modal">
+        <div class="modal-content" style="">
+            <h2>Review</h2>
+            <div class="scrollable" style="display: flex; flex-direction: column; text-align: start;">
+                Send to
+                <input type="text" name="" id="" disabled style="border: none; width:">
+                Amount(₱)
+                <input type="text" name="" id="" disabled style="border: none;">
+                Message (Optional)
+                <input type="text" name="" id="" disabled style="border: none;">
+            </div>
+            <button class="confirm-btn" onclick="">Confirm</button>
+            <button class="close-btn" onclick="closereviewModal()">Close</button>
         </div>
     </div>
     <script src="script.js"></script>
