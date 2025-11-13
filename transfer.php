@@ -1,25 +1,85 @@
 <?php
 session_start();
+include 'db.php';
 
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-header("Expires: 0");
+$connectDB = connectDB();
 
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-    $_SESSION = array();
-    session_destroy();
-    header("Location: index.php");
-    exit();
-}
-
+// Check if user is logged in
 if (!isset($_SESSION['email'])) {
     header("Location: index.php");
     exit();
 }
+// Logout handling
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+    $_SESSION = array();
+    session_destroy();
+    header("Location: index.php", true, 303);
+    exit();
+}
 
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
+$user_email = $_SESSION['email'];
+
+if (isset($_POST['transfer'])) {
+    $recipient_email = trim($_POST['recipient_email']);
+    $amount = floatval($_POST['amount']);
+    $message = trim($_POST['message']);
+
+    if ($amount <= 0) {
+        $error = "Invalid amount.";
+    } elseif ($recipient_email === $user_email) {
+        $error = "You cannot send money to yourself.";
+    } else {
+        // Start transaction
+        $connectDB->begin_transaction();
+
+        try {
+            // Get sender balance
+            $stmt = $connectDB->prepare("SELECT id, balance FROM users WHERE email = ?");
+            $stmt->bind_param("s", $user_email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $sender = $result->fetch_assoc();
+
+            if (!$sender)
+                throw new Exception("Sender not found.");
+            if ($sender['balance'] < $amount)
+                throw new Exception("Insufficient balance.");
+
+            // Get recipient
+            $stmt = $connectDB->prepare("SELECT id, balance FROM users WHERE email = ?");
+            $stmt->bind_param("s", $recipient_email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $recipient = $result->fetch_assoc();
+
+            if (!$recipient)
+                throw new Exception("Recipient not found.");
+
+            // Deduct from sender
+            $new_sender_balance = $sender['balance'] - $amount;
+            $stmt = $connectDB->prepare("UPDATE users SET balance = ? WHERE id = ?");
+            $stmt->bind_param("di", $new_sender_balance, $sender['id']);
+            $stmt->execute();
+
+            // Add to recipient
+            $new_recipient_balance = $recipient['balance'] + $amount;
+            $stmt = $connectDB->prepare("UPDATE users SET balance = ? WHERE id = ?");
+            $stmt->bind_param("di", $new_recipient_balance, $recipient['id']);
+            $stmt->execute();
+
+            // Optional: log the transaction in another table
+            $stmt = $connectDB->prepare("INSERT INTO transactions (sender_id, recipient_id, amount, message, created_at) VALUES (?, ?, ?, ?, NOW())");
+            $stmt->bind_param("iids", $sender['id'], $recipient['id'], $amount, $message);
+            $stmt->execute();
+
+            $connectDB->commit();
+            $success = "Transfer successful!";
+        } catch (Exception $e) {
+            $connectDB->rollback();
+            $error = $e->getMessage();
+        }
+    }
+}
 ?>
 
 
@@ -44,11 +104,6 @@ header("Pragma: no-cache");
             <a href="dashboard.php">
                 <div class="Dashboard">
                     <i class="bi bi-house"></i> Dashboard
-                </div>
-            </a>
-            <a href="account.php">
-                <div class="Account">
-                    <i class="bi bi-person"></i> Account
                 </div>
             </a>
             <a href="transfer.php" class="active">
@@ -87,13 +142,34 @@ header("Pragma: no-cache");
             <div class="transfer">
                 <div class="content">
                     <h1>Transfer Funds</h1>
-                    <div class="inputs">
-                        <div class="Personal"> Send to<input type="text" placeholder="Phone number" required></div>
-                        <div class="Personal"> Amount(₱)<input type="number" placeholder="Amount" required></div>
-                        <div class="Personal"> Message (Optional)<input type="text" placeholder="Message for recipient">
+
+                    <?php if (!empty($error)): ?>
+                        <div class="error" style="color:red;"><?= htmlspecialchars($error) ?></div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($success)): ?>
+                        <div class="success" style="color:green;"><?= htmlspecialchars($success) ?></div>
+                    <?php endif; ?>
+
+                    <form class="inputs" method="POST" action="transfer.php" id="transferForm">
+                        <div class="Personal">Send to
+                            <input type="email" name="recipient_email" id="recipient_email" placeholder="Email"
+                                required>
                         </div>
-                        <div class="next_prev"><button class="review-btn">Review</button></div>
-                    </div>
+                        <div class="Personal">Amount(₱)
+                            <input type="number" name="amount" id="amount" placeholder="Amount" min="1" required>
+                        </div>
+                        <div class="Personal">Message (Optional)
+                            <input type="text" name="message" id="message" placeholder="Message for recipient">
+                        </div>
+                        <div class="next_prev">
+                            <button type="button" id="reviewButton" class="review-btn">Review</button>
+                        </div>
+
+                        <!-- Hidden submit button -->
+                        <button type="submit" name="transfer" id="hiddenSubmit" style="display:none;"></button>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -110,6 +186,27 @@ header("Pragma: no-cache");
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
+    <div id="reviewModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2>Review Transaction</h2>
+            <div class="scrollable" style="display: flex; flex-direction: column; text-align: start;">
+                <label>Send to</label>
+                <input type="text" id="review_email" disabled>
+
+                <label>Amount (₱)</label>
+                <input type="text" id="review_amount" disabled>
+
+                <label>Message</label>
+                <input type="text" id="review_message" disabled>
+            </div>
+
+            <div style="margin-top:15px;">
+                <button type="button" id="confirmButton" class="confirm-btn">Confirm</button>
+                <button type="button" id="closeReviewModal" class="close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script>
         window.addEventListener('pageshow', function (event) {

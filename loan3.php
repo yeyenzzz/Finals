@@ -46,11 +46,6 @@ header("Pragma: no-cache");
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
-            <a href="account.php">
-                <div class="Account">
-                    <i class="bi bi-person"></i> Account
-                </div>
-            </a>
             <a href="transfer.php">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer

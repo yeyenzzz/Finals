@@ -325,6 +325,13 @@ header("Pragma: no-cache");
     </div>
 
     <script src="script.js"></script>
+    <script>
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                window.location.reload();
+            }
+        });
+    </script>
 </body>
 
 </html>

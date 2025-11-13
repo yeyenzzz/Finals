@@ -1,25 +1,38 @@
 <?php
 session_start();
+
 // Force no caching
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 header("Expires: 0");
 
+// Redirect to login if not logged in
+if (!isset($_SESSION['email'])) {
+    header("Location: index.php", true, 303);
+    exit();
+}
+
+// Logout handling
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     $_SESSION = array();
     session_destroy();
     header("Location: index.php", true, 303);
-
     exit();
 }
 
-if (!isset($_SESSION['email'])) {
-    header("Location: index.php", true, 303);
+// Database connection
+include 'db.php';
+$connectDB = connectDB();
 
-    exit();
-}
-
+// Fetch user info including balance
+$email = $_SESSION['email'];
+$stmt = $connectDB->prepare("SELECT firstName, balance FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($firstName, $balance);
+$stmt->fetch();
+$stmt->close();
 ?>
 
 
@@ -46,11 +59,7 @@ if (!isset($_SESSION['email'])) {
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
-            <a href="account.php">
-                <div class="Account">
-                    <i class="bi bi-person"></i> Account
-                </div>
-            </a>
+
             <a href="transfer.php">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer
@@ -98,7 +107,9 @@ if (!isset($_SESSION['email'])) {
             <div class="section">
                 <div class="balance">
                     <h3>Account Balance</h3>
+                    <p>P<?= number_format($balance, 2) ?></p>
                 </div>
+
                 <div class="transaction">
                     <h3>Transactions</h3>
                 </div>

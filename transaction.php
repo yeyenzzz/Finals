@@ -112,12 +112,12 @@ if (!isset($_SESSION['email'])) {
         </div>
     </div>
     <script src="script.js"></script>
-    <script type="text/javascript">
-        function preventBack() {
-            window.history.forward();
-        }
-        setTimeout(preventBack, 0);
-        window.onunload = function () { null };
+    <script>
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                window.location.reload();
+            }
+        });
     </script>
 
 

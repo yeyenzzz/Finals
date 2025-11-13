@@ -32,3 +32,74 @@ function closeModal3() {
 function confirmLogout() {
   window.location.href = "index.php";
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Elements
+  const reviewButton = document.getElementById("reviewButton");
+  const confirmButton = document.getElementById("confirmButton");
+  const closeReviewModal = document.getElementById("closeReviewModal");
+  const reviewModal = document.getElementById("reviewModal");
+  const hiddenSubmit = document.getElementById("hiddenSubmit");
+
+  // Input fields
+  const recipientInput = document.getElementById("recipient_email");
+  const amountInput = document.getElementById("amount");
+  const messageInput = document.getElementById("message");
+
+  // Review modal display fields
+  const reviewEmail = document.getElementById("review_email");
+  const reviewAmount = document.getElementById("review_amount");
+  const reviewMessage = document.getElementById("review_message");
+
+  // --- Open Review Modal ---
+  if (reviewButton) {
+    reviewButton.addEventListener("click", function () {
+      const email = recipientInput.value.trim();
+      const amount = parseFloat(amountInput.value.trim());
+      const message = messageInput.value.trim();
+
+      if (!email || isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid recipient email and amount.");
+        return;
+      }
+
+      // Fill modal info
+      reviewEmail.value = email;
+      reviewAmount.value = `₱${amount.toFixed(2)}`;
+      reviewMessage.value = message || "(No message)";
+
+      // Show modal
+      reviewModal.style.display = "flex";
+    });
+  }
+
+  // --- Close Review Modal ---
+  if (closeReviewModal) {
+    closeReviewModal.addEventListener("click", function () {
+      reviewModal.style.display = "none";
+    });
+  }
+
+  // --- Confirm Transfer (Submit Form) ---
+  if (confirmButton) {
+    confirmButton.addEventListener("click", function () {
+      reviewModal.style.display = "none";
+      hiddenSubmit.click();
+    });
+  }
+});
+
+// ============================================================
+// Optional: Page Reload Protection (Keep existing behavior)
+// ============================================================
+
+window.addEventListener("pageshow", function (event) {
+  if (
+    event.persisted ||
+    (window.performance &&
+      window.performance.getEntriesByType("navigation")[0].type ===
+        "back_forward")
+  ) {
+    window.location.reload();
+  }
+});
