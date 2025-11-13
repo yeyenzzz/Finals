@@ -46,11 +46,6 @@ if (!isset($_SESSION['email'])) {
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
-            <a href="account.php">
-                <div class="Account">
-                    <i class="bi bi-person"></i> Account
-                </div>
-            </a>
             <a href="transfer.php">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer
@@ -61,7 +56,7 @@ if (!isset($_SESSION['email'])) {
                     <i class="bi bi-credit-card"></i> Cards
                 </div>
             </a>
-            <a href="loan4.php" class="active">
+            <a href="loan.php" class="active">
                 <div class="Loan">
                     <i class="bi bi-cash"></i> Loan
                 </div>
@@ -97,12 +92,12 @@ if (!isset($_SESSION['email'])) {
                         </div>
                         <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" required>
                         </div>
-                        <div class="Personal"> Monthly Salary (₱)<input type="number" placeholder="Monthly Salary (₱)"
+                        <div class="Personal"> Monthly Salary (₱)<input type="number" placeholder="Contact Number"
                                 required>
                         </div>
                         <div class="Personal">Upload Valid ID <input type="file" placeholder="Upload Valid ID" required>
                         </div>
-                        <div class="Personal">Upload PaySlip (3 Months) <input type="file" placeholder="Upload Pay Slip"
+                        <div class="Personal">Upload PaySlip (3 Months) <input type="file" placeholder="Upload Valid ID"
                                 required></div>
 
                         <div class="next_prev">
