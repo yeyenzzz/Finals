@@ -89,54 +89,53 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
     $verificationToken = bin2hex(random_bytes(16));
 
-    $stmt = $connectDB->prepare("INSERT INTO users (firstName, lastName, email, password, verification_token) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $firstName, $lastName, $email, $hashedPassword, $verificationToken);
+    $_SESSION["pending_registration"] = [
+      "firstName" => $firstName,
+      "lastName" => $lastName,
+      "email" => $email,
+      "password" => $hashedPassword,
+      "token" => $verificationToken
+    ];
+    // Build verify link
+    $verificationLink = "http://localhost/Finals/verify.php?token=$verificationToken";
 
-    if ($stmt->execute()) {
+    // Send email
+    $mail = new PHPMailer(true);
 
-      $verificationLink = "http://localhost/Finals-main/verify.php?email=$email&token=$verificationToken";
-
-      $mail = new PHPMailer(true);
-
+    try {
 
       $mail->isSMTP();
       $mail->Host = "smtp.gmail.com";
       $mail->SMTPAuth = true;
       $mail->Username = "etappay@gmail.com";
       $mail->Password = "nuzu piax cjsy gohx";
-      $mail->SMTPSecure = "tls"; // TLS/SSL
+      $mail->SMTPSecure = "tls";
       $mail->Port = 587;
 
-      // Sender + recipient
-      $mail->setFrom('etappay@gmail.com', 'eTapPay');
+      $mail->setFrom("etappay@gmail.com", "EtapPay");
       $mail->addAddress($email, $firstName);
 
-      // Email contents
       $mail->isHTML(true);
       $mail->Subject = "Verify Your EtapPay Account";
       $mail->Body = "
-              <p>Hi <strong>$firstName</strong>,</p>
-              <p>Please verify your account by clicking the link below:</p>
-              <p><a href='$verificationLink'>$verificationLink</a></p>
-              <br>
-              <p>Thank you!</p>
-          ";
-
-      $mail->AltBody = "Hi $firstName, Please confirm: $verificationLink";
+                <p>Hi <strong>$firstName</strong>,</p>
+                <p>Please verify your account by clicking the link below:</p>
+                <a href='$verificationLink'>$verificationLink</a>
+                <br><br>
+                <p>Thank you!</p>
+            ";
 
       $mail->send();
 
       echo "<script>
-              alert('Account created! Please check your email to verify.');
-              window.location.href = 'index.php';
-          </script>";
-
+                alert('Verification email sent! Check your email.');
+                window.location = 'index.php';
+            </script>";
       exit();
 
-    } else {
-      echo "Error: " . $stmt->error;
+    } catch (Exception $e) {
+      echo "Email could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }
-    $stmt->close();
   }
 }
 ?>

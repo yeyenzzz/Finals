@@ -35,23 +35,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   } else {
     include 'db.php';
     $connectDB = connectDB();
-    $stmt = $connectDB->prepare("SELECT id, firstName, password, is_verified FROM users WHERE email = ?");
+    $stmt = $connectDB->prepare("SELECT id, firstName, password FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows === 1) {
-      $stmt->bind_result($id, $firstName, $hashedPassword, $isVerified);
+      $stmt->bind_result($id, $firstName, $hashedPassword);
       $stmt->fetch();
-
-      // If not verified → block login 
-      if ($isVerified == 0) {
-        $_SESSION['login_error'] = "*Please verify your email before logging in.";
-        $_SESSION['login_email'] = $email;
-        $stmt->close();
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
-      }
 
       if (password_verify($password, $hashedPassword)) {
         $_SESSION['email'] = $email;

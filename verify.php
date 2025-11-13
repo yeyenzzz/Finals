@@ -1,27 +1,55 @@
 <?php
-include 'db.php';
+session_start();
+include "db.php";
+
+if (!isset($_GET["token"])) {
+    die("Invalid verification request.");
+}
+
+$token = $_GET["token"];
+
+// Check session data
+if (!isset($_SESSION["pending_registration"])) {
+    die("No pending registration found. Verification expired or already completed.");
+}
+
+$data = $_SESSION["pending_registration"];
+
+// Compare token
+if ($data["token"] !== $token) {
+    die("Invalid or expired verification token.");
+}
+
 $connectDB = connectDB();
 
-if (isset($_GET['email']) && isset($_GET['token'])) {
-    $email = $_GET['email'];
-    $token = $_GET['token'];
+// Insert into DB
+$stmt = $connectDB->prepare("
+    INSERT INTO users (firstName, lastName, email, password, email_verified) 
+    VALUES (?, ?, ?, ?, 1)
+");
 
-    $stmt = $connectDB->prepare("SELECT id FROM users WHERE email = ? AND verification_token = ?");
-    $stmt->bind_param("ss", $email, $token);
-    $stmt->execute();
-    $stmt->store_result();
+$stmt->bind_param(
+    "ssss",
+    $data["firstName"],
+    $data["lastName"],
+    $data["email"],
+    $data["password"]
+);
 
-    if ($stmt->num_rows > 0) {
-        $stmt->close();
+if ($stmt->execute()) {
 
-        $stmt = $connectDB->prepare("UPDATE users SET is_verified = 1, verification_token = NULL WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->close();
+    // Remove temporary session data
+    unset($_SESSION["pending_registration"]);
 
-        echo "Email verified. You may now <a href='index.php'>login</a>.";
-    } else {
-        echo "Invalid verification link.";
-    }
+    echo "
+        <script>
+            alert('Your account was successfully verified!');
+            window.location.href = 'index.php';
+        </script>
+    ";
+} else {
+    echo "Database Error: " . $stmt->error;
 }
+
+$stmt->close();
 ?>
