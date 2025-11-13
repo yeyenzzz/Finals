@@ -108,7 +108,8 @@ $stmt->close();
             <div class="section">
                 <div class="balance">
                     <h3>Account Balance</h3>
-                    <p>P<?= number_format($balance, 2) ?></p>
+                    <p style="margin: 10px; font-size: 20px;">₱<?= number_format($balance, 2) ?></p>
+                    <button class="next-btn" style="width: 100px; margin: 10px;">+Cash In</button>
                 </div>
 
                 <div class="transaction">
