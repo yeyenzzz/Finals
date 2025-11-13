@@ -89,17 +89,21 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// ============================================================
-// Optional: Page Reload Protection (Keep existing behavior)
-// ============================================================
+// Transaction filter buttons
+document.querySelectorAll(".filter-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    // Remove active class from all buttons
+    document
+      .querySelectorAll(".filter-btn")
+      .forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
 
-window.addEventListener("pageshow", function (event) {
-  if (
-    event.persisted ||
-    (window.performance &&
-      window.performance.getEntriesByType("navigation")[0].type ===
-        "back_forward")
-  ) {
-    window.location.reload();
-  }
+    const target = btn.getAttribute("data-target");
+    // Hide all sections
+    document
+      .querySelectorAll(".transactions-section")
+      .forEach((section) => (section.style.display = "none"));
+    // Show the selected section
+    document.getElementById(target).style.display = "block";
+  });
 });

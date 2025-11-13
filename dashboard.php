@@ -27,14 +27,37 @@ $connectDB = connectDB();
 
 // Fetch user info including balance
 $email = $_SESSION['email'];
-$stmt = $connectDB->prepare("SELECT firstName, balance FROM users WHERE email = ?");
+$stmt = $connectDB->prepare("SELECT id, firstName, balance FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
-$stmt->bind_result($firstName, $balance);
+$stmt->bind_result($user_id, $firstName, $balance);
 $stmt->fetch();
 $stmt->close();
-?>
 
+// Fetch Sent Transactions
+$sentQuery = $connectDB->prepare("
+    SELECT t.id, t.amount, t.message, t.created_at, u.firstName AS recipient_name
+    FROM transactions t
+    JOIN users u ON t.recipient_id = u.id
+    WHERE t.sender_id = ?
+    ORDER BY t.created_at DESC
+");
+$sentQuery->bind_param("i", $user_id);
+$sentQuery->execute();
+$sentResult = $sentQuery->get_result();
+
+// Fetch Received Transactions
+$receivedQuery = $connectDB->prepare("
+    SELECT t.id, t.amount, t.message, t.created_at, u.firstName AS sender_name
+    FROM transactions t
+    JOIN users u ON t.sender_id = u.id
+    WHERE t.recipient_id = ?
+    ORDER BY t.created_at DESC
+");
+$receivedQuery->bind_param("i", $user_id);
+$receivedQuery->execute();
+$receivedResult = $receivedQuery->get_result();
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -49,6 +72,7 @@ $stmt->close();
 
 <body>
     <div class="whole">
+        <!-- Sidebar Navigation -->
         <div class="nav-section">
             <div class="logo">
                 <img src="images/logo.png" alt="" class="logo">
@@ -59,7 +83,6 @@ $stmt->close();
                     <i class="bi bi-house"></i> Dashboard
                 </div>
             </a>
-
             <a href="transfer.php">
                 <div class="Transfer">
                     <i class="bi bi-arrow-left-right"></i> Transfer
@@ -86,13 +109,21 @@ $stmt->close();
                 </div>
             </a>
         </div>
+
+        <!-- Main Page -->
         <div class="page">
             <div class="profile" id="profile">
-                <a href="#" onclick="openModal3(event)"><i class="bi bi-box-arrow-right" title="Logout"
-                        style="font-size: 25px; color;"></i></a>
-                <a href="#"><i class="bi bi-person-circle" title="Profile" style="font-size: 25px; color;"></i></a>
-                <a href="#"><i class="bi bi-bell-fill" title="Notification" style="font-size: 25px; color;"></i></a>
+                <a href="#" onclick="openModal3(event)">
+                    <i class="bi bi-box-arrow-right" title="Logout" style="font-size: 25px;"></i>
+                </a>
+                <a href="#">
+                    <i class="bi bi-person-circle" title="Profile" style="font-size: 25px;"></i>
+                </a>
+                <a href="#">
+                    <i class="bi bi-bell-fill" title="Notification" style="font-size: 25px;"></i>
+                </a>
             </div>
+
             <div class="greet">
                 <div>
                     <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
@@ -105,39 +136,106 @@ $stmt->close();
                     <div class="card-design" id="card4"></div>
                 </div>
             </div>
+
             <div class="section">
+                <!-- Balance -->
                 <div class="balance">
                     <h3>Account Balance</h3>
                     <p>P<?= number_format($balance, 2) ?></p>
+                    <button class="next-btn" style="width: 100px; margin: 10px;">+Cash In</button>
                 </div>
 
+                <!-- Transactions with Nav Filter -->
                 <div class="transaction">
                     <h3>Transactions</h3>
+
+                    <!-- Nav Filter -->
+                    <div class="transaction-nav">
+                        <button class="filter-btn active" data-target="sent">Sent Transactions</button>
+                        <button class="filter-btn" data-target="received">Received Transactions</button>
+                    </div>
+
+                    <!-- Sent Transactions -->
+                    <div class="transactions-section" id="sent">
+                        <?php if ($sentResult->num_rows > 0): ?>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>To</th>
+                                        <th>Amount</th>
+                                        <th>Message</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($row = $sentResult->fetch_assoc()): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($row['recipient_name']) ?></td>
+                                            <td class="amount-sent">-₱<?= number_format($row['amount'], 2) ?></td>
+                                            <td><?= htmlspecialchars($row['message']) ?></td>
+                                            <td><?= htmlspecialchars($row['created_at']) ?></td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        <?php else: ?>
+                            <div class="no-transactions">No sent transactions yet.</div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Received Transactions -->
+                    <div class="transactions-section" id="received" style="display: none;">
+                        <?php if ($receivedResult->num_rows > 0): ?>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>From</th>
+                                        <th>Amount</th>
+                                        <th>Message</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while ($row = $receivedResult->fetch_assoc()): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($row['sender_name']) ?></td>
+                                            <td class="amount-received">+₱<?= number_format($row['amount'], 2) ?></td>
+                                            <td><?= htmlspecialchars($row['message']) ?></td>
+                                            <td><?= htmlspecialchars($row['created_at']) ?></td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        <?php else: ?>
+                            <div class="no-transactions">No received transactions yet.</div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Logout Modal -->
     <div id="logoutModal" class="modal">
         <div class="modal-content">
             <h2>Logout</h2>
             <div class="scrollable">
-                <p>
-                    Logout your accout?
-                </p>
+                <p>Logout your account?</p>
             </div>
             <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
+
     <script src="script.js"></script>
     <script>
+        // Ensure page reload on back navigation
         window.addEventListener('pageshow', function (event) {
             if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
                 window.location.reload();
             }
         });
     </script>
-
 </body>
 
 </html>
