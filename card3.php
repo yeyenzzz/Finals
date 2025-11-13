@@ -66,6 +66,11 @@ header("Pragma: no-cache");
                     <i class="bi bi-envelope"></i> Inbox
                 </div>
             </a>
+            <a href="settings.php">
+                <div class="Settings">
+                    <i class="bi bi-gear"></i> Settings
+                </div>
+            </a>
         </div>
         <div class="page">
             <div class="profile" id="profile">
