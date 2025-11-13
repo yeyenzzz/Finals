@@ -106,17 +106,17 @@ header("Pragma: no-cache");
         </div>
     </div>
     <div id="reviewModal" class="modal">
-        <div class="modal-content" style="">
+        <div class="modal-content" style="max-width: 600px;">
             <h2>Review</h2>
             <div class="scrollable" style="display: flex; flex-direction: column; text-align: start;">
                 Send to
-                <input type="text" name="" id="" disabled style="border: none; width:">
+                <input type="text" name="" id="" disabled style="border: none;">
                 Amount(₱)
                 <input type="text" name="" id="" disabled style="border: none;">
                 Message (Optional)
                 <input type="text" name="" id="" disabled style="border: none;">
             </div>
-            <button class="confirm-btn" onclick="">Confirm</button>
+            <button onclick="">Confirm</button>
             <button class="close-btn" onclick="closereviewModal()">Close</button>
         </div>
     </div>
