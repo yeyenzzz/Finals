@@ -141,7 +141,7 @@ $receivedResult = $receivedQuery->get_result();
                 <!-- Balance -->
                 <div class="balance">
                     <h3>Account Balance</h3>
-                    <p>P<?= number_format($balance, 2) ?></p>
+                    <p style="font-size: 30px; margin: 20px;">₱<?= number_format($balance, 2) ?></p>
                     <button class="next-btn" style="width: 100px; margin: 10px;">+Cash In</button>
                 </div>
 
@@ -150,7 +150,7 @@ $receivedResult = $receivedQuery->get_result();
                     <h3>Transactions</h3>
 
                     <!-- Nav Filter -->
-                    <div class="transaction-nav">
+                    <div class="transaction-nav" style="margin-top: 10px;">
                         <button class="filter-btn active" data-target="sent">Sent Transactions</button>
                         <button class="filter-btn" data-target="received">Received Transactions</button>
                     </div>
