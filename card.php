@@ -80,7 +80,7 @@ header("Pragma: no-cache");
                 <a href="#"><i class="bi bi-bell-fill" title="Notification" style="font-size: 25px; color;"></i></a>
             </div>
             <div class="transfer">
-                <div class="content">
+                <div class="content" id="cardContent">
                     <h1>Credit Card</h1>
                     <div class="applycard"><img src="images/credit-card.png" alt="" class="credit-card "></div>
                     <p>Don't have a credit card yet? Apply now with just a few simple</p>
@@ -93,9 +93,8 @@ header("Pragma: no-cache");
                             <h3><i class="bi bi-check-circle-fill" style="color: #00226f;"></i> Full transparency</h3>
                             <p>See all fees and terms before you accept your credit card offer</p>
                         </div>
-                        <div class="Personal">
-                        </div>
-                        <div class="next_prev"><a href="card2.php"><button class="next-btn">Apply</button></a>
+                        <div class="next_prev">
+                            <div><button class="next-btn" onclick="showApplicationForm()">Apply</button></div>
                         </div>
                     </div>
                 </div>
@@ -115,6 +114,7 @@ header("Pragma: no-cache");
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
+
     <script src="script.js"></script>
     <script>
         window.addEventListener('pageshow', function (event) {

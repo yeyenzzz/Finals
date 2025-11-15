@@ -142,7 +142,7 @@ $receivedResult = $receivedQuery->get_result();
                 <div class="balance">
                     <h3>Account Balance</h3>
                     <p style="font-size: 30px; margin: 20px;">₱<?= number_format($balance, 2) ?></p>
-                    <button class="next-btn" style="width: 100px; margin: 10px;">+Cash In</button>
+                    <button class="next-btn" style="width: 100px; margin: 10px;" onclick="openCashin()">Deposit</button>
                 </div>
 
                 <!-- Transactions with Nav Filter -->
@@ -224,6 +224,18 @@ $receivedResult = $receivedQuery->get_result();
             </div>
             <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
             <button class="close-btn" onclick="closeModal3()">Close</button>
+        </div>
+    </div>
+
+    <div id="cashinModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2>Deposit</h2>
+            <div class="scrollable" style="display: flex; flex-direction: column; text-align: start;">
+                Amount
+                <input type="number" placeholder="Amount" style="width: 100%;">
+            </div>
+            <button class="next-btn" onclick="">Confirm</button>
+            <button class="close-btn" onclick="closeCashin()">Close</button>
         </div>
     </div>
 
