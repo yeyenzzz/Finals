@@ -116,14 +116,13 @@ $receivedResult = $receivedQuery->get_result();
                 <a href="#" onclick="openModal3(event)">
                     <i class="bi bi-box-arrow-right" title="Logout" style="font-size: 25px;"></i>
                 </a>
-                <a href="#">
+                <a href="#" onclick="openProfile(event)">
                     <i class="bi bi-person-circle" title="Profile" style="font-size: 25px;"></i>
                 </a>
                 <a href="#">
                     <i class="bi bi-bell-fill" title="Notification" style="font-size: 25px;"></i>
                 </a>
             </div>
-
             <div class="greet">
                 <div>
                     <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
@@ -236,6 +235,21 @@ $receivedResult = $receivedQuery->get_result();
             </div>
             <button class="next-btn" onclick="">Confirm</button>
             <button class="close-btn" onclick="closeCashin()">Close</button>
+        </div>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content" style="max-width: 490px;">
+            <h2>Profile</h2>
+            <div class="scrollable" style="display: flex; flex-direction: column; text-align: start;">
+                Name
+                <input type="text" placeholder="Name" style="width: 100%;">
+                Birthday
+                <input type="text" placeholder="Birthday" style="width: 100%;">
+                Current Address
+                <input type="text" placeholder="Current Address" style="width: 100%;">
+            </div>
+            <button class="close-btn" onclick="closeProfile()">Close</button>
         </div>
     </div>
 

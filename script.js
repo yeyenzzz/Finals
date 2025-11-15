@@ -29,6 +29,17 @@ function closeModal3() {
   modal3.style.display = "none";
 }
 
+const profile = document.getElementById("profileModal");
+
+function openProfile(event) {
+  event.preventDefault();
+  profile.style.display = "flex";
+}
+
+function closeProfile() {
+  profile.style.display = "none";
+}
+
 function confirmLogout() {
   window.location.href = "index.php";
 }
