@@ -668,11 +668,10 @@ td.amount-received {
   background-color: #f0f0f0;
   cursor: pointer;
   border-radius: 5px;
-  font-weight: bold;
   transition: background-color 0.2s;
 }
 
 .transaction-nav .filter-btn.active {
-  background-color: #007bff;
+  background-color: #00226f;
   color: white;
 }
