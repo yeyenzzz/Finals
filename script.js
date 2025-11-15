@@ -107,3 +107,43 @@ document.querySelectorAll(".filter-btn").forEach((btn) => {
     document.getElementById(target).style.display = "block";
   });
 });
+
+// --- NOTIFICATION MODAL ---
+const notifModal = document.getElementById("notifModal");
+const modalTitle = document.getElementById("modalTitle");
+const modalMessage = document.getElementById("modalMessage");
+const modalTime = document.getElementById("modalTime");
+
+document.querySelectorAll(".notif-card").forEach((card) => {
+  card.addEventListener("click", () => {
+    const notifId = card.dataset.id;
+
+    modalTitle.textContent = card.dataset.title;
+    modalMessage.textContent = card.dataset.message;
+    modalTime.textContent = card.dataset.created;
+    notifModal.style.display = "flex";
+
+    if (card.classList.contains("unread")) {
+      card.classList.remove("unread");
+      card.classList.add("read");
+
+      // Send AJAX POST to the same page
+      fetch("transaction.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `mark_read_id=${notifId}`,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status !== "success") {
+            console.error("Failed to mark as read");
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+  });
+});
+
+function closeNotifModal() {
+  notifModal.style.display = "none";
+}

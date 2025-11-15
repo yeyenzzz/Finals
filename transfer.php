@@ -69,8 +69,13 @@ if (isset($_POST['transfer'])) {
 
             // Optional: log the transaction in another table
             $stmt = $connectDB->prepare("INSERT INTO transactions (sender_id, recipient_id, amount, message, created_at) VALUES (?, ?, ?, ?, NOW())");
+            $stmt2 = $connectDB->prepare("INSERT INTO notifications (user_id, title, message) VALUES (?, ?, ?)");
+            $notif_title = "You received ₱$amount";
+            $notif_msg = "You got ₱$amount from $user_email. Message: $message";
             $stmt->bind_param("iids", $sender['id'], $recipient['id'], $amount, $message);
+            $stmt2->bind_param("iss", $recipient['id'], $notif_title, $notif_msg);
             $stmt->execute();
+            $stmt2->execute();
 
             $connectDB->commit();
             $success = "Transfer successful!";
