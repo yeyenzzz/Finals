@@ -78,7 +78,7 @@ if (!isset($_SESSION['email'])) {
                 <a href="#"><i class="bi bi-bell-fill" title="Notification" style="font-size: 25px; color;"></i></a>
             </div>
             <div class="transfer">
-                <div class="content">
+                <div class="content" id="loanContent">
                     <h1>Loan Application</h1>
                     <div class="applycard"><img src="images/save.png" alt="" class="credit-card "></div>
                     <p> Need extra funds? Apply for a loan today with simple </p>
@@ -97,7 +97,10 @@ if (!isset($_SESSION['email'])) {
                         </div>
                         <div class="Personal">
                         </div>
-                        <div class="next_prev"><a href="loan.php"><button class="next-btn">Apply</button></a>
+                        <div class="next_prev">
+                            <div>
+                                <button class="next-btn" onclick="showLoanApplication()">Apply</button>
+                            </div>
                         </div>
                     </div>
                 </div>

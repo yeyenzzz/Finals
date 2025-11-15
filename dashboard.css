@@ -41,7 +41,6 @@ body {
 }
 
 .Dashboard,
-.Account,
 .Transfer,
 .Loan,
 .Cards,
@@ -54,11 +53,6 @@ body {
 }
 
 .Dashboard:hover {
-  background-color: #00226f;
-  color: white;
-}
-
-.Accou:hover {
   background-color: #00226f;
   color: white;
 }
@@ -152,6 +146,7 @@ a {
   background-color: white;
   border-radius: 10px;
   max-width: 1272px;
+  height: 610px;
   margin: 30px;
 }
 
