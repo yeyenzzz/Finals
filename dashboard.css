@@ -678,22 +678,28 @@ td.amount-received {
 /* --- NOTIFICATION CARDS --- */
 .inputsnotif {
   margin-top: 20px;
-  display: flex; /* Enable flex layout */
-  flex-wrap: wrap; /* Allow wrapping if too many cards */
-  gap: 15px; /* Space between cards */
-  min-height: 460px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  height: 480px;
+  overflow-y: auto;
+  background-color: #cacaca;
+  border-radius: 20px;
+  padding: 10px;
 }
 
 .notif-card {
+  margin: 3px 5px 0px 5px;
   background-color: #fff;
   padding: 15px;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  flex: 1 0 200px; /* Width: minimum 200px, grow as needed */
-  max-width: 250px; /* Optional max width */
+  width: 100%;
+  max-width: 770px;
   transition: background 0.2s, transform 0.1s;
-  max-height: 50px;
+  max-height: 57px;
 }
 
 .notif-card.unread {
@@ -779,4 +785,15 @@ td.amount-received {
 .modal-notif .scrollable::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 3px;
+}
+
+.profile-section {
+  color: #3a3a3a;
+}
+
+.profile-section p {
+  color: black;
+  font-size: 18px;
+  margin-top: 10px;
+  border-bottom: 1px solid #9a9a9a;
 }

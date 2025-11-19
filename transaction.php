@@ -123,7 +123,7 @@ while ($row = $notifications->fetch_assoc()) {
                         <a href="transaction.php" style="padding: 7px;">Transactions</a>
                     </div>
 
-                    <div class="inputs" style="margin-top:20px;">
+                    <div class="inputsnotif" style="margin-top:20px;">
                         <?php if (!empty($notificationsArray)): ?>
                             <?php foreach ($notificationsArray as $row): ?>
                                 <div class="notif-card transaction <?php echo $row['is_read'] ? 'read' : 'unread'; ?>"
@@ -133,6 +133,7 @@ while ($row = $notifications->fetch_assoc()) {
                                     data-created="<?php echo htmlspecialchars($row['created_at'], ENT_QUOTES); ?>">
                                     <h3 class="title"><?php echo htmlspecialchars($row['title']); ?></h3>
                                 </div>
+
                             <?php endforeach; ?>
                         <?php else: ?>
                             <p style="color:gray;">No transaction notifications available.</p>

@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       </div>
     </div>
     <div class="wrap">
-      <div class="container">
+      <div class="container" id="loginContainer">
         <div class="header">
           <div class="logo">
             <img src="images/logo.png" alt="" class="logo">
@@ -119,6 +119,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 Do not have an account?
                 <a href="register.php">Register here</a>
               </p>
+            </div>
+            <div class="admin_login">
+              <div><a href="admin.php">Admin login</a></div>
             </div>
           </div>
         </form>

@@ -170,6 +170,12 @@ a:hover {
   text-decoration: underline;
 }
 
+.admin_login {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
 .Button {
   display: flex;
   flex-direction: column;
