@@ -171,167 +171,25 @@ header("Pragma: no-cache");
                     </div>
                 </div>
 
-                <div class="settings-section">
-                    <h2><i class="bi bi-shield-check"></i> Security</h2>
-
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h3>Login History</h3>
-                            <p>Recent login activities on your account</p>
+                <div id="logoutModal" class="modal">
+                    <div class="modal-content">
+                        <h2>Logout</h2>
+                        <div class="scrollable">
+                            <p>Logout your account?</p>
                         </div>
-                        <div class="setting-action">
-                            <button class="btn-edit" onclick="viewLoginHistory()">View All</button>
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 15px;">
-                        <div class="login-history-item">
-                            <div class="device-info">
-                                <i class="bi bi-laptop"></i>
-                                <div>
-                                    <strong>Current Device</strong>
-                                    <div class="time">Taguig, Metro Manila • 2 hours ago</div>
-                                </div>
-                            </div>
-                            <span style="color: #28a745; font-weight: bold;">Current</span>
-                        </div>
-                        <div class="login-history-item">
-                            <div class="device-info">
-                                <i class="bi bi-phone"></i>
-                                <div>
-                                    <strong>Other Devices</strong>
-                                    <div class="time">Taguig, Metro Manila • Yesterday, 3:45 PM</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="setting-item" style="margin-top: 20px;">
-                        <div class="setting-info">
-                            <h3>Active Sessions</h3>
-                            <p>Manage devices currently logged into your account</p>
-                        </div>
-                        <span class="setting-value">2 active</span>
-                        <div class="setting-action">
-                            <button class="btn-danger" onclick="logoutAllDevices()">Logout All</button>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h3>Security Questions</h3>
-                            <p>For account recovery purposes</p>
-                        </div>
-                        <span class="setting-value">2 configured</span>
-                        <div class="setting-action">
-                            <button class="btn-edit" onclick="editSecurityQuestions()">Manage</button>
-                        </div>
+                        <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
+                        <button class="close-btn" onclick="closeModal3()">Close</button>
                     </div>
                 </div>
 
-                <div class="settings-section">
-                    <h2><i class="bi bi-sliders"></i> Preferences</h2>
-
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h3>Language</h3>
-                            <p>Choose your preferred language</p>
-                        </div>
-                        <span class="setting-value">English</span>
-                        <div class="setting-action">
-                            <button class="btn-edit" onclick="changeLanguage()">Change</button>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h3>Currency</h3>
-                            <p>Display currency for transactions</p>
-                        </div>
-                        <span class="setting-value">PHP (₱)</span>
-                        <div class="setting-action">
-                            <button class="btn-edit" onclick="changeCurrency()">Change</button>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h3>Email Notifications</h3>
-                            <p>Receive transaction alerts via email</p>
-                        </div>
-                        <div class="setting-action">
-                            <div class="toggle-switch active" onclick="toggleNotification(this)"></div>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h3>SMS Notifications</h3>
-                            <p>Receive transaction alerts via SMS</p>
-                        </div>
-                        <div class="setting-action">
-                            <div class="toggle-switch active" onclick="toggleNotification(this)"></div>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h3>Transaction Alerts</h3>
-                            <p>Get notified for transactions above ₱1,000</p>
-                        </div>
-                        <span class="setting-value">₱1,000</span>
-                        <div class="setting-action">
-                            <button class="btn-edit" onclick="editThreshold()">Adjust</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <h2><i class="bi bi-lock"></i> Privacy & Data</h2>
-
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h3>Download Account Data</h3>
-                            <p>Get a copy of your account information and transaction history</p>
-                        </div>
-                        <div class="setting-action">
-                            <button class="btn-edit" onclick="downloadData()">Download</button>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h3>Close Account</h3>
-                            <p style="color: #dc3545;">Permanently delete your eTapPay account</p>
-                        </div>
-                        <div class="setting-action">
-                            <button class="btn-danger" onclick="closeAccount()">Close Account</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="logoutModal" class="modal">
-        <div class="modal-content">
-            <h2>Logout</h2>
-            <div class="scrollable">
-                <p>Logout your account?</p>
-            </div>
-            <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
-            <button class="close-btn" onclick="closeModal3()">Close</button>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-    <script>
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
-                window.location.reload();
-            }
-        });
-    </script>
+                <script src="script.js"></script>
+                <script>
+                    window.addEventListener('pageshow', function (event) {
+                        if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                            window.location.reload();
+                        }
+                    });
+                </script>
 </body>
 
 </html>

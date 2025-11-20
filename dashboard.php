@@ -241,13 +241,15 @@ $receivedResult = $receivedQuery->get_result();
     <div id="profileModal" class="modal">
         <div class="modal-content" style="max-width: 490px;">
             <h2>Profile</h2>
-            <div class="scrollable" style="display: flex; flex-direction: column; text-align: start;">
+            <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
                 Name
-                <input type="text" placeholder="Name" style="width: 100%;">
-                Birthday
-                <input type="text" placeholder="Birthday" style="width: 100%;">
+                <p class="items">Lorenz L. Narvaez</p>
+                Number
+                <p class="items">Lorenz L. Narvaez</p>
+                Date of Birth
+                <p class="items">Lorenz L. Narvaez</p>
                 Current Address
-                <input type="text" placeholder="Current Address" style="width: 100%;">
+                <p class="items">Lorenz L. Narvaez</p>
             </div>
             <button class="close-btn" onclick="closeProfile()">Close</button>
         </div>
