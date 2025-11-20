@@ -49,7 +49,7 @@ header("Pragma: no-cache");
                     <i class="bi bi-credit-card"></i> Cards
                 </div>
             </a>
-            <a href="loan.php">
+            <a href="loan4.php">
                 <div class="Loan">
                     <i class="bi bi-cash"></i> Loan
                 </div>
