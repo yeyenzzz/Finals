@@ -54,80 +54,39 @@ function closeCashin() {
   cashin.style.display = "none";
 }
 
-const card = document.getElementById("cardApplication");
+const card = document.getElementById("cardModal");
 
-function openCardInfo() {
+function openCard() {
   card.style.display = "flex";
 }
 
-function closeCardInfo() {
+function closeCard() {
   card.style.display = "none";
 }
 
-let cardData = {}; // global object to hold form data
-
 function showApplicationForm() {
   document.getElementById("cardContent").innerHTML = `
-    <h1>Credit Card</h1>
-    <p>Fill in your details:</p>
-    <div class="inputs">
-      <div class="Personal">Full Name<input type="text" id="full_name" placeholder="Full Name" required></div>
-      <div class="Personal">Age<input type="number" id="age" placeholder="Age" required></div>
-      <div class="Personal">Email<input type="email" id="email" placeholder="Email" required></div>
-      <div class="Personal">Contact<input type="text" id="contact" placeholder="Contact Number" required></div>
-      <div class="Personal">Address<input type="text" id="address" placeholder="Address" required></div>
-      <div class="Personal">Salary<input type="number" id="salary" placeholder="Monthly Salary" required></div>
-      <div class="Personal">Upload ID<input type="file" id="valid_id" required></div>
-      <div class="Personal">Upload Payslip<input type="file" id="payslip" required></div>
+        <h1>Credit Card</h1>
+        <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
+        <div class="inputs">
+            <div class="Personal">
+                <h1>| Credit Card Application</h1>
+            </div>
+            <div class="Personal"> Full Name<input type="text" placeholder="Full Name" required></div>
+            <div class="Personal"> Age (21+)<input type="number" placeholder="Age" required></div>
+            <div class="Personal"> Email Address<input type="email" placeholder="Email Address" required></div>
+            <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" required></div>
+            <div class="Personal"> Address<input type="text" placeholder="Address" required></div>
+            <div class="Personal"> Monthly Salary (₱)<input type="number" placeholder="Monthly Salary" required></div>
+            <div class="Personal"> Upload Valid ID <input type="file" required></div>
+            <div class="Personal"> Upload PaySlip (3 Months) <input type="file" required></div>
 
-      <div class="next_prev">
-        <div><button class="prev-btn" onclick="location.reload()">Cancel</button></div>
-        <div><button class="next-btn" onclick="showCardSummary()">Next</button></div>
-      </div>
-    </div>
-  `;
-}
-
-function showCardSummary() {
-  // Save text data
-  cardData.full_name = document.getElementById("full_name").value;
-  cardData.age = document.getElementById("age").value;
-  cardData.email = document.getElementById("email").value;
-  cardData.contact = document.getElementById("contact").value;
-  cardData.address = document.getElementById("address").value;
-  cardData.salary = document.getElementById("salary").value;
-  cardData.valid_id = document.getElementById("valid_id").files[0]?.name || "";
-  cardData.payslip = document.getElementById("payslip").files[0]?.name || "";
-
-  document.getElementById("cardContent").innerHTML = `
-    <h1>Review Your Application</h1>
-    <div class="inputs">
-      <div class="Personal">Full Name: ${cardData.full_name}</div>
-      <div class="Personal">Age: ${cardData.age}</div>
-      <div class="Personal">Email: ${cardData.email}</div>
-      <div class="Personal">Contact: ${cardData.contact}</div>
-      <div class="Personal">Address: ${cardData.address}</div>
-      <div class="Personal">Salary: ₱${cardData.salary}</div>
-      <div class="Personal">Uploaded ID: ${cardData.valid_id}</div>
-      <div class="Personal">Uploaded Payslip: ${cardData.payslip}</div>
-
-      <form action="card.php" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="full_name" value="${cardData.full_name}">
-        <input type="hidden" name="age" value="${cardData.age}">
-        <input type="hidden" name="email" value="${cardData.email}">
-        <input type="hidden" name="contact" value="${cardData.contact}">
-        <input type="hidden" name="address" value="${cardData.address}">
-        <input type="hidden" name="salary" value="${cardData.salary}">
-        <div class="Personal">Upload ID again: <input type="file" name="valid_id" required></div>
-        <div class="Personal">Upload Payslip again: <input type="file" name="payslip" required></div>
-        <button type="submit" name="submit_card" class="next-btn">Submit</button>
-      </form>
-
-      <div class="next_prev">
-        <button class="prev-btn" onclick="showApplicationForm()">Previous</button>
-      </div>
-    </div>
-  `;
+            <div class="next_prev">
+                <div><button class="prev-btn" onclick="location.reload()">Cancel</button></div>
+                <div><button class="next-btn" onclick="openCard()">Next</button></div>
+            </div>
+        </div>
+    `;
 }
 
 function showLoanApplication() {
@@ -194,46 +153,7 @@ function show2Loan() {
             </select></div>
         <div class="next_prev">
             <div><button class="prev-btn" onclick="showLoanApplication()">Previous</button></div>
-            <div><button class="next-btn" onclick="show3Loan()">Next</button></div>
-        </div>
-    </div>
-  `;
-}
-
-function show3Loan() {
-  document.getElementById("loanContent").innerHTML = `
-    <h1>Loan Application</h1>
-    <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
-    <div class="inputs">
-        <div class="Personal">
-            <h1>| Summary</h1>
-        </div>
-        <div class="Personal"> Full Name<input type="text" placeholder="Full Name" disabled></div>
-        <div class="Personal"> Email Address<input type="text" placeholder="Email Address" disabled>
-        </div>
-        <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" disabled>
-        </div>
-        <div class="Personal"> Monthly Salary (₱)<input type="text" placeholder="Contact Number"
-                disabled>
-        </div>
-        <div class="Personal">Upload Valid ID <input type="text" placeholder="Upload Valid ID" disabled>
-        </div>
-        <div class="Personal">Upload PaySlip (3 Months) <input type="text" placeholder="Upload Valid ID"
-                disabled></div>
-        <div class="Personal"> Loan Type <input type="text" placeholder="Select Loan Type" disabled>
-        </div>
-        <div class="Personal"> Desired Loan Amount (₱)<input type="text"
-                placeholder="Desired Loan Amount" disabled></div>
-        <div class="Personal"> Loan Term (Months)<input type="text" placeholder="Select Loan Term"
-                disabled>
-        </div>
-        <div class="Personal"> Payment Frequency<input type="text"
-                placeholder="Select Payment Frequency" disabled></div>
-        <div class="Personal"> Payment Type<input type="text" placeholder="Select Payment Type"
-                disabled></div>
-        <div class="next_prev">
-            <div><button class="prev-btn" onclick="show2Loan()">Previous</button></div>
-            <div><button class="next-btn" onclicl="">Submit</button></div>
+            <div><button class="next-btn" onclick="openCard()">Next</button></div>
         </div>
     </div>
   `;

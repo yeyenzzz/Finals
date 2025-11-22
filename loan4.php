@@ -74,7 +74,8 @@ if (!isset($_SESSION['email'])) {
             <div class="profile" id="profile">
                 <a href="#" onclick="openModal3(event)"><i class="bi bi-box-arrow-right" title="Logout"
                         style="font-size: 25px; color;"></i></a>
-                <a href="#"><i class="bi bi-person-circle" title="Profile" style="font-size: 25px; color;"></i></a>
+                <a href="#" onclick="openProfile(event)"><i class="bi bi-person-circle" title="Profile"
+                        style="font-size: 25px; color;"></i></a>
                 <a href="#"><i class="bi bi-bell-fill" title="Notification" style="font-size: 25px; color;"></i></a>
             </div>
             <div class="transfer">
@@ -120,6 +121,32 @@ if (!isset($_SESSION['email'])) {
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
+
+    <div id="cardModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <h2>Are you sure about the details for the card application?</h2>
+            <button class="next-btn" onclick="">Confirm</button>
+            <button class="close-btn" onclick="closeCard()">Close</button>
+        </div>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content" style="max-width: 490px;">
+            <h2>Profile</h2>
+            <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
+                Name
+                <p class="items">Lorenz L. Narvaez</p>
+                Number
+                <p class="items">Lorenz L. Narvaez</p>
+                Date of Birth
+                <p class="items">Lorenz L. Narvaez</p>
+                Current Address
+                <p class="items">Lorenz L. Narvaez</p>
+            </div>
+            <button class="close-btn" onclick="closeProfile()">Close</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script>
         window.addEventListener('pageshow', function (event) {
