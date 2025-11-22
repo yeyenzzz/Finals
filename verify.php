@@ -24,14 +24,15 @@ $connectDB = connectDB();
 
 // Insert into DB
 $stmt = $connectDB->prepare("
-    INSERT INTO users (firstName, lastName, email, password, email_verified) 
-    VALUES (?, ?, ?, ?, 1)
+    INSERT INTO users (firstName, lastName, phone_number, email, password, email_verified) 
+    VALUES (?, ?, ?, ?, ?, 1)
 ");
 
 $stmt->bind_param(
-    "ssss",
+    "sssss",
     $data["firstName"],
     $data["lastName"],
+    $data["phone_number"],
     $data["email"],
     $data["password"]
 );
