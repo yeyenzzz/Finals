@@ -36,49 +36,57 @@ if (!isset($_SESSION['email'])) {
 
 <body>
     <div class="whole">
-        <div class="nav-section">
-            <div class="logo">
+        <div class="profiles" id="profile">
+            <div class="logo ">
                 <img src="images/logo.png" alt="" class="logo">
                 <h3>eTapPay</h3>
             </div>
-            <a href="dashboard.php">
-                <div class="Dashboard">
-                    <i class="bi bi-house"></i> Dashboard
-                </div>
-            </a>
-            <a href="transfer.php">
-                <div class="Transfer">
-                    <i class="bi bi-arrow-left-right"></i> Transfer
-                </div>
-            </a>
-            <a href="card.php">
-                <div class="Cards">
-                    <i class="bi bi-credit-card"></i> Cards
-                </div>
-            </a>
-            <a href="loan4.php">
-                <div class="Loan">
-                    <i class="bi bi-cash"></i> Loan
-                </div>
-            </a>
-            <a href="inbox.php" class="active">
-                <div class="Inbox">
-                    <i class="bi bi-envelope"></i> Inbox
-                </div>
-            </a>
-            <a href="settings.php">
-                <div class="Settings">
-                    <i class="bi bi-gear"></i> Settings
-                </div>
-            </a>
+            <div class="profile">
+                <a href="#" onclick="openModal3(event)">
+                    <i class="bi bi-box-arrow-right" title="Logout" style="font-size: 25px;"></i>
+                </a>
+                <a href="#" onclick="openProfile(event)">
+                    <i class="bi bi-person-circle" title="Profile" style="font-size: 25px;"></i>
+                </a>
+                <a href="#">
+                    <i class="bi bi-bell-fill" title="Notification" style="font-size: 25px;"></i>
+                </a>
+            </div>
         </div>
         <div class="page">
-            <div class="profile" id="profile">
-                <a href="#" onclick="openModal3(event)"><i class="bi bi-box-arrow-right" title="Logout"
-                        style="font-size: 25px; color;"></i></a>
-                <a href="#" onclick="openProfile(event)"><i class="bi bi-person-circle" title="Profile"
-                        style="font-size: 25px; color;"></i></a>
-                <a href="#"><i class="bi bi-bell-fill" title="Notification" style="font-size: 25px; color;"></i></a>
+            <div class="navs">
+                <div class="nav-section">
+                    <a href="dashboard.php">
+                        <div class="Dashboard">
+                            <i class="bi bi-house"></i> Dashboard
+                        </div>
+                    </a>
+                    <a href="transfer.php">
+                        <div class="Transfer">
+                            <i class="bi bi-arrow-left-right"></i> Transfer
+                        </div>
+                    </a>
+                    <a href="card.php">
+                        <div class="Cards">
+                            <i class="bi bi-credit-card"></i> Cards
+                        </div>
+                    </a>
+                    <a href="loan4.php">
+                        <div class="Loan">
+                            <i class="bi bi-cash"></i> Loan
+                        </div>
+                    </a>
+                    <a href="inbox.php" class="active">
+                        <div class="Inbox">
+                            <i class="bi bi-envelope"></i> Inbox
+                        </div>
+                    </a>
+                    <a href="settings.php">
+                        <div class="Settings">
+                            <i class="bi bi-gear"></i> Settings
+                        </div>
+                    </a>
+                </div>
             </div>
             <div class="transfer">
                 <div class="content">

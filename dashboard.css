@@ -11,7 +11,7 @@ body {
 
 .whole {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .nav-section {
@@ -20,26 +20,43 @@ body {
   align-items: center;
   width: 100%;
   max-width: 200px;
-  height: 100vh;
   gap: 30px;
+  background-color: white;
+  margin-top: 30px;
+  overflow: hidden;
+}
+
+.navs {
+  background-color: white;
+  width: 100%;
+  max-width: 200px;
 }
 
 .logo {
   font-family: "Poppins", sans-serif;
-  width: 70px;
   display: flex;
   flex-direction: row;
-  margin-right: 80px;
+  margin-left: 10px;
   margin-top: 2px;
+  overflow-y: hidden;
+}
+
+.logo img {
+  width: 100%;
+  max-width: 70px;
+  height: auto;
 }
 
 .logo h3 {
   position: absolute;
   margin-top: 20px;
-  margin-left: 57px;
+  margin-left: 70px;
   color: #0464ff;
 }
 
+.transfer {
+  width: 100%;
+}
 .Dashboard,
 .Transfer,
 .Loan,
@@ -94,14 +111,19 @@ a {
 
 .page {
   width: 100%;
+  display: flex;
   background-color: #eeeeee;
+  height: 667px;
+}
+
+.profiles {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  background-color: white;
 }
 
 .profile {
-  display: flex;
-  flex-direction: row-reverse;
-  width: 100%;
-  background-color: white;
   padding: 20px 50px 20px 20px;
   margin-bottom: 5px;
   gap: 20px;
@@ -136,6 +158,10 @@ a {
 .greet p {
   color: white;
   font-size: 17px;
+}
+
+.handle {
+  width: 100%;
 }
 
 .content {
@@ -796,4 +822,78 @@ td.amount-received {
   font-size: 18px;
   margin-top: 10px;
   border-bottom: 1px solid #9a9a9a;
+}
+
+/* MOBILE LAYOUT – MOVE NAV TO BOTTOM */
+@media (max-width: 768px) {
+  .whole {
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* NAV moves to bottom */
+  .nav-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    height: 70px;
+    flex-direction: row; /* horizontal */
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    background-color: white;
+    z-index: 1000;
+    border-top: 1px solid #dcdcdc;
+    gap: 0;
+  }
+
+  /* Make each nav item behave like an icon button */
+  .navs,
+  .Dashboard,
+  .Transfer,
+  .Loan,
+  .Cards,
+  .Inbox,
+  .Settings {
+    width: auto;
+    padding: 5px 10px;
+    text-align: center;
+  }
+
+  .navs {
+    background-color: #eeeeee;
+  }
+
+  .navs a {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+  }
+
+  /* MAIN PAGE should not be hidden behind bottom nav */
+  .page,
+  .transfer {
+    margin-left: 0;
+    margin-bottom: 90px; /* space for bottom nav */
+    flex-direction: column;
+  }
+
+  .profiles {
+    flex-direction: row;
+  }
+
+  /* Cards and animations still work */
+  .cards {
+    margin: 0 auto;
+    transform: rotate(7deg);
+  }
+
+  .card-design {
+    width: 80px;
+    height: 135px;
+    top: 70px;
+    right: 15px;
+  }
 }
