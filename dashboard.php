@@ -93,47 +93,12 @@ if (isset($_POST['depositAmount'])) {
 
 <body>
     <div class="whole">
-        <!-- Sidebar Navigation -->
-        <div class="nav-section">
-            <div class="logo">
+        <div class="profiles" id="profile">
+            <div class="logo ">
                 <img src="images/logo.png" alt="" class="logo">
                 <h3>eTapPay</h3>
             </div>
-            <a href="dashboard.php" class="active">
-                <div class="Dashboard">
-                    <i class="bi bi-house"></i> Dashboard
-                </div>
-            </a>
-            <a href="transfer.php">
-                <div class="Transfer">
-                    <i class="bi bi-arrow-left-right"></i> Transfer
-                </div>
-            </a>
-            <a href="card.php">
-                <div class="Cards">
-                    <i class="bi bi-credit-card"></i> Cards
-                </div>
-            </a>
-            <a href="loan4.php">
-                <div class="Loan">
-                    <i class="bi bi-cash"></i> Loan
-                </div>
-            </a>
-            <a href="inbox.php">
-                <div class="Inbox">
-                    <i class="bi bi-envelope"></i> Inbox
-                </div>
-            </a>
-            <a href="settings.php">
-                <div class="Settings">
-                    <i class="bi bi-gear"></i> Settings
-                </div>
-            </a>
-        </div>
-
-        <!-- Main Page -->
-        <div class="page">
-            <div class="profile" id="profile">
+            <div class="profile">
                 <a href="#" onclick="openModal3(event)">
                     <i class="bi bi-box-arrow-right" title="Logout" style="font-size: 25px;"></i>
                 </a>
@@ -144,91 +109,128 @@ if (isset($_POST['depositAmount'])) {
                     <i class="bi bi-bell-fill" title="Notification" style="font-size: 25px;"></i>
                 </a>
             </div>
-            <div class="greet">
-                <div>
-                    <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
-                    <p>Monitor your balance, review transactions, and manage your finances effortlessly.</p>
-                </div>
-                <div class="cards">
-                    <div class="card-design" id="card1"></div>
-                    <div class="card-design" id="card2"></div>
-                    <div class="card-design" id="card3"></div>
-                    <div class="card-design" id="card4"></div>
+        </div>
+        <!-- Sidebar Navigation -->
+
+        <!-- Main Page -->
+        <div class="page">
+            <div class="navs">
+                <div class="nav-section">
+                    <a href="dashboard.php" class="active">
+                        <div class="Dashboard">
+                            <i class="bi bi-house"></i> Dashboard
+                        </div>
+                    </a>
+                    <a href="transfer.php">
+                        <div class="Transfer">
+                            <i class="bi bi-arrow-left-right"></i> Transfer
+                        </div>
+                    </a>
+                    <a href="card.php">
+                        <div class="Cards">
+                            <i class="bi bi-credit-card"></i> Cards
+                        </div>
+                    </a>
+                    <a href="loan4.php">
+                        <div class="Loan">
+                            <i class="bi bi-cash"></i> Loan
+                        </div>
+                    </a>
+                    <a href="inbox.php">
+                        <div class="Inbox">
+                            <i class="bi bi-envelope"></i> Inbox
+                        </div>
+                    </a>
+                    <a href="settings.php">
+                        <div class="Settings">
+                            <i class="bi bi-gear"></i> Settings
+                        </div>
+                    </a>
                 </div>
             </div>
-
-            <div class="section">
-                <!-- Balance -->
-                <div class="balance">
-                    <h3>Account Balance</h3>
-                    <p style="font-size: 30px; margin: 20px;">₱<?= number_format($balance, 2) ?></p>
-                    <button class="next-btn" style="width: 100px; margin: 10px;" onclick="openCashin()">Deposit</button>
+            <div class="handle">
+                <div class="greet">
+                    <div>
+                        <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
+                        <p>Monitor your balance, review transactions, and manage your finances effortlessly.</p>
+                    </div>
+                    <div class="cards">
+                        <div class="card-design" id="card1"></div>
+                        <div class="card-design" id="card2"></div>
+                        <div class="card-design" id="card3"></div>
+                        <div class="card-design" id="card4"></div>
+                    </div>
                 </div>
-
-                <!-- Transactions with Nav Filter -->
-                <div class="transaction">
-                    <h3>Transactions</h3>
-
-                    <!-- Nav Filter -->
-                    <div class="transaction-nav" style="margin-top: 10px;">
-                        <button class="filter-btn active" data-target="sent">Sent Transactions</button>
-                        <button class="filter-btn" data-target="received">Received Transactions</button>
+                <div class="section">
+                    <!-- Balance -->
+                    <div class="balance">
+                        <h3>Account Balance</h3>
+                        <p style="font-size: 30px; margin: 20px;">₱<?= number_format($balance, 2) ?></p>
+                        <button class="next-btn" style="width: 100px; margin: 10px;"
+                            onclick="openCashin()">Deposit</button>
                     </div>
-
-                    <!-- Sent Transactions -->
-                    <div class="transactions-section" id="sent">
-                        <?php if ($sentResult->num_rows > 0): ?>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>To</th>
-                                        <th>Amount</th>
-                                        <th>Message</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php while ($row = $sentResult->fetch_assoc()): ?>
+                    <!-- Transactions with Nav Filter -->
+                    <div class="transaction">
+                        <h3>Transactions</h3>
+                        <!-- Nav Filter -->
+                        <div class="transaction-nav" style="margin-top: 10px;">
+                            <button class="filter-btn active" data-target="sent">Sent Transactions</button>
+                            <button class="filter-btn" data-target="received">Received Transactions</button>
+                        </div>
+                        <!-- Sent Transactions -->
+                        <div class="transactions-section" id="sent">
+                            <?php if ($sentResult->num_rows > 0): ?>
+                                <table>
+                                    <thead>
                                         <tr>
-                                            <td><?= htmlspecialchars($row['recipient_name']) ?></td>
-                                            <td class="amount-sent">-₱<?= number_format($row['amount'], 2) ?></td>
-                                            <td><?= htmlspecialchars($row['message']) ?></td>
-                                            <td><?= htmlspecialchars($row['created_at']) ?></td>
+                                            <th>To</th>
+                                            <th>Amount</th>
+                                            <th>Message</th>
+                                            <th>Date</th>
                                         </tr>
-                                    <?php endwhile; ?>
-                                </tbody>
-                            </table>
-                        <?php else: ?>
-                            <div class="no-transactions">No sent transactions yet.</div>
-                        <?php endif; ?>
-                    </div>
-
-                    <!-- Received Transactions -->
-                    <div class="transactions-section" id="received" style="display: none;">
-                        <?php if ($receivedResult->num_rows > 0): ?>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>From</th>
-                                        <th>Amount</th>
-                                        <th>Message</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php while ($row = $receivedResult->fetch_assoc()): ?>
+                                    </thead>
+                                    <tbody>
+                                        <?php while ($row = $sentResult->fetch_assoc()): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($row['recipient_name']) ?></td>
+                                                <td class="amount-sent">-₱<?= number_format($row['amount'], 2) ?></td>
+                                                <td><?= htmlspecialchars($row['message']) ?></td>
+                                                <td><?= htmlspecialchars($row['created_at']) ?></td>
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    </tbody>
+                                </table>
+                            <?php else: ?>
+                                <div class="no-transactions">No sent transactions yet.</div>
+                            <?php endif; ?>
+                        </div>
+                        <!-- Received Transactions -->
+                        <div class="transactions-section" id="received" style="display: none;">
+                            <?php if ($receivedResult->num_rows > 0): ?>
+                                <table>
+                                    <thead>
                                         <tr>
-                                            <td><?= htmlspecialchars($row['sender_name']) ?></td>
-                                            <td class="amount-received">+₱<?= number_format($row['amount'], 2) ?></td>
-                                            <td><?= htmlspecialchars($row['message']) ?></td>
-                                            <td><?= htmlspecialchars($row['created_at']) ?></td>
+                                            <th>From</th>
+                                            <th>Amount</th>
+                                            <th>Message</th>
+                                            <th>Date</th>
                                         </tr>
-                                    <?php endwhile; ?>
-                                </tbody>
-                            </table>
-                        <?php else: ?>
-                            <div class="no-transactions">No received transactions yet.</div>
-                        <?php endif; ?>
+                                    </thead>
+                                    <tbody>
+                                        <?php while ($row = $receivedResult->fetch_assoc()): ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($row['sender_name']) ?></td>
+                                                <td class="amount-received">+₱<?= number_format($row['amount'], 2) ?></td>
+                                                <td><?= htmlspecialchars($row['message']) ?></td>
+                                                <td><?= htmlspecialchars($row['created_at']) ?></td>
+                                            </tr>
+                                        <?php endwhile; ?>
+                                    </tbody>
+                                </table>
+                            <?php else: ?>
+                                <div class="no-transactions">No received transactions yet.</div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
