@@ -101,7 +101,7 @@ header("Pragma: no-cache");
             </div>
         </div>
     </div>
-    </div>
+
     <div id="logoutModal" class="modal">
         <div class="modal-content">
             <h2>Logout</h2>

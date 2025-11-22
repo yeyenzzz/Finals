@@ -22,7 +22,7 @@ if (isset($_SESSION['email'])) {
 $firstName = "";
 $lastName = "";
 $email = "";
-$phone = "";
+$phone_number = "";
 $password = "";
 $confirmPassword = "";
 
@@ -41,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $firstName = trim($_POST['firstName']);
   $lastName = trim($_POST['lastName']);
   $email = trim($_POST['email']);
+  $phone_number = trim($_POST['phone_number']);
   $password = $_POST['password'];
   $confirmPassword = $_POST['confirmPassword'];
 
@@ -94,12 +95,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       "firstName" => $firstName,
       "lastName" => $lastName,
       "email" => $email,
-      "phone" => $phone,
+      "phone_number" => $phone_number,
       "password" => $hashedPassword,
       "token" => $verificationToken
     ];
     // Build verify link
-    $verificationLink = "http://localhost/Finals-main/verify.php?token=$verificationToken";
+    $verificationLink = "http://localhost/Finals/verify.php?token=$verificationToken";
 
     // Send email
     $mail = new PHPMailer(true);
@@ -188,7 +189,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               <input type="email" placeholder="Email" name="email" value="<?= $email ?>" required />
             </div>
             <div class="phone">
-              <input type="text" placeholder="Phone Number" name="phone" value="<?= $phone ?>" required />
+              <input type="text" placeholder="Phone Number" name="phone_number" value="<?= $phone_number ?>" required />
             </div>
             <div class="password">
               <input type="password" placeholder="Password" name="password" required />
