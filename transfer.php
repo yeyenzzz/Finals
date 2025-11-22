@@ -107,14 +107,14 @@ if (isset($_POST['transfer'])) {
                 <h3>eTapPay</h3>
             </div>
             <div class="profile">
-                <a href="#" onclick="openModal3(event)">
-                    <i class="bi bi-box-arrow-right" title="Logout" style="font-size: 25px;"></i>
+                <a href="#">
+                    <i class="bi bi-bell-fill" title="Notification"></i>
                 </a>
                 <a href="#" onclick="openProfile(event)">
-                    <i class="bi bi-person-circle" title="Profile" style="font-size: 25px;"></i>
+                    <i class="bi bi-person-circle" title="Profile"></i>
                 </a>
-                <a href="#">
-                    <i class="bi bi-bell-fill" title="Notification" style="font-size: 25px;"></i>
+                <a href="#" onclick="openModal3(event)">
+                    <i class="bi bi-box-arrow-right" title="Logout"></i>
                 </a>
             </div>
         </div>

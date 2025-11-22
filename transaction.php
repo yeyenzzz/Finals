@@ -86,14 +86,14 @@ while ($row = $notifications->fetch_assoc()) {
                 <h3>eTapPay</h3>
             </div>
             <div class="profile">
-                <a href="#" onclick="openModal3(event)">
-                    <i class="bi bi-box-arrow-right" title="Logout" style="font-size: 25px;"></i>
+                <a href="#">
+                    <i class="bi bi-bell-fill" title="Notification"></i>
                 </a>
                 <a href="#" onclick="openProfile(event)">
-                    <i class="bi bi-person-circle" title="Profile" style="font-size: 25px;"></i>
+                    <i class="bi bi-person-circle" title="Profile"></i>
                 </a>
-                <a href="#">
-                    <i class="bi bi-bell-fill" title="Notification" style="font-size: 25px;"></i>
+                <a href="#" onclick="openModal3(event)">
+                    <i class="bi bi-box-arrow-right" title="Logout"></i>
                 </a>
             </div>
         </div>
@@ -141,7 +141,7 @@ while ($row = $notifications->fetch_assoc()) {
                     <div class="inbox">
                         <a href="inbox.php" style="margin-right: 75px; padding: 7px;">All</a>
                         <a href="updates.php" style="margin-right: 75px; padding: 7px;">Updates</a>
-                        <a href="transaction.php" style="padding: 7px;">Transactions</a>
+                        <a href="transaction.php" style="padding: 7px;" class="notif-active">Transactions</a>
                     </div>
 
                     <div class="inputsnotif" style="margin-top:20px;">
