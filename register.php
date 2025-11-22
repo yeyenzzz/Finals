@@ -22,6 +22,7 @@ if (isset($_SESSION['email'])) {
 $firstName = "";
 $lastName = "";
 $email = "";
+$phone = "";
 $password = "";
 $confirmPassword = "";
 
@@ -93,11 +94,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       "firstName" => $firstName,
       "lastName" => $lastName,
       "email" => $email,
+      "phone" => $phone,
       "password" => $hashedPassword,
       "token" => $verificationToken
     ];
     // Build verify link
-    $verificationLink = "http://localhost/Finals/verify.php?token=$verificationToken";
+    $verificationLink = "http://localhost/Finals-main/verify.php?token=$verificationToken";
 
     // Send email
     $mail = new PHPMailer(true);
@@ -184,6 +186,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </div>
             <div class="email">
               <input type="email" placeholder="Email" name="email" value="<?= $email ?>" required />
+            </div>
+            <div class="phone">
+              <input type="text" placeholder="Phone Number" name="phone" value="<?= $phone ?>" required />
             </div>
             <div class="password">
               <input type="password" placeholder="Password" name="password" required />
