@@ -18,8 +18,41 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Pragma: no-cache");
+include 'db.php';
+$conn = connectDB();
+
+$userEmail = $_SESSION['email'];
+$userQuery = $conn->prepare("SELECT firstName, lastName, email, phone_number FROM users WHERE email = ?");
+$userQuery->bind_param("s", $userEmail);
+$userQuery->execute();
+$userResult = $userQuery->get_result();
+$userData = $userResult->fetch_assoc();
+
+if (isset($_POST['confirm_card'])) {
+    $full_name = $_POST['full_name'];
+    $age = $_POST['age'];
+    $email = $_POST['email'];
+    $phone_number = $_POST['phone_number'];
+    $address = $_POST['address'];
+    $salary = $_POST['salary'];
+
+    // Handle file uploads
+    $valid_id = $_FILES['valid_id']['name'];
+    $payslip = $_FILES['payslip']['name'];
+    $uploadDir = "uploads/";
+    move_uploaded_file($_FILES['valid_id']['tmp_name'], $uploadDir . $valid_id);
+    move_uploaded_file($_FILES['payslip']['tmp_name'], $uploadDir . $payslip);
+
+    // Insert into credit_cards table
+    $stmt = $conn->prepare("INSERT INTO credit_cards (email, full_name, age, phone_number, address, salary, valid_id, payslip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssississ", $email, $full_name, $age, $phone_number, $address, $salary, $valid_id, $payslip);
+    if ($stmt->execute()) {
+        echo "<script>alert('Card application submitted successfully!');</script>";
+    } else {
+        echo "<script>alert('Failed to submit application.');</script>";
+    }
+}
+
 ?>
 
 
@@ -119,7 +152,8 @@ header("Pragma: no-cache");
     <div id="cardModal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
             <h2>Are you sure about the details for the card application?</h2>
-            <button class="next-btn" onclick="">Confirm</button>
+            <button class="next-btn" onclick="document.getElementById('cardForm').submit();"
+                name="confirm_card">Confirm</button>
             <button class="close-btn" onclick="closeCard()">Close</button>
         </div>
     </div>
@@ -148,6 +182,14 @@ header("Pragma: no-cache");
                 window.location.reload();
             }
         });
+    </script>
+    <script>
+        // Pass PHP values to JS
+        const userData = {
+            fullName: "<?php echo $userData['firstName'] . ' ' . $userData['lastName']; ?>",
+            email: "<?php echo $userData['email']; ?>",
+            phoneNumber: "<?php echo $userData['phone_number']; ?>"
+        };
     </script>
 
 </body>

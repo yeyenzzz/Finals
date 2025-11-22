@@ -57,6 +57,27 @@ $receivedQuery = $connectDB->prepare("
 $receivedQuery->bind_param("i", $user_id);
 $receivedQuery->execute();
 $receivedResult = $receivedQuery->get_result();
+
+$depositError = "";
+
+if (isset($_POST['depositAmount'])) {
+    $amount = floatval($_POST['depositAmount']);
+
+    if ($amount <= 0) {
+        $depositError = "Please enter a valid amount.";
+    } else {
+        $update = $connectDB->prepare("UPDATE users SET balance = balance + ? WHERE id = ?");
+        $update->bind_param("di", $amount, $user_id);
+        $update->execute();
+        $update->close();
+
+        header("Location: dashboard.php", true, 303);
+        exit();
+    }
+}
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -228,13 +249,19 @@ $receivedResult = $receivedQuery->get_result();
 
     <div id="cashinModal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
-            <h2>Deposit</h2>
-            <div class="scrollable" style="display: flex; flex-direction: column; text-align: start;">
-                Amount
-                <input type="number" placeholder="Amount" style="width: 100%;">
-            </div>
-            <button class="next-btn" onclick="">Confirm</button>
-            <button class="close-btn" onclick="closeCashin()">Close</button>
+            <form method="post" action="dashboard.php">
+                <h2>Deposit</h2>
+                <div class="scrollable" style="display: flex; flex-direction: column; text-align: start;">
+                    Amount
+                    <input type="number" name="depositAmount" placeholder="Amount" style="width: 100%;" required min="1"
+                        step="0.01">
+                    <span style="color: red; font-size: 14px; margin-top: 5px;">
+                        <?= htmlspecialchars($depositError) ?>
+                    </span>
+                </div>
+                <button type="submit" class="next-btn" onclick="">Confirm</button>
+                <button type="button" class="close-btn" onclick="closeCashin()">Close</button>
+            </form>
         </div>
     </div>
 
