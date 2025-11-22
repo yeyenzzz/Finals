@@ -54,13 +54,13 @@ function closeCashin() {
   cashin.style.display = "none";
 }
 
-const card = document.getElementById("cardApplication");
+const card = document.getElementById("cardModal");
 
-function openCardInfo() {
+function openCard() {
   card.style.display = "flex";
 }
 
-function closeCardInfo() {
+function closeCard() {
   card.style.display = "none";
 }
 
@@ -83,43 +83,9 @@ function showApplicationForm() {
 
             <div class="next_prev">
                 <div><button class="prev-btn" onclick="location.reload()">Cancel</button></div>
-                <div><button class="next-btn" onclick="showCardSummary()">Next</button></div>
+                <div><button class="next-btn" onclick="openCard()">Next</button></div>
             </div>
         </div>
-    `;
-}
-
-function showCardSummary() {
-  document.getElementById("cardContent").innerHTML = `
-
-        <h1>Credit Card</h1>
-        <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
-        <div class="inputs">
-            <div class="Personal">
-                <h1>| Card Summary</h1>
-            </div>
-            <div class="Personal"> Full Name<input type="text" placeholder="Full Name" disabled></div>
-            <div class="Personal"> Age (21+)<input type="text" placeholder="Age" disabled></div>
-            <div class="Personal"> Email Address<input type="text" placeholder="Email Address" disabled>
-            </div>
-            <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" disabled>
-            </div>
-            <div class="Personal"> Address<input type="text" placeholder="Address" disabled>
-            </div>
-            <div class="Personal"> Monthly Salary (₱)<input type="text" placeholder="Contact Number"
-                    disabled>
-            </div>
-            <div class="Personal">Upload Valid ID <input type="text" placeholder="Upload Valid ID" disabled>
-            </div>
-            <div class="Personal">Upload PaySlip (3 Months) <input type="text" placeholder="Upload Valid ID"
-                    disabled></div>
-
-            <div class="next_prev">
-                <div><button class="prev-btn" onclick="showApplicationForm()">Previous</button></div>
-                <div><button class="next-btn" onclick="#">Submit</button></div>
-            </div>
-        </div>
-    </div>
     `;
 }
 
@@ -187,46 +153,7 @@ function show2Loan() {
             </select></div>
         <div class="next_prev">
             <div><button class="prev-btn" onclick="showLoanApplication()">Previous</button></div>
-            <div><button class="next-btn" onclick="show3Loan()">Next</button></div>
-        </div>
-    </div>
-  `;
-}
-
-function show3Loan() {
-  document.getElementById("loanContent").innerHTML = `
-    <h1>Loan Application</h1>
-    <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
-    <div class="inputs">
-        <div class="Personal">
-            <h1>| Summary</h1>
-        </div>
-        <div class="Personal"> Full Name<input type="text" placeholder="Full Name" disabled></div>
-        <div class="Personal"> Email Address<input type="text" placeholder="Email Address" disabled>
-        </div>
-        <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" disabled>
-        </div>
-        <div class="Personal"> Monthly Salary (₱)<input type="text" placeholder="Contact Number"
-                disabled>
-        </div>
-        <div class="Personal">Upload Valid ID <input type="text" placeholder="Upload Valid ID" disabled>
-        </div>
-        <div class="Personal">Upload PaySlip (3 Months) <input type="text" placeholder="Upload Valid ID"
-                disabled></div>
-        <div class="Personal"> Loan Type <input type="text" placeholder="Select Loan Type" disabled>
-        </div>
-        <div class="Personal"> Desired Loan Amount (₱)<input type="text"
-                placeholder="Desired Loan Amount" disabled></div>
-        <div class="Personal"> Loan Term (Months)<input type="text" placeholder="Select Loan Term"
-                disabled>
-        </div>
-        <div class="Personal"> Payment Frequency<input type="text"
-                placeholder="Select Payment Frequency" disabled></div>
-        <div class="Personal"> Payment Type<input type="text" placeholder="Select Payment Type"
-                disabled></div>
-        <div class="next_prev">
-            <div><button class="prev-btn" onclick="show2Loan()">Previous</button></div>
-            <div><button class="next-btn" onclicl="">Submit</button></div>
+            <div><button class="next-btn" onclick="openCard()">Next</button></div>
         </div>
     </div>
   `;

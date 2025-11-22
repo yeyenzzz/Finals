@@ -41,6 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $firstName = trim($_POST['firstName']);
   $lastName = trim($_POST['lastName']);
   $email = trim($_POST['email']);
+  $phone = trim($_POST['phone']);
   $password = $_POST['password'];
   $confirmPassword = $_POST['confirmPassword'];
 
