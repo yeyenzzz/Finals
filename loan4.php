@@ -145,26 +145,28 @@ if (!isset($_SESSION['email'])) {
             <h2>Profile</h2>
             <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
                 Name
-                <p class="items">Lorenz L. Narvaez</p>
-                Number
-                <p class="items">Lorenz L. Narvaez</p>
+                <p class="items">
+                    <?= htmlspecialchars($_SESSION['firstName'] ?? '') ?>
+                    <?= htmlspecialchars($_SESSION['lastName'] ?? '') ?>
+                </p>
+                Phone Number
+                <p class="items"><?= htmlspecialchars($_SESSION['phone_number'] ?? '') ?></p>
                 Date of Birth
-                <p class="items">Lorenz L. Narvaez</p>
+                <p class="items"><?= htmlspecialchars($_SESSION['date_of_birth'] ?? '') ?></p>
                 Current Address
-                <p class="items">Lorenz L. Narvaez</p>
+                <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
             <button class="close-btn" onclick="closeProfile()">Close</button>
         </div>
-    </div>
 
-    <script src="script.js"></script>
-    <script>
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
-                window.location.reload();
-            }
-        });
-    </script>
+        <script src="script.js"></script>
+        <script>
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                    window.location.reload();
+                }
+            });
+        </script>
 
 </body>
 

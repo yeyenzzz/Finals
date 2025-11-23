@@ -79,7 +79,7 @@ function showApplicationForm() {
         <h1>Credit Card</h1>
         <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
         <div class="inputs">
-        <form id="cardForm" method="post" enctype="multipart/form-data">
+        <form id="cardForm" method="post" enctype="multipart/form-data" style="width: 100%;">
          <input type="hidden" name="confirm_card" value="1">
         
             <div class="Personal">
@@ -91,6 +91,7 @@ function showApplicationForm() {
             <div class="Personal"> Age (21+)
                 <input type="number" name="age" placeholder="Age" required>
             </div>
+
             <div class="Personal"> Email Address
                 <input type="email" name="email"  value="${userData.email}"  required>
             </div>

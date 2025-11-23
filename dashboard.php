@@ -27,10 +27,10 @@ $connectDB = connectDB();
 
 // Fetch user info including balance
 $email = $_SESSION['email'];
-$stmt = $connectDB->prepare("SELECT id, firstName, balance FROM users WHERE email = ?");
+$stmt = $connectDB->prepare("SELECT id, firstName, lastName, balance FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
-$stmt->bind_result($user_id, $firstName, $balance);
+$stmt->bind_result($user_id, $firstName, $lastName, $balance);
 $stmt->fetch();
 $stmt->close();
 
@@ -149,7 +149,8 @@ if (isset($_POST['depositAmount'])) {
             <div class="handle">
                 <div class="greet">
                     <div>
-                        <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!</h1>
+                        <h1>Welcome back, <?= htmlspecialchars($_SESSION['firstName']) ?>!
+                        </h1>
                         <p>Monitor your balance, review transactions, and manage your finances effortlessly.</p>
                     </div>
                     <div class="cards">
@@ -264,19 +265,21 @@ if (isset($_POST['depositAmount'])) {
             </form>
         </div>
     </div>
-
     <div id="profileModal" class="modal">
         <div class="modal-content" style="max-width: 490px;">
             <h2>Profile</h2>
             <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
                 Name
-                <p class="items">Lorenz L. Narvaez</p>
-                Number
-                <p class="items">Lorenz L. Narvaez</p>
+                <p class="items">
+                    <?= htmlspecialchars($_SESSION['firstName'] ?? '') ?>
+                    <?= htmlspecialchars($_SESSION['lastName'] ?? '') ?>
+                </p>
+                Phone Number
+                <p class="items"><?= htmlspecialchars($_SESSION['phone_number'] ?? '') ?></p>
                 Date of Birth
-                <p class="items">Lorenz L. Narvaez</p>
+                <p class="items"><?= htmlspecialchars($_SESSION['date_of_birth'] ?? '') ?></p>
                 Current Address
-                <p class="items">Lorenz L. Narvaez</p>
+                <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
             <button class="close-btn" onclick="closeProfile()">Close</button>
         </div>

@@ -35,19 +35,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   } else {
     include 'db.php';
     $connectDB = connectDB();
-    $stmt = $connectDB->prepare("SELECT id, firstName, password FROM users WHERE email = ?");
+    $stmt = $connectDB->prepare("SELECT id, firstName, lastName, phone_number, password FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows === 1) {
-      $stmt->bind_result($id, $firstName, $hashedPassword);
+      $stmt->bind_result($id, $firstName, $lastName, $phone_number, $hashedPassword);
       $stmt->fetch();
 
       if (password_verify($password, $hashedPassword)) {
         $_SESSION['email'] = $email;
         $_SESSION['id'] = $id;
         $_SESSION['firstName'] = $firstName;
+        $_SESSION['lastName'] = $lastName;
+        $_SESSION['phone_number'] = $phone_number;
         header("Location: dashboard.php");
         exit();
       } else {
