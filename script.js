@@ -66,47 +66,45 @@ function closeCard() {
 
 function showApplicationForm() {
   document.getElementById("cardContent").innerHTML = `
-        <h1>Credit Card</h1>
-        <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
-        <div class="inputs">
-        <form id="cardForm" method="post" enctype="multipart/form-data">
-         <input type="hidden" name="confirm_card" value="1">
-        
-            <div class="Personal">
-                <h1>| Credit Card Application</h1>
-            </div>
-            <div class="Personal"> Full Name
-                <input type="text" name="full_name" value="${userData.fullName}" required>
-            </div>
-            <div class="Personal"> Age (21+)
-                <input type="number" name="age" placeholder="Age" required>
-            </div>
-            <div class="Personal"> Email Address
-                <input type="email" name="email"  value="${userData.email}"  required>
-            </div>
-            <div class="Personal"> Phone Number
-                <input type="text" name="phone_number"  value="${userData.phoneNumber}" required>
-            </div>
-            <div class="Personal"> Address
-                <input type="text" name="address" placeholder="Address" required>
-            </div>
-            <div class="Personal"> Monthly Salary (₱)
-                <input type="number" name="salary" placeholder="Monthly Salary" required>
-            </div>
-            <div class="Personal"> Upload Valid ID 
-                <input type="file" name="valid_id" required>
-            </div>
-            <div class="Personal"> Upload PaySlip (3 Months) 
-                <input type="file" name="payslip" required>
-            </div>
+<h1>Credit Card</h1>
+<p>Please complete all fields below to check your eligibility and apply for a loan.</p>
+<div class="inputs">
+  <form id=cardForm class="inputs" method="post" enctype="multipart/form-data">
+    <div class="Personal">
+      <h1>| Credit Card Application</h1>
+    </div>
+    <div class="Personal"> Full Name
+      <input type="text" name="full_name" value="${userData.fullName}" required readonly>
+    </div>
+    <div class="Personal"> Age (21+)
+      <input type="number" name="age" placeholder="Age" required>
+    </div>
+    <div class="Personal"> Email Address
+      <input type="email" name="email" value="${userData.email}" required readonly>
+    </div>
+    <div class="Personal"> Phone Number
+      <input type="text" name="phone_number" value="${userData.phoneNumber}" required readonly>
+    </div>
+    <div class="Personal"> Address
+      <input type="text" name="address" placeholder="Address" required>
+    </div>
+    <div class="Personal"> Monthly Salary (₱)
+      <input type="number" name="salary" placeholder="Monthly Salary" required>
+    </div>
+    <div class="Personal"> Upload Valid ID
+      <input type="file" name="valid_id" required>
+    </div>
+    <div class="Personal"> Upload PaySlip (3 Months)
+      <input type="file" name="payslip" required>
+    </div>
+    <input type="hidden" name="confirm_card" value="1">
 
-            <div class="next_prev">
-                <div><button type="button" class="prev-btn" onclick="location.reload()">Cancel</button></div>
-                <div><button type="button" class="next-btn" onclick="openCard()">Next</button></div>
-            </div>
-        </form>
-        </div>
-        
+    <div class="next_prev">
+      <div><button type="button" class="prev-btn" onclick="location.reload()">Cancel</button></div>
+      <div><button type="button" class="next-btn" onclick="openCard()">Next</button></div>
+    </div>
+  </form>
+</div>
     `;
 }
 

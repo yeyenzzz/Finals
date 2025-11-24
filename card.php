@@ -21,6 +21,7 @@ if (!isset($_SESSION['email'])) {
 include 'db.php';
 $conn = connectDB();
 
+// Fetch user
 $userEmail = $_SESSION['email'];
 $userQuery = $conn->prepare("SELECT firstName, lastName, email, phone_number FROM users WHERE email = ?");
 $userQuery->bind_param("s", $userEmail);
@@ -28,7 +29,12 @@ $userQuery->execute();
 $userResult = $userQuery->get_result();
 $userData = $userResult->fetch_assoc();
 
-if (isset($_POST['confirm_card'])) {
+
+// ------------------------------------------------------------
+// CARD SUBMISSION HANDLER (POST → REDIRECT)
+// ------------------------------------------------------------
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_card'])) {
+
     $full_name = $_POST['full_name'];
     $age = $_POST['age'];
     $email = $_POST['email'];
@@ -36,23 +42,32 @@ if (isset($_POST['confirm_card'])) {
     $address = $_POST['address'];
     $salary = $_POST['salary'];
 
-    // Handle file uploads
-    $valid_id = $_FILES['valid_id']['name'];
-    $payslip = $_FILES['payslip']['name'];
+    // Uploads directory
     $uploadDir = "uploads/";
+
+    $valid_id = time() . "_" . basename($_FILES['valid_id']['name']);
+    $payslip = time() . "_" . basename($_FILES['payslip']['name']);
+
     move_uploaded_file($_FILES['valid_id']['tmp_name'], $uploadDir . $valid_id);
     move_uploaded_file($_FILES['payslip']['tmp_name'], $uploadDir . $payslip);
 
-    // Insert into credit_cards table
-    $stmt = $conn->prepare("INSERT INTO credit_cards (email, full_name, age, phone_number, address, salary, valid_id, payslip) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssississ", $email, $full_name, $age, $phone_number, $address, $salary, $valid_id, $payslip);
-    if ($stmt->execute()) {
-        echo "<script>alert('Card application submitted successfully!');</script>";
-    } else {
-        echo "<script>alert('Failed to submit application.');</script>";
-    }
-}
+    // Insert record
+    $stmt = $conn->prepare("
+        INSERT INTO credit_cards (email, full_name, age, phone_number, address, salary, valid_id, payslip)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ");
 
+    $stmt->bind_param("ssississ", $email, $full_name, $age, $phone_number, $address, $salary, $valid_id, $payslip);
+
+    if ($stmt->execute()) {
+        $_SESSION['flash'] = "Card application submitted successfully!";
+    } else {
+        $_SESSION['flash'] = "Failed to submit application.";
+    }
+
+    header("Location: card.php");
+    exit();
+}
 ?>
 
 
@@ -68,6 +83,14 @@ if (isset($_POST['confirm_card'])) {
 </head>
 
 <body>
+    <?php
+    // FLASH MESSAGE AFTER REDIRECT
+    if (!empty($_SESSION['flash'])) {
+        echo "<script>alert('" . $_SESSION['flash'] . "');</script>";
+        unset($_SESSION['flash']);
+    }
+    ?>
+
     <div class="whole">
         <div class="profiles" id="profile">
             <div class="logo ">
