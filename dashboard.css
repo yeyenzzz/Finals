@@ -57,6 +57,7 @@ body {
 .transfer {
   width: 100%;
 }
+
 .Dashboard,
 .Transfer,
 .Loan,
@@ -131,6 +132,7 @@ a {
 
 .profile i {
   padding: 10px;
+  font-size: 25px;
   border-radius: 50%;
   transition: all 0.3s;
   color: #00226f;
@@ -494,6 +496,13 @@ button:hover {
   border-bottom: 1px solid #f5f5f5;
 }
 
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
 .setting-item:last-child {
   border-bottom: none;
 }
@@ -824,11 +833,49 @@ td.amount-received {
   border-bottom: 1px solid #9a9a9a;
 }
 
+.inbox a {
+  position: relative;
+  color: #00226f;
+}
+
+.inbox a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background-color: #00226f;
+  transition: width 0.3s ease;
+}
+
+.inbox a:hover::after {
+  width: 100%;
+}
+
+.inbox a.notif-active::after {
+  width: 100%;
+}
+
 /* MOBILE LAYOUT – MOVE NAV TO BOTTOM */
 @media (max-width: 768px) {
   .whole {
     flex-direction: column;
     overflow: hidden;
+  }
+
+  .logo img {
+    width: 60px;
+  }
+
+  .logo h3 {
+    left: 3px;
+  }
+
+  .content {
+    margin: 0px;
+    gap: 1px;
+    margin-bottom: 10px;
   }
 
   /* NAV moves to bottom */
@@ -872,11 +919,13 @@ td.amount-received {
     font-size: 12px;
   }
 
-  /* MAIN PAGE should not be hidden behind bottom nav */
-  .page,
-  .transfer {
+  .profile i {
+    font-size: 20px;
+  }
+
+  .page {
     margin-left: 0;
-    margin-bottom: 90px; /* space for bottom nav */
+    margin-bottom: 90px;
     flex-direction: column;
   }
 
@@ -887,13 +936,13 @@ td.amount-received {
   /* Cards and animations still work */
   .cards {
     margin: 0 auto;
-    transform: rotate(7deg);
+    transform: rotate(deg);
   }
 
   .card-design {
-    width: 80px;
-    height: 135px;
+    width: 67px;
+    height: 105px;
     top: 70px;
-    right: 15px;
+    right: 37px;
   }
 }

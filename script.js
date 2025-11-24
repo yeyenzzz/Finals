@@ -64,6 +64,16 @@ function closeCard() {
   card.style.display = "none";
 }
 
+const verify = document.getElementById("verifyModal");
+
+function openVerify() {
+  verify.style.display = "flex";
+}
+
+function closeVerify() {
+  verify.style.display = "none";
+}
+
 function showApplicationForm() {
   document.getElementById("cardContent").innerHTML = `
 <h1>Credit Card</h1>

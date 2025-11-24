@@ -98,14 +98,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_card'])) {
                 <h3>eTapPay</h3>
             </div>
             <div class="profile">
-                <a href="#" onclick="openModal3(event)">
-                    <i class="bi bi-box-arrow-right" title="Logout" style="font-size: 25px;"></i>
+                <a href="#">
+                    <i class="bi bi-bell-fill" title="Notification"></i>
                 </a>
                 <a href="#" onclick="openProfile(event)">
-                    <i class="bi bi-person-circle" title="Profile" style="font-size: 25px;"></i>
+                    <i class="bi bi-person-circle" title="Profile"></i>
                 </a>
-                <a href="#">
-                    <i class="bi bi-bell-fill" title="Notification" style="font-size: 25px;"></i>
+                <a href="#" onclick="openModal3(event)">
+                    <i class="bi bi-box-arrow-right" title="Logout"></i>
                 </a>
             </div>
         </div>
@@ -194,34 +194,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_card'])) {
             <h2>Profile</h2>
             <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
                 Name
-                <p class="items">Lorenz L. Narvaez</p>
-                Number
-                <p class="items">Lorenz L. Narvaez</p>
+                <p class="items">
+                    <?= htmlspecialchars($_SESSION['firstName'] ?? '') ?>
+                    <?= htmlspecialchars($_SESSION['lastName'] ?? '') ?>
+                </p>
+                Phone Number
+                <p class="items"><?= htmlspecialchars($_SESSION['phone_number'] ?? '') ?></p>
                 Date of Birth
-                <p class="items">Lorenz L. Narvaez</p>
+                <p class="items"><?= htmlspecialchars($_SESSION['date_of_birth'] ?? '') ?></p>
                 Current Address
-                <p class="items">Lorenz L. Narvaez</p>
+                <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
             <button class="close-btn" onclick="closeProfile()">Close</button>
         </div>
-    </div>
 
-    <script src="script.js"></script>
-    <script>
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
-                window.location.reload();
-            }
-        });
-    </script>
-    <script>
-        // Pass PHP values to JS
-        const userData = {
-            fullName: "<?php echo $userData['firstName'] . ' ' . $userData['lastName']; ?>",
-            email: "<?php echo $userData['email']; ?>",
-            phoneNumber: "<?php echo $userData['phone_number']; ?>"
-        };
-    </script>
+        <script src="script.js"></script>
+        <script>
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                    window.location.reload();
+                }
+            });
+        </script>
+        <script>
+            // Pass PHP values to JS
+            const userData = {
+                fullName: "<?php echo $userData['firstName'] . ' ' . $userData['lastName']; ?>",
+                email: "<?php echo $userData['email']; ?>",
+                phoneNumber: "<?php echo $userData['phone_number']; ?>"
+            };
+        </script>
 
 </body>
 
