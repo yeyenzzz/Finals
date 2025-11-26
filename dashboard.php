@@ -99,9 +99,6 @@ if (isset($_POST['depositAmount'])) {
                 <h3>eTapPay</h3>
             </div>
             <div class="profile">
-                <a href="#">
-                    <i class="bi bi-bell-fill" title="Notification"></i>
-                </a>
                 <a href="#" onclick="openProfile(event)">
                     <i class="bi bi-person-circle" title="Profile"></i>
                 </a>
@@ -281,19 +278,20 @@ if (isset($_POST['depositAmount'])) {
                 Current Address
                 <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
-            <button class="close-btn" onclick="closeProfile()">Close</button>
+            <div class="profile-btn">
+                <button class="next-btn" onclick="showverifyID()">Verify account</button>
+                <button class="close-btn" onclick="closeProfile()">Close</button>
+            </div>
         </div>
-    </div>
-
-    <script src="script.js"></script>
-    <script>
-        // Ensure page reload on back navigation
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
-                window.location.reload();
-            }
-        });
-    </script>
+        <script src="script.js"></script>
+        <script>
+            // Ensure page reload on back navigation
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                    window.location.reload();
+                }
+            });
+        </script>
 </body>
 
 </html>
