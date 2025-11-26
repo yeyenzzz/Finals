@@ -13,7 +13,7 @@
     <div class="whole">
         <div class="nav-section">
             <div class="logo">
-              <img src="logo.png" alt="" class="logo">
+              <img src="images/logo.png" alt="" class="logo">
               <h3>eTapPay</h3>
             </div>
             <a href="admin.php">

@@ -125,7 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               </p>
             </div>
             <div class="admin_login">
-              <div><a href="admin.php">Admin login</a></div>
+              <div><a href="adminlogin.php">Admin login</a></div>
             </div>
           </div>
         </form>
