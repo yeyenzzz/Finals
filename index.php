@@ -35,13 +35,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   } else {
     include 'db.php';
     $connectDB = connectDB();
-    $stmt = $connectDB->prepare("SELECT id, firstName, lastName, phone_number, password FROM users WHERE email = ?");
+    $stmt = $connectDB->prepare("SELECT id, firstName, lastName, phone_number, address, date_of_birth, password FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows === 1) {
-      $stmt->bind_result($id, $firstName, $lastName, $phone_number, $hashedPassword);
+      $stmt->bind_result($id, $firstName, $lastName, $phone_number, $address, $date_of_birth, $hashedPassword);
       $stmt->fetch();
 
       if (password_verify($password, $hashedPassword)) {
@@ -50,6 +50,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION['firstName'] = $firstName;
         $_SESSION['lastName'] = $lastName;
         $_SESSION['phone_number'] = $phone_number;
+        $_SESSION['address'] = $address;
+        $_SESSION['date_of_birth'] = $date_of_birth;
         header("Location: dashboard.php");
         exit();
       } else {

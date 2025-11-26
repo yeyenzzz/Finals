@@ -74,6 +74,8 @@ function closeVerify() {
   verify.style.display = "none";
 }
 
+const verifyID = document.getElementById("verifyIDModal");
+
 function showApplicationForm() {
   document.getElementById("cardContent").innerHTML = `
 <h1>Credit Card</h1>
@@ -142,6 +144,30 @@ function showLoanApplication() {
         <div class="next_prev">
             <div><button class="prev-btn" onclick="location.reload()">Cancel</button></div>
             <div><button class="next-btn" onclick="show2Loan()">Next</button></div>
+        </div>
+    </div>
+    `;
+}
+
+function showverifyID() {
+  document.getElementById("profileMode").innerHTML = `
+      <div class="modal-content" style="max-width: 490px;">
+        <h2>Profile</h2>
+        <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
+            Name
+            <input type="text" placeholder="">
+            ID Number
+            <input type="text" name="" id="">
+            Date of Birth
+            <input type="date" name="" id="">
+            Current Address
+            <input type="text" name="" id="">
+            ID
+            <input type="file" name="" id="">
+        </div>
+        <div class="profile-btn">
+            <button class="next-btn">Submit</button>
+            <button class="close-btn" onclick="closeVerifyID()">Close</button>
         </div>
     </div>
     `;
