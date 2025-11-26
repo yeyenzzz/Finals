@@ -43,6 +43,7 @@ body {
 .Dashboard,
 .Loan,
 .Verify,
+.activeloan,
 .Card {
   padding: 10px 20px 10px 20px;
   width: 190px;
@@ -64,6 +65,11 @@ body {
   color: white;
 }
 .Loan:hover {
+  background-color: #00226f;
+  color: white;
+  border-radius: 10px;
+}
+.activeloan:hover {
   background-color: #00226f;
   color: white;
   border-radius: 10px;

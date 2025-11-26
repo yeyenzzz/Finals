@@ -28,6 +28,14 @@ function openModal3(event) {
 function closeModal3() {
   modal3.style.display = "none";
 }
+const modal4 = document.getElementById("viewmodal");
+
+function openModal4() {
+  modal4.style.display = "flex";
+}
+function closeModal4() {
+  modal4.style.display = "none";
+}
 
 const profile = document.getElementById("profileModal");
 
