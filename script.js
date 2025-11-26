@@ -160,6 +160,8 @@ function showLoanApplication() {
     `;
 }
 
+let originalProfile = profile.innerHTML;
+
 function showverifyID() {
   document.getElementById("profileModal").innerHTML = `
     <div class="modal-content" style="max-width: 490px;">
@@ -182,6 +184,10 @@ function showverifyID() {
         </div>
     </div>
     `;
+}
+
+function closeVerifyID() {
+  profile.innerHTML = originalProfile;
 }
 
 function show2Loan() {
