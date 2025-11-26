@@ -16,19 +16,19 @@
               <img src="logo.png" alt="" class="logo">
               <h3>eTapPay</h3>
             </div>
-            <a href="admin.html">
+            <a href="admin.php">
                 <div class="Dashboard"><i class="bi bi-house"></i> Dashboard</div>
             </a>
-            <a href="Verify.html">
+            <a href="verification.php">
                 <div class="Verify"><i class="bi bi-person-check"></i> Verify Users</div>
             </a>
-            <a href="Cardreuest.html" >
+            <a href="crdreuest.php" >
                 <div class="Card"><i class="bi bi-credit-card"></i> Card Requests</div>
             </a>
-            <a href="Loanapplication.html">
+            <a href="loanapplication.php">
                 <div class="Loan"><i class="bi bi-cash"></i> Loan Applications</div>
             </a>
-            <a href="activeloan.html" class="active">
+            <a href="activeloan.php" class="active">
                 <div class="activeloan"><i class="bi bi-coin"></i> Active Loans</div>
             </a>
         </div>

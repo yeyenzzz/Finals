@@ -31,6 +31,9 @@
             <a href="loanapplication.php" class="active">
                 <div class="Loan"><i class="bi bi-cash"></i> Loan Applications</div>
             </a>
+            <a href="activeloan.php">
+                <div class="activeloan"><i class="bi bi-coin"></i> Active Loans</div>
+            </a>
         </div>
 
 
