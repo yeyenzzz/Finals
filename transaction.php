@@ -86,9 +86,6 @@ while ($row = $notifications->fetch_assoc()) {
                 <h3>eTapPay</h3>
             </div>
             <div class="profile">
-                <a href="#">
-                    <i class="bi bi-bell-fill" title="Notification"></i>
-                </a>
                 <a href="#" onclick="openProfile(event)">
                     <i class="bi bi-person-circle" title="Profile"></i>
                 </a>
@@ -206,7 +203,10 @@ while ($row = $notifications->fetch_assoc()) {
                 Current Address
                 <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
-            <button class="close-btn" onclick="closeProfile()">Close</button>
+            <div class="profile-btn">
+                <button class="next-btn" onclick="showverifyID()">Verify account</button>
+                <button class="close-btn" onclick="closeProfile()">Close</button>
+            </div>
         </div>
     </div>
 

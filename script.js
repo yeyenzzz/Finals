@@ -74,6 +74,8 @@ function closeVerify() {
   verify.style.display = "none";
 }
 
+const verifyID = document.getElementById("verifyIDModal");
+
 function showApplicationForm() {
   document.getElementById("cardContent").innerHTML = `
         <h1>Credit Card</h1>
@@ -150,43 +152,46 @@ function showLoanApplication() {
     `;
 }
 
+function showverifyID() {
+  document.getElementById("profileModal").innerHTML = `
+      <div class="modal-content" style="max-width: 490px;">
+        <h2>Profile</h2>
+        <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
+            Name
+            <input type="text" placeholder="">
+            ID Number
+            <input type="text" name="" id="">
+            Date of Birth
+            <input type="date" name="" id="">
+            Current Address
+            <input type="text" name="" id="">
+            ID
+            <input type="file" name="" id="">
+        </div>
+        <div class="profile-btn">
+            <button class="next-btn">Submit</button>
+            <button class="close-btn" onclick="openProfile()">Close</button>
+        </div>
+    </div>
+    `;
+}
+
 function show2Loan() {
   document.getElementById("loanContent").innerHTML = `
-    <h1>Loan Application</h1>
-    <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
-    <div class="inputs">
-        <div class="Personal">
-            <h1>| 2. Loan Details</h1>
-        </div>
-        <div class="Personal"> Loan Type <select>
-                <option value="" disabled selected class="disabled">Select Loan Type</option>
-                <option value="Business Loan">Business Loan</option>
-                <option value="Personal Loan">Personal Loan</option>
-                <option value="Educational Loan">Educational Loan</option>
-            </select></div>
-        <div class="Personal"> Desired Loan Amount (₱)<input type="number"
-                placeholder="Desired Loan Amount" required></div>
-        <div class="Personal"> Loan Term (Months)<select>
-                <option value="" disabled selected class="disabled">Select Loan Term</option>
-                <option value="12">12 months</option>
-                <option value="24">24 months</option>
-                <option value="36">36 months</option>
-            </select></div>
-        <div class="Personal"> Payment Frequency<select>
-                <option value="" disabled selected class="disabled">Select Payment Frequency</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Bi-weekly">Bi-weekly</option>
-                <option value="Quarterly">Quarterly</option>
-            </select></div>
-        <div class="Personal"> Payment Type<select>
-                <option value="" disabled selected class="disabled">Select Payment Type</option>
-                <option value="Manual">Manual Payment</option>
-                <option value="Automatic">Automatic Payment (Auto Debit/Auto Pay)</option>
-            </select></div>
-        <div class="next_prev">
-            <div><button class="prev-btn" onclick="showLoanApplication()">Previous</button></div>
-            <div><button class="next-btn" onclick="openCard()">Next</button></div>
-        </div>
+        Name
+        <input type="text" placeholder="">
+        ID Number
+        <input type="text" name="" id="">
+        Date of Birth
+        <input type="date" name="" id="">
+        Current Address
+        <input type="text" name="" id="">
+        ID
+        <input type="file" name="" id="">
+    </div>
+    <div class="profile-btn">
+        <button class="next-btn">Submit</button>
+        <button class="close-btn" onclick="closeVerifyID()">Close</button>
     </div>
   `;
 }

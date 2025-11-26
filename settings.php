@@ -42,9 +42,6 @@ header("Pragma: no-cache");
                 <h3>eTapPay</h3>
             </div>
             <div class="profile">
-                <a href="#">
-                    <i class="bi bi-bell-fill" title="Notification" style="font-size: 25px;"></i>
-                </a>
                 <a href="#" onclick="openProfile(event)">
                     <i class="bi bi-person-circle" title="Profile" style="font-size: 25px;"></i>
                 </a>
@@ -130,7 +127,7 @@ header("Pragma: no-cache");
                             <p>Cannot be changed after verification</p>
                         </div>
                         <span class="setting-value"
-                            data-field="date_of_birth"><?= htmlspecialchars($_SESSION['date_of_birth'] ?? 'Set Birthdate') ?></span>
+                            data-field="date_of_birth"><?= htmlspecialchars($_SESSION['date_of_birth'] ?? '') ?></span>
                         <div class="setting-action">
                             <button class="btn-edit">Save</button>
                         </div>
@@ -142,7 +139,7 @@ header("Pragma: no-cache");
                             <p>Your current residential address</p>
                         </div>
                         <span class="setting-value"
-                            data-field="address"><?= htmlspecialchars($_SESSION['address'] ?? 'Set Address') ?></span>
+                            data-field="address"><?= htmlspecialchars($_SESSION['address'] ?? 's') ?></span>
                         <div class="setting-action">
                             <button class="btn-edit">Save</button>
                         </div>
@@ -191,7 +188,10 @@ header("Pragma: no-cache");
                 Current Address
                 <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
-            <button class="close-btn" onclick="closeProfile()">Close</button>
+            <div class="profile-btn">
+                <button class="next-btn" onclick="showverifyID()">Verify account</button>
+                <button class="close-btn" onclick="closeProfile()">Close</button>
+            </div>
         </div>
     </div>
 
