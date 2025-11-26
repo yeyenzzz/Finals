@@ -158,8 +158,8 @@ function showLoanApplication() {
 }
 
 function showverifyID() {
-  document.getElementById("profileMode").innerHTML = `
-      <div class="modal-content" style="max-width: 490px;">
+  document.getElementById("profileModal").innerHTML = `
+    <div class="modal-content" style="max-width: 490px;">
         <h2>Profile</h2>
         <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
             Name
