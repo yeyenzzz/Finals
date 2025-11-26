@@ -27,10 +27,10 @@ $connectDB = connectDB();
 
 // Fetch user info including balance
 $email = $_SESSION['email'];
-$stmt = $connectDB->prepare("SELECT id, firstName, lastName, balance FROM users WHERE email = ?");
+$stmt = $connectDB->prepare("SELECT id, firstName, lastName, balance, is_verified FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
-$stmt->bind_result($user_id, $firstName, $lastName, $balance);
+$stmt->bind_result($user_id, $firstName, $lastName, $balance, $is_verified);
 $stmt->fetch();
 $stmt->close();
 
@@ -279,7 +279,15 @@ if (isset($_POST['depositAmount'])) {
                 <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
             <div class="profile-btn">
-                <button class="next-btn" onclick="showverifyID()">Verify account</button>
+                <?php
+                if (is_null($is_verified)) {
+                    echo '<button class="next-btn" onclick="showverifyID()">Verify account</button>';
+                } elseif ($is_verified == 0) {
+                    echo '<button class="next-btn" disabled>PENDING</button>';
+                } elseif ($is_verified == 1) {
+                    echo '<button class="next-btn" disabled>VERIFIED</button>';
+                }
+                ?>
                 <button class="close-btn" onclick="closeProfile()">Close</button>
             </div>
         </div>
@@ -292,6 +300,10 @@ if (isset($_POST['depositAmount'])) {
                 }
             });
         </script>
+        <script>
+            const USER_ID = "<?= $user_id ?>";
+        </script>
+
 </body>
 
 </html>

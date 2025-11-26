@@ -161,22 +161,32 @@ function showverifyID() {
   document.getElementById("profileModal").innerHTML = `
     <div class="modal-content" style="max-width: 490px;">
         <h2>Profile</h2>
+           <form method="POST" action="saveValidID.php" enctype="multipart/form-data">
         <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
-            Name
-            <input type="text" placeholder="">
-            ID Number
-            <input type="text" name="" id="">
-            Date of Birth
-            <input type="date" name="" id="">
-            Current Address
-            <input type="text" name="" id="">
-            ID
-            <input type="file" name="" id="">
+          Name
+          <input type="text" name="name" required>
+
+          ID Number
+          <input type="text" name="id_number" required>
+
+          Date of Birth
+          <input type="date" name="dob" required>
+
+          Current Address
+          <input type="text" name="address" required>
+
+          ID (Upload)
+          <input type="file" name="valid_id_image" required>
+          
+          <!-- Hidden FK -->
+          <input type="hidden" name="user_id" value="${USER_ID}">
         </div>
+
         <div class="profile-btn">
-            <button class="next-btn">Submit</button>
-            <button class="close-btn" onclick="closeVerifyID()">Close</button>
+          <button type="submit" class="next-btn">Submit</button>
+          <button type="button" class="close-btn" onclick="closeProfile()">Close</button>
         </div>
+      </form>
     </div>
     `;
 }
