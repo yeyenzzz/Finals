@@ -48,7 +48,6 @@ header("Pragma: no-cache");
                 <a href="#" onclick="openModal3(event)">
                     <i class="bi bi-box-arrow-right" title="Logout" style="font-size: 25px;"></i>
                 </a>
-
             </div>
         </div>
 
@@ -79,6 +78,7 @@ header("Pragma: no-cache");
             <div class="settings-container">
                 <h1 style="margin-bottom: 30px;">Settings</h1>
 
+                <!-- Account Settings -->
                 <div class="settings-section">
                     <h2><i class="bi bi-person-gear"></i> Account Settings</h2>
 
@@ -87,8 +87,8 @@ header("Pragma: no-cache");
                             <h3>Email Address</h3>
                             <p>Your registered email for account access and notifications</p>
                         </div>
-                        <span class="setting-value"
-                            data-field="email"><?= htmlspecialchars($_SESSION['email']) ?></span>
+                        <input class="setting-value" type="email" name="email" data-field="email"
+                            value="<?= htmlspecialchars($_SESSION['email']) ?>" required />
                     </div>
 
                     <div class="setting-item">
@@ -96,29 +96,34 @@ header("Pragma: no-cache");
                             <h3>Phone Number</h3>
                             <p>Used for sending and receiving funds</p>
                         </div>
-                        <span class="setting-value"
-                            data-field="phone"><?= htmlspecialchars($_SESSION['phone_number'] ?? '') ?></span>
-                        <div class="setting-action">
-                            <button class="btn-edit">Save</button>
-                        </div>
+                        <input class="setting-value" type="tel" name="phone_number" pattern="09[0-9]{9}"
+                            data-field="phone_number" value="<?= htmlspecialchars($_SESSION['phone_number'] ?? '') ?>"
+                            required />
+                        <div class="setting-action"><button class="btn-edit">Save</button></div>
                     </div>
                 </div>
 
+                <!-- Personal Information -->
                 <div class="settings-section">
                     <h2><i class="bi bi-person-vcard"></i> Personal Information</h2>
 
                     <div class="setting-item">
                         <div class="setting-info">
-                            <h3>Full Name</h3>
+                            <h3>First Name</h3>
                             <p>Your legal name as per ID</p>
                         </div>
-                        <span class="setting-value"
-                            data-field="firstName"><?= htmlspecialchars($_SESSION['firstName'] ?? '') ?></span>
-                        <span class="setting-value"
-                            data-field="lastName"><?= htmlspecialchars($_SESSION['lastName'] ?? '') ?></span>
-                        <div class="setting-action">
-                            <button class="btn-edit">Save</button>
+                        <input class="setting-value" type="text" name="firstName" data-field="firstName"
+                            value="<?= htmlspecialchars($_SESSION['firstName'] ?? '') ?>" required />
+                        <div class="setting-action"><button class="btn-edit">Save</button></div>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Last Name</h3>
+                            <p>Your legal name as per ID</p>
                         </div>
+                        <input class="setting-value" type="text" name="lastName" data-field="lastName"
+                            value="<?= htmlspecialchars($_SESSION['lastName'] ?? '') ?>" required />
+                        <div class="setting-action"><button class="btn-edit">Save</button></div>
                     </div>
 
                     <div class="setting-item">
@@ -126,11 +131,9 @@ header("Pragma: no-cache");
                             <h3>Date of Birth</h3>
                             <p>Cannot be changed after verification</p>
                         </div>
-                        <span class="setting-value"
-                            data-field="date_of_birth"><?= htmlspecialchars($_SESSION['date_of_birth'] ?? '') ?></span>
-                        <div class="setting-action">
-                            <button class="btn-edit">Save</button>
-                        </div>
+                        <input class="setting-value" type="date" name="date_of_birth" data-field="date_of_birth"
+                            value="<?= htmlspecialchars($_SESSION['date_of_birth'] ?? '') ?>" required />
+                        <div class="setting-action"><button class="btn-edit">Save</button></div>
                     </div>
 
                     <div class="setting-item">
@@ -138,47 +141,34 @@ header("Pragma: no-cache");
                             <h3>Address</h3>
                             <p>Your current residential address</p>
                         </div>
-                        <span class="setting-value"
-                            data-field="address"><?= htmlspecialchars($_SESSION['address'] ?? 's') ?></span>
-                        <div class="setting-action">
-                            <button class="btn-edit">Save</button>
-                        </div>
-                    </div>
-
-                    <div class="setting-item">
-                        <div class="setting-info">
-                            <h3>Valid ID</h3>
-                            <p>Government-issued ID number or type</p>
-                        </div>
-                        <span class="setting-value"
-                            data-field="valid_id"><?= htmlspecialchars($_SESSION['valid_id'] ?? '') ?></span>
-                        <div class="setting-action">
-                            <button class="btn-edit">Save</button>
-                        </div>
+                        <input class="setting-value" type="text" name="address" data-field="address"
+                            value="<?= htmlspecialchars($_SESSION['address'] ?? '') ?>" required />
+                        <div class="setting-action"><button class="btn-edit">Save</button></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Logout Modal -->
     <div id="logoutModal" class="modal">
         <div class="modal-content">
             <h2>Logout</h2>
             <div class="scrollable">
-                <p>
-                    Logout your accout?
-                </p>
+                <p>Logout your account?</p>
             </div>
             <button class="confirm-btn" onclick="window.location.href='?action=logout'">Logout</button>
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
+
+    <!-- Profile Modal -->
     <div id="profileModal" class="modal">
         <div class="modal-content" style="max-width: 490px;">
             <h2>Profile</h2>
             <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
                 Name
-                <p class="items">
-                    <?= htmlspecialchars($_SESSION['firstName'] ?? '') ?>
+                <p class="items"><?= htmlspecialchars($_SESSION['firstName'] ?? '') ?>
                     <?= htmlspecialchars($_SESSION['lastName'] ?? '') ?>
                 </p>
                 Phone Number
@@ -195,25 +185,24 @@ header("Pragma: no-cache");
         </div>
     </div>
 
+    <!-- JS -->
     <script>
-        // Make spans editable when clicked
-        document.querySelectorAll('.setting-value').forEach(span => {
-            span.addEventListener('click', () => {
-                span.setAttribute('contenteditable', 'true');
-                span.focus();
-            });
-        });
-
         // Handle Save button
         document.querySelectorAll('.btn-edit').forEach(btn => {
             btn.addEventListener('click', () => {
                 const item = btn.closest('.setting-item');
-                const spans = item.querySelectorAll('.setting-value');
+                const fields = item.querySelectorAll('.setting-value');
                 let data = {};
 
-                spans.forEach(span => {
-                    const field = span.dataset.field;
-                    if (field) data[field] = span.innerText.trim();
+                fields.forEach(el => {
+                    const field = el.dataset.field;
+                    if (!field) return;
+
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                        data[field] = el.value.trim();
+                    } else {
+                        data[field] = el.innerText.trim();
+                    }
                 });
 
                 fetch('update_settings.php', {
@@ -225,7 +214,6 @@ header("Pragma: no-cache");
                     .then(resp => {
                         if (resp.success) {
                             alert('Updated successfully!');
-                            spans.forEach(span => span.removeAttribute('contenteditable'));
                         } else {
                             alert('Update failed: ' + resp.message);
                         }

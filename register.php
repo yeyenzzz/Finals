@@ -30,6 +30,7 @@ $nameError = "";
 $emailError = "";
 $passwordError = "";
 $confirmPasswordError = "";
+$phoneError = "";
 
 $error = false;
 
@@ -70,6 +71,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     $stmt->close();
   }
+
+  // Validate phone number
+  if (empty($phone_number)) {
+    $error = true;
+    $phoneError = "*Phone number is required.";
+  } elseif (!preg_match("/^09\d{9}$/", $phone_number)) {
+    // Must start with 09 and be 11 digits total
+    $error = true;
+    $phoneError = "*Phone number must start with 09 and be 11 digits.";
+  } else {
+    // Check if phone number already exists
+    $stmt = $connectDB->prepare("SELECT id FROM users WHERE phone_number = ?");
+    $stmt->bind_param("s", $phone_number);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows > 0) {
+      $error = true;
+      $phoneError = "*Phone number is already used.";
+    }
+    $stmt->close();
+  }
+
 
   // Validate password
   if (empty($password)) {
@@ -198,6 +221,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               <span class="error"><?= $emailError ?></span>
               <span class="error"><?= $passwordError ?></span>
               <span class="error"><?= $confirmPasswordError ?></span>
+              <span class="error"><?= $phoneError ?></span>
             </div>
             <div class="TermsConditions">
               <input type="checkbox" class="checkbox" required>

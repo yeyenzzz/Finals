@@ -76,8 +76,6 @@ if (isset($_POST['depositAmount'])) {
     }
 }
 
-
-
 ?>
 
 <!DOCTYPE html>

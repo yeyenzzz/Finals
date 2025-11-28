@@ -299,3 +299,42 @@ button:hover {
     opacity: 1;
   }
 }
+
+@media (max-width: 768px) {
+  body {
+    height: 100vh;
+    overflow: hidden;
+    padding: 10px;
+  }
+
+  .page {
+    flex-direction: column;
+    height: 100%;
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .left {
+    display: none;
+  }
+
+  .wrap {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 380px;
+    padding: 20px;
+  }
+
+  button {
+    max-width: 100%;
+  }
+}

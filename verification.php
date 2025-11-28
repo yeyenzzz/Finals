@@ -3,7 +3,7 @@ session_start();
 include 'db.php';
 $connectDB = connectDB();
 
-// Handle inline Approve
+// Handle Approve / Reject
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['approve_id'])) {
         $userId = intval($_POST['approve_id']);
@@ -19,17 +19,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch only pending users
+// STATUS FILTER
+$statusFilter = "";
+if (isset($_GET['status'])) {
+    if ($_GET['status'] === "0") {
+        $statusFilter = "WHERE u.is_verified = 0";
+    } elseif ($_GET['status'] === "1") {
+        $statusFilter = "WHERE u.is_verified = 1";
+    } elseif ($_GET['status'] === "rejected") {
+        $statusFilter = "WHERE u.is_verified IS NULL";
+    }
+}
+
+// SEARCH FILTER
+$search = "";
+$searchFilter = "";
+
+if (isset($_GET['search']) && $_GET['search'] !== "") {
+    $search = $connectDB->real_escape_string($_GET['search']);
+    $searchFilter = " AND (
+        u.firstName LIKE '%$search%' OR
+        u.lastName LIKE '%$search%' OR
+        CONCAT(u.firstName, ' ', u.lastName) LIKE '%$search%' OR
+        u.email LIKE '%$search%' OR
+        u.phone_number LIKE '%$search%'
+    )";
+}
+
+// MAIN QUERY
 $query = "
-    SELECT u.id, u.firstName, u.lastName, u.phone_number, u.date_of_birth, u.email, 
-           uv.id_image, u.is_verified, uv.created_at
+    SELECT u.id, u.firstName, u.lastName, u.phone_number, u.date_of_birth,
+           u.email, uv.id_image, u.is_verified, uv.uploaded_at
     FROM users u
-    JOIN usersvalidID uv ON u.id = uv.user_id
-    WHERE u.is_verified = 0 
-    ORDER BY uv.created_at DESC
+    LEFT JOIN usersvalidID uv ON u.id = uv.user_id
+    $statusFilter $searchFilter
+    ORDER BY uv.uploaded_at DESC
 ";
+
 $result = $connectDB->query($query);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -74,15 +103,22 @@ $result = $connectDB->query($query);
             <div class="content-section">
                 <h2>Verify Users</h2>
 
-                <div class="filter-bar">
-                    <input type="text" placeholder="Search user or account..." class="search-box">
-                    <select>
-                        <option>Status (All)</option>
-                        <option>Pending</option>
-                        <option>Approved</option>
-                        <option>Rejected</option>
+                <!-- SEARCH + FILTER BAR -->
+                <form method="GET" class="filter-bar">
+                    <input type="text" name="search" placeholder="Search user or account..." class="search-box"
+                        value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="">Status (All)</option>
+                        <option value="0" <?= (isset($_GET['status']) && $_GET['status'] == "0") ? "selected" : "" ?>>
+                            Pending</option>
+                        <option value="1" <?= (isset($_GET['status']) && $_GET['status'] == "1") ? "selected" : "" ?>>
+                            Approved</option>
+                        <option value="rejected" <?= (isset($_GET['status']) && $_GET['status'] == "rejected") ? "selected" : "" ?>>No ID/Rejected</option>
                     </select>
-                </div>
+
+                    <button type="submit" style="display:none;"></button>
+                </form>
 
                 <table class="data-table">
                     <thead>
@@ -103,20 +139,37 @@ $result = $connectDB->query($query);
                                 <td><?= htmlspecialchars($row['phone_number']) ?></td>
                                 <td><?= htmlspecialchars($row['date_of_birth']) ?></td>
                                 <td><?= htmlspecialchars($row['email']) ?></td>
-                                <td><?= date("M d, Y", strtotime($row['created_at'])) ?></td>
-                                <td><span class="badge pending">Pending</span></td>
+                                <td><?= date("M d, Y", strtotime($row['uploaded_at'])) ?></td>
+
+                                <td>
+                                    <?php
+                                    if ($row['is_verified'] == 1) {
+                                        echo '<span class="badge approved">Approved</span>';
+                                    } elseif ($row['is_verified'] === NULL) {
+                                        echo '<span class="badge rejected">No ID/Rejected</span>';
+                                    } else {
+                                        echo '<span class="badge pending">Pending</span>';
+                                    }
+                                    ?>
+                                </td>
+
                                 <td>
                                     <button class="view-btn"
-                                        onclick="openModalWithID('<?= htmlspecialchars($row['id_image'], ENT_QUOTES) ?>')">View
-                                        ID</button>
-                                    <form method="post" style="display:inline">
-                                        <input type="hidden" name="approve_id" value="<?= $row['id'] ?>">
-                                        <button type="submit" class="approve-btn">Approve</button>
-                                    </form>
-                                    <form method="post" style="display:inline">
-                                        <input type="hidden" name="reject_id" value="<?= $row['id'] ?>">
-                                        <button type="submit" class="reject-btn">Reject</button>
-                                    </form>
+                                        onclick="openModalWithID('<?= htmlspecialchars($row['id_image'], ENT_QUOTES) ?>')">
+                                        View ID
+                                    </button>
+
+                                    <?php if ($row['is_verified'] == 0): ?>
+                                        <form method="post" style="display:inline">
+                                            <input type="hidden" name="approve_id" value="<?= $row['id'] ?>">
+                                            <button type="submit" class="approve-btn">Approve</button>
+                                        </form>
+
+                                        <form method="post" style="display:inline">
+                                            <input type="hidden" name="reject_id" value="<?= $row['id'] ?>">
+                                            <button type="submit" class="reject-btn">Reject</button>
+                                        </form>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -151,12 +204,14 @@ $result = $connectDB->query($query);
         function openModalWithID(imageName) {
             const modal = document.getElementById('viewmodal');
             modal.style.display = 'block';
-            document.getElementById('idPreview').innerHTML = `<img src="uploads/valid_ids/${imageName}" style="max-width:100%;">`;
+            document.getElementById('idPreview').innerHTML =
+                `<img src="uploads/valid_ids/${imageName}" style="max-width:100%;">`;
         }
         function closeModal4() {
             document.getElementById('viewmodal').style.display = 'none';
         }
     </script>
+
     <script src="script.js"></script>
 </body>
 

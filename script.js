@@ -192,7 +192,6 @@ function showverifyID() {
       </form>
       <p>Please provide your valid ID to verify your identity.</p>
         <p>Note: Accepted IDs are Passport, Driver's License, or National ID and make sure that the details are the same with the your registration information (Go to Settings to Update).</p>
-
     </div>
     `;
 }

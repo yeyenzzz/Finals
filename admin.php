@@ -6,11 +6,11 @@ $connectDB = connectDB();
 // Fetch only active users
 $query = "
     SELECT u.id, u.firstName, u.lastName, u.phone_number, u.date_of_birth, u.email, 
-           uv.id_image, u.is_verified, uv.created_at
+           uv.id_image, u.is_verified, u.created_at
     FROM users u
     JOIN usersvalidID uv ON u.id = uv.user_id
     WHERE u.is_verified = 1
-    ORDER BY uv.created_at DESC
+    ORDER BY u.created_at DESC
 ";
 $result = $connectDB->query($query);
 ?>
