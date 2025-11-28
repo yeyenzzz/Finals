@@ -13,7 +13,7 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-// Logout handling
+// Logout handling 
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     $_SESSION = array();
     session_destroy();
@@ -27,10 +27,10 @@ $connectDB = connectDB();
 
 // Fetch user info including balance
 $email = $_SESSION['email'];
-$stmt = $connectDB->prepare("SELECT id, firstName, lastName, balance, is_verified FROM users WHERE email = ?");
+$stmt = $connectDB->prepare("SELECT id, firstName, lastName, date_of_birth, address, balance, is_verified FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
-$stmt->bind_result($user_id, $firstName, $lastName, $balance, $is_verified);
+$stmt->bind_result($user_id, $firstName, $lastName, $date_of_birth, $address, $balance, $is_verified);
 $stmt->fetch();
 $stmt->close();
 
@@ -300,9 +300,14 @@ if (isset($_POST['depositAmount'])) {
                 }
             });
         </script>
+
         <script>
             const USER_ID = "<?= $user_id ?>";
+            const USER_NAME = "<?= $firstName . ' ' . $lastName ?>";
+            const USER_DOB = "<?= $date_of_birth ?>";
+            const USER_ADDRESS = "<?= $address ?>";
         </script>
+
 
 </body>
 

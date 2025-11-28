@@ -3,12 +3,29 @@ session_start();
 include 'db.php';
 $connectDB = connectDB();
 
-// Fetch users who submitted verification
+// Handle inline Approve
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['approve_id'])) {
+        $userId = intval($_POST['approve_id']);
+        $connectDB->query("UPDATE users SET is_verified = 1 WHERE id = $userId");
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    } elseif (isset($_POST['reject_id'])) {
+        $userId = intval($_POST['reject_id']);
+        $connectDB->query("DELETE FROM usersvalidID WHERE user_id = $userId");
+        $connectDB->query("UPDATE users SET is_verified = NULL WHERE id = $userId");
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    }
+}
+
+// Fetch only pending users
 $query = "
     SELECT u.id, u.firstName, u.lastName, u.phone_number, u.date_of_birth, u.email, 
            uv.id_image, u.is_verified, uv.created_at
     FROM users u
     JOIN usersvalidID uv ON u.id = uv.user_id
+    WHERE u.is_verified = 0 
     ORDER BY uv.created_at DESC
 ";
 $result = $connectDB->query($query);
@@ -87,29 +104,19 @@ $result = $connectDB->query($query);
                                 <td><?= htmlspecialchars($row['date_of_birth']) ?></td>
                                 <td><?= htmlspecialchars($row['email']) ?></td>
                                 <td><?= date("M d, Y", strtotime($row['created_at'])) ?></td>
-                                <td>
-                                    <?php
-                                    if ($row['is_verified'] === null || $row['is_verified'] == 0) {
-                                        echo '<span class="badge pending">Pending</span>';
-                                    } elseif ($row['is_verified'] == 1) {
-                                        echo '<span class="badge approved">Approved</span>';
-                                    } else {
-                                        echo '<span class="badge rejected">Rejected</span>';
-                                    }
-                                    ?>
-                                </td>
+                                <td><span class="badge pending">Pending</span></td>
                                 <td>
                                     <button class="view-btn"
-                                        onclick="openModalWithID('<?= $row['id_image'] ?>')">View</button>
-                                    <?php if ($row['is_verified'] == 0 || $row['is_verified'] === null): ?>
-                                        <a href="verify_action.php?user_id=<?= $row['id'] ?>&action=approve"><button
-                                                class="approve-btn">Approve</button></a>
-                                        <a href="verify_action.php?user_id=<?= $row['id'] ?>&action=reject"><button
-                                                class="reject-btn">Reject</button></a>
-                                    <?php else: ?>
-                                        <button class="approve-btn" disabled>Approve</button>
-                                        <button class="reject-btn" disabled>Reject</button>
-                                    <?php endif; ?>
+                                        onclick="openModalWithID('<?= htmlspecialchars($row['id_image'], ENT_QUOTES) ?>')">View
+                                        ID</button>
+                                    <form method="post" style="display:inline">
+                                        <input type="hidden" name="approve_id" value="<?= $row['id'] ?>">
+                                        <button type="submit" class="approve-btn">Approve</button>
+                                    </form>
+                                    <form method="post" style="display:inline">
+                                        <input type="hidden" name="reject_id" value="<?= $row['id'] ?>">
+                                        <button type="submit" class="reject-btn">Reject</button>
+                                    </form>
                                 </td>
                             </tr>
                         <?php endwhile; ?>
@@ -118,15 +125,19 @@ $result = $connectDB->query($query);
             </div>
         </div>
     </div>
+
+    <!-- Logout Modal -->
     <div id="logoutModal" class="modal">
         <div class="modal-content">
             <h2>Logout</h2>
             <div class="scrollable">
-                <p>Logout your accout?</p>
-            </div> <button class="confirm-btn" onclick="confirmLogout()">Logout</button> <button class="close-btn"
-                onclick="closeModal3()">Close</button>
+                <p>Logout your account?</p>
+            </div>
+            <button class="confirm-btn" onclick="confirmLogout()">Logout</button>
+            <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
+
     <!-- View ID Modal -->
     <div id="viewmodal" class="modal">
         <div class="modal1-content">
@@ -140,9 +151,8 @@ $result = $connectDB->query($query);
         function openModalWithID(imageName) {
             const modal = document.getElementById('viewmodal');
             modal.style.display = 'block';
-            document.getElementById('idPreview').innerHTML = `<img src="uploads/valid_ids/${imageName}" style="max-width: 100%;">`;
+            document.getElementById('idPreview').innerHTML = `<img src="uploads/valid_ids/${imageName}" style="max-width:100%;">`;
         }
-
         function closeModal4() {
             document.getElementById('viewmodal').style.display = 'none';
         }

@@ -50,10 +50,10 @@ if (!move_uploaded_file($fileTmp, $targetFile)) {
 
 // Insert into usersvalidID table
 $stmt = $connectDB->prepare("
-    INSERT INTO usersvalidID (user_id, full_name, id_number, dob, address, id_image)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO usersvalidID (user_id, id_number, id_image)
+    VALUES (?, ?, ?)
 ");
-$stmt->bind_param("isssss", $user_id, $name, $id_number, $dob, $address, $newFileName);
+$stmt->bind_param("iss", $user_id, $id_number, $newFileName);
 
 if ($stmt->execute()) {
     // Set user as pending verification

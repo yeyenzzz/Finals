@@ -100,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       "token" => $verificationToken
     ];
     // Build verify link
-    $verificationLink = "http://localhost/Finals-main/verify.php?token=$verificationToken";
+    $verificationLink = "http://localhost/Finals/verify.php?token=$verificationToken";
 
     // Send email
     $mail = new PHPMailer(true);

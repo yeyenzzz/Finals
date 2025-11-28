@@ -162,23 +162,24 @@ let originalProfile = profile.innerHTML;
 function showverifyID() {
   document.getElementById("profileModal").innerHTML = `
     <div class="modal-content" style="max-width: 490px;">
-        <h2>Profile</h2>
+        <h2>Verify your Account</h2>
+        
            <form method="POST" action="saveValidID.php" enctype="multipart/form-data">
         <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
           Name
-          <input type="text" name="name" required>
+             <input type="text" name="name" value="${USER_NAME}" readonly>
 
-          ID Number
-          <input type="text" name="id_number" required>
+                ID Number
+                <input type="text" name="id_number" required>
 
-          Date of Birth
-          <input type="date" name="dob" required>
+                Date of Birth
+                <input type="text" name="dob" value="${USER_DOB}" readonly>
 
-          Current Address
-          <input type="text" name="address" required>
+                Current Address
+                <input type="text" name="address" value="${USER_ADDRESS}" readonly>
 
-          ID (Upload)
-          <input type="file" name="valid_id_image" required>
+                ID (Upload)
+                <input type="file" name="valid_id_image" required>
           
           <!-- Hidden FK -->
           <input type="hidden" name="user_id" value="${USER_ID}">
@@ -186,9 +187,12 @@ function showverifyID() {
 
         <div class="profile-btn">
           <button type="submit" class="next-btn">Submit</button>
-          <button type="button" class="close-btn" onclick="closeProfile()">Close</button>
+          <button type="button" class="close-btn" onclick="closeVerifyID()">Close</button>
         </div>
       </form>
+      <p>Please provide your valid ID to verify your identity.</p>
+        <p>Note: Accepted IDs are Passport, Driver's License, or National ID and make sure that the details are the same with the your registration information (Go to Settings to Update).</p>
+
     </div>
     `;
 }
