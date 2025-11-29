@@ -1,23 +1,98 @@
 <?php
 session_start();
+include 'db.php';
+$conn = connectDB();
 
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-header("Expires: 0");
-
-if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-    $_SESSION = array();
-    session_destroy();
-    header("Location: index.php");
-    exit();
-}
-
+// Redirect if user is not logged in
 if (!isset($_SESSION['email'])) {
     header("Location: index.php");
     exit();
 }
 
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+    $_SESSION = array();
+    session_destroy();
+    header("Location: index.php", true, 303);
+    exit();
+}
+
+// Fetch user info
+$userEmail = $_SESSION['email'];
+$stmt = $conn->prepare("SELECT id, firstName, lastName, date_of_birth, address, balance, is_verified FROM users WHERE email = ?");
+$stmt->bind_param("s", $userEmail);
+$stmt->execute();
+$stmt->bind_result($user_id, $firstName, $lastName, $date_of_birth, $address, $balance, $is_verified);
+$stmt->fetch();
+$stmt->close();
+$userQuery = $conn->prepare("SELECT id, firstName, lastName, email, phone_number FROM users WHERE email = ?");
+$userQuery->bind_param("s", $userEmail);
+$userQuery->execute();
+$userResult = $userQuery->get_result();
+$userData = $userResult->fetch_assoc();
+
+// Handle loan submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitLoan'])) {
+
+    $user_id = $userData['id'];
+    $monthly_salary = $_POST['monthly_salary'];
+    $loan_type = $_POST['loan_type'];
+    $loan_amount = $_POST['loan_amount'];
+    $loan_term = $_POST['loan_term'];
+    $payment_frequency = $_POST['payment_frequency'];
+    $payment_type = $_POST['payment_type'];
+
+    $uploadDir = "uploads/";
+
+    // Ensure upload directory exists
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    // Handle Valid ID upload
+    if (isset($_FILES['valid_id']) && $_FILES['valid_id']['error'] === UPLOAD_ERR_OK) {
+        $valid_idName = uniqid() . "_" . basename($_FILES['valid_id']['name']);
+        $validIDPath = $uploadDir . $valid_idName;
+        move_uploaded_file($_FILES['valid_id']['tmp_name'], $validIDPath);
+    } else {
+        die("Error uploading Valid ID.");
+    }
+
+    // Handle Payslip upload
+    if (isset($_FILES['payslip']) && $_FILES['payslip']['error'] === UPLOAD_ERR_OK) {
+        $payslipName = uniqid() . "_" . basename($_FILES['payslip']['name']);
+        $payslipPath = $uploadDir . $payslipName;
+        move_uploaded_file($_FILES['payslip']['tmp_name'], $payslipPath);
+    } else {
+        die("Error uploading Payslip.");
+    }
+
+    // Insert into loanrequest table
+    $stmt = $conn->prepare("
+        INSERT INTO loanrequest
+        (user_id, monthly_salary, valid_id, payslip, loan_type, loan_amount, loan_term, payment_frequency, payment_type)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+
+    $stmt->bind_param(
+        "idsssisss",
+        $user_id,
+        $monthly_salary,
+        $validIDPath,
+        $payslipPath,
+        $loan_type,
+        $loan_amount,
+        $loan_term,
+        $payment_frequency,
+        $payment_type
+    );
+
+    if ($stmt->execute()) {
+        header("Location: loan4.php"); // redirect on success
+        exit();
+    } else {
+        die("Database error: " . $stmt->error);
+    }
+}
 ?>
 
 
@@ -108,9 +183,18 @@ if (!isset($_SESSION['email'])) {
                         </div>
                         <div class="next_prev">
                             <div>
-                                <button class="next-btn" onclick="showLoanApplication()">Apply</button>
+                                <?php
+                                if (is_null($is_verified) || $is_verified == 0) {
+                                    // User not verified or pending
+                                    echo '<button class="next-btn" onclick="openProfile(event)">Verify account</button>';
+                                } elseif ($is_verified == 1) {
+                                    // User verified
+                                    echo '<button type="button" class="next-btn" onclick="showLoanApplication()">Apply</button>';
+                                }
+                                ?>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -154,7 +238,15 @@ if (!isset($_SESSION['email'])) {
                 <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
             <div class="profile-btn">
-                <button class="next-btn" onclick="showverifyID()">Verify account</button>
+                <?php
+                if (is_null($is_verified)) {
+                    echo '<button class="next-btn" onclick="showverifyID()">Verify account</button>';
+                } elseif ($is_verified == 0) {
+                    echo '<button class="next-btn" disabled>PENDING</button>';
+                } elseif ($is_verified == 1) {
+                    echo '<button class="next-btn" disabled>VERIFIED</button>';
+                }
+                ?>
                 <button class="close-btn" onclick="closeProfile()">Close</button>
             </div>
         </div>
@@ -166,6 +258,18 @@ if (!isset($_SESSION['email'])) {
                     window.location.reload();
                 }
             });
+        </script>
+        <script>
+            // Pass PHP values to JS
+            const userData = {
+                fullName: "<?php echo $userData['firstName'] . ' ' . $userData['lastName']; ?>",
+                email: "<?php echo $userData['email']; ?>",
+                phoneNumber: "<?php echo $userData['phone_number']; ?>"
+            };
+            const USER_ID = "<?= $user_id ?>";
+            const USER_NAME = "<?= $firstName . ' ' . $lastName ?>";
+            const USER_DOB = "<?= $date_of_birth ?>";
+            const USER_ADDRESS = "<?= $address ?>";
         </script>
 
 </body>

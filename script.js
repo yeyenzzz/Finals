@@ -87,9 +87,9 @@ const verifyID = document.getElementById("verifyIDModal");
 function showApplicationForm() {
   document.getElementById("cardContent").innerHTML = `
 <h1>Credit Card</h1>
-<p>Please complete all fields below to check your eligibility and apply for a loan.</p>
+<p>Please complete all fields below to check your eligibility and apply for a card.</p>
 <div class="inputs">
-  <form id=cardForm class="inputs" method="post" enctype="multipart/form-data">
+  <form id="cardForm" class="inputs" method="post" enctype="multipart/form-data">
     <div class="Personal">
       <h1>| Credit Card Application</h1>
     </div>
@@ -97,7 +97,7 @@ function showApplicationForm() {
       <input type="text" name="full_name" value="${userData.fullName}" required readonly>
     </div>
     <div class="Personal"> Age (21+)
-      <input type="number" name="age" placeholder="Age" required>
+      <input type="number" name="age" value="${userData.age}" required readonly>
     </div>
     <div class="Personal"> Email Address
       <input type="email" name="email" value="${userData.email}" required readonly>
@@ -106,7 +106,7 @@ function showApplicationForm() {
       <input type="text" name="phone_number" value="${userData.phoneNumber}" required readonly>
     </div>
     <div class="Personal"> Address
-      <input type="text" name="address" placeholder="Address" required>
+      <input type="text" name="address" value="${userData.address}" required>
     </div>
     <div class="Personal"> Monthly Salary (₱)
       <input type="number" name="salary" placeholder="Monthly Salary" required>
@@ -121,42 +121,101 @@ function showApplicationForm() {
 
     <div class="next_prev">
       <div><button type="button" class="prev-btn" onclick="location.reload()">Cancel</button></div>
-      <div><button type="button" class="next-btn" onclick="openCard()">Next</button></div>
+      <div><button type="button" class="next-btn" onclick="openCard()">Submit</button></div>
     </div>
   </form>
 </div>
-    `;
+  `;
 }
 
 function showLoanApplication() {
   document.getElementById("loanContent").innerHTML = `
     <h1>Loan Application</h1>
     <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
-    <div class="inputs">
-        <div class="Personal">
-            <h1>| 1. Personal Information</h1>
-        </div>
-        <div class="Personal"> Full Name<input type="text" placeholder="Full Name" required></div>
-        <div class="Personal"> Email Address<input type="email" placeholder="Email Address" required>
-        </div>
-        <div class="Personal"> Contact Number<input type="text" placeholder="Contact Number" required>
-        </div>
-        <div class="Personal"> Monthly Salary (₱)<input type="number" placeholder="Contact Number"
-                required>
-        </div>
-        <div class="Personal">Upload Valid ID <input type="file" placeholder="Upload Valid ID" required>
-        </div>
-        <div class="Personal">Upload PaySlip (3 Months) <input type="file" placeholder="Upload Valid ID"
-                required></div>
 
-        <div class="next_prev">
-            <div><button class="prev-btn" onclick="location.reload()">Cancel</button></div>
-            <div><button class="next-btn" onclick="show2Loan()">Next</button></div>
+    <form id="loanForm" class="inputs" method="POST" enctype="multipart/form-data">
+      <!-- Step 1 -->
+      <div id="loanStep1" class="inputs">
+        <h2>1. Personal Information</h2>
+        <div class="Personal">Full Name
+            <input type="text" name="fullName" value="${userData.fullName}" readonly>
         </div>
-    </div>
-    `;
+        <div class="Personal">Email
+            <input type="email" name="email" value="${userData.email}" readonly>
+        </div>
+        <div class="Personal">Phone
+            <input type="text" name="phone_number" value="${userData.phoneNumber}" readonly>
+        </div>
+        <div class="Personal">Monthly Salary (₱)
+            <input type="number" name="monthly_salary" placeholder="Enter monthly salary" required>
+        </div>
+        <div class="Personal">Upload Valid ID
+            <input type="file" name="valid_id" accept=".jpg,.jpeg,.png,.pdf" required>
+        </div>
+        <div class="Personal">Upload Payslip
+            <input type="file" name="payslip" accept=".jpg,.jpeg,.png,.pdf" required>
+        </div>
+        <div class="next_prev">
+            <button type="button" class="next-btn" onclick="showStep2()">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="loanStep2" class="inputs" style="display:none;">
+        <h2>2. Loan Details</h2>
+        <div class="Personal">Loan Type
+            <select name="loan_type" required>
+                <option value="" disabled selected>Select Loan Type</option>
+                <option value="Business Loan">Business Loan</option>
+                <option value="Personal Loan">Personal Loan</option>
+                <option value="Educational Loan">Educational Loan</option>
+            </select>
+        </div>
+        <div class="Personal">Loan Amount (₱)
+            <input type="number" name="loan_amount" placeholder="Enter loan amount" required>
+        </div>
+        <div class="Personal">Loan Term (Months)
+            <select name="loan_term" required>
+                <option value="" disabled selected>Select Loan Term</option>
+                <option value="12">12 months</option>
+                <option value="24">24 months</option>
+                <option value="36">36 months</option>
+            </select>
+        </div>
+        <div class="Personal">Payment Frequency
+            <select name="payment_frequency" required>
+                <option value="" disabled selected>Select Payment Frequency</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Bi-weekly">Bi-weekly</option>
+                <option value="Quarterly">Quarterly</option>
+            </select>
+        </div>
+        <div class="Personal">Payment Type
+          <select name="payment_type" required>
+              <option value="" disabled selected>Select Payment Type</option>
+              <option value="Manual">Manual</option>
+              <option value="Automatic">Automatic</option>
+          </select>
+        </div>
+        <input type="hidden" name="submitLoan" value="1">
+        <div class="next_prev">
+          <button type="button" class="prev-btn" onclick="showStep1()">Previous</button>
+          <button type="submit" class="next-btn" name="submitLoan">Submit</button>
+        </div>
+      </div>
+    </form>
+  `;
 }
 
+function showStep2() {
+  document.getElementById("loanStep1").style.display = "none";
+  document.getElementById("loanStep2").style.display = "block";
+}
+
+function showStep1() {
+  document.getElementById("loanStep2").style.display = "none";
+  document.getElementById("loanStep1").style.display = "block";
+}
 let originalProfile = profile.innerHTML;
 
 function showverifyID() {
@@ -198,47 +257,6 @@ function showverifyID() {
 
 function closeVerifyID() {
   profile.innerHTML = originalProfile;
-}
-
-function show2Loan() {
-  document.getElementById("loanContent").innerHTML = `
-    <h1>Loan Application</h1>
-    <p>Please complete all fields below to check your eligibility and apply for a loan.</p>
-    <div class="inputs">
-        <div class="Personal">
-            <h1>| 2. Loan Details</h1>
-        </div>
-        <div class="Personal"> Loan Type <select>
-                <option value="" disabled selected class="disabled">Select Loan Type</option>
-                <option value="Business Loan">Business Loan</option>
-                <option value="Personal Loan">Personal Loan</option>
-                <option value="Educational Loan">Educational Loan</option>
-            </select></div>
-        <div class="Personal"> Desired Loan Amount (₱)<input type="number"
-                placeholder="Desired Loan Amount" required></div>
-        <div class="Personal"> Loan Term (Months)<select>
-                <option value="" disabled selected class="disabled">Select Loan Term</option>
-                <option value="12">12 months</option>
-                <option value="24">24 months</option>
-                <option value="36">36 months</option>
-            </select></div>
-        <div class="Personal"> Payment Frequency<select>
-                <option value="" disabled selected class="disabled">Select Payment Frequency</option>
-                <option value="Monthly">Monthly</option>
-                <option value="Bi-weekly">Bi-weekly</option>
-                <option value="Quarterly">Quarterly</option>
-            </select></div>
-        <div class="Personal"> Payment Type<select>
-                <option value="" disabled selected class="disabled">Select Payment Type</option>
-                <option value="Manual">Manual Payment</option>
-                <option value="Automatic">Automatic Payment (Auto Debit/Auto Pay)</option>
-            </select></div>
-        <div class="next_prev">
-            <div><button class="prev-btn" onclick="showLoanApplication()">Previous</button></div>
-            <div><button class="next-btn" onclick="openCard()">Next</button></div>
-        </div>
-    </div>
-  `;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -354,4 +372,49 @@ document.querySelectorAll(".notif-card").forEach((card) => {
 
 function closeNotifModal() {
   notifModal.style.display = "none";
+}
+
+function openModalView(loanId) {
+  const dataRow = document.getElementById("data-" + loanId);
+
+  const validID = dataRow.getAttribute("data-validid");
+  const payslip = dataRow.getAttribute("data-payslip");
+
+  // Set images
+  document.getElementById("modalValidID").src = validID;
+  document.getElementById("modalPayslip").src = payslip;
+
+  // Show modal
+  document.getElementById("viewmodal").style.display = "flex";
+}
+
+function closeModalView() {
+  document.getElementById("viewmodal").style.display = "none";
+}
+
+function openModalView(activeLoanId) {
+  const dataRow = document.getElementById("data-" + activeLoanId);
+
+  document.getElementById("modalLoanType").innerText =
+    "Loan Type: " + dataRow.getAttribute("data-loantype");
+  document.getElementById("modalLoanAmount").innerText =
+    "Loan Amount: ₱" + dataRow.getAttribute("data-loanamount");
+  document.getElementById("modalLoanTerm").innerText =
+    "Loan Term: " + dataRow.getAttribute("data-loanterm") + " months";
+  document.getElementById("modalPayment").innerText =
+    "Payment: " +
+    dataRow.getAttribute("data-paymenttype") +
+    ", " +
+    dataRow.getAttribute("data-paymentfrequency");
+
+  document.getElementById("modalValidID").src =
+    dataRow.getAttribute("data-validid");
+  document.getElementById("modalPayslip").src =
+    dataRow.getAttribute("data-payslip");
+
+  document.getElementById("viewmodal").style.display = "flex";
+}
+
+function closeModalView() {
+  document.getElementById("viewmodal").style.display = "none";
 }

@@ -34,6 +34,74 @@ $stmt->bind_result($user_id, $firstName, $lastName, $date_of_birth, $address, $b
 $stmt->fetch();
 $stmt->close();
 
+// ===== AUTO PAYMENT LOGIC START =====
+$loanQuery = $connectDB->prepare("
+    SELECT al.id AS activeLoanId, lr.loan_amount, lr.payment_frequency, lr.payment_type, lr.status, al.created_at, lr.loan_term
+    FROM activeloan al
+    JOIN loanrequest lr ON al.loan_id = lr.id
+    WHERE al.user_id = ? AND lr.status = 'approved' AND lr.payment_type = 'Automatic'
+");
+$loanQuery->bind_param("i", $user_id);
+$loanQuery->execute();
+$loanResult = $loanQuery->get_result();
+
+$today = new DateTime();
+
+while ($loan = $loanResult->fetch_assoc()) {
+    $loanStart = new DateTime($loan['created_at']);
+    $frequency = $loan['payment_frequency'];
+    $loanAmount = floatval($loan['loan_amount']);
+    $loanTerm = intval($loan['loan_term']); // Assuming months
+
+    // Determine interval and number of payments
+    switch ($frequency) {
+        case 'monthly':
+            $intervalSpec = 'P1M';
+            $totalPayments = $loanTerm;
+            break;
+        case 'bi-weekly':
+            $intervalSpec = 'P2W';
+            $totalPayments = $loanTerm * 2;
+            break;
+        case 'quarterly':
+            $intervalSpec = 'P3M';
+            $totalPayments = ceil($loanTerm / 3);
+            break;
+        default:
+            continue 2; // Skip unknown frequency
+    }
+
+    $paymentAmount = $loanAmount / $totalPayments;
+
+    // Generate payment schedule
+    $paymentDates = new DatePeriod($loanStart, new DateInterval($intervalSpec), $totalPayments);
+    foreach ($paymentDates as $paymentDate) {
+        if ($paymentDate->format('Y-m-d') === $today->format('Y-m-d')) {
+            // Payment is due today
+            if ($balance >= $paymentAmount) {
+                $balance -= $paymentAmount;
+
+                // Update user balance
+                $updateBalance = $connectDB->prepare("UPDATE users SET balance = ? WHERE id = ?");
+                $updateBalance->bind_param("di", $balance, $user_id);
+                $updateBalance->execute();
+                $updateBalance->close();
+
+                // Log transaction
+                $logPayment = $connectDB->prepare("
+                    INSERT INTO transactions (sender_id, recipient_id, amount, message, created_at)
+                    VALUES (?, ?, ?, ?, NOW())
+                ");
+                $message = "Automatic loan payment for Loan ID: " . $loan['activeLoanId'];
+                $logPayment->bind_param("iids", $user_id, $user_id, $paymentAmount, $message);
+                $logPayment->execute();
+                $logPayment->close();
+            }
+        }
+    }
+}
+// ===== AUTO PAYMENT LOGIC END =====
+
 // Fetch Sent Transactions
 $sentQuery = $connectDB->prepare("
     SELECT t.id, t.amount, t.message, t.created_at, u.firstName AS recipient_name
@@ -77,6 +145,7 @@ if (isset($_POST['depositAmount'])) {
 }
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

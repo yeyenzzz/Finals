@@ -23,12 +23,22 @@ $conn = connectDB();
 
 // Fetch user
 $userEmail = $_SESSION['email'];
-$userQuery = $conn->prepare("SELECT firstName, lastName, email, phone_number FROM users WHERE email = ?");
+
+$stmt = $conn->prepare("SELECT id, firstName, lastName, date_of_birth, address, balance, is_verified FROM users WHERE email = ?");
+$stmt->bind_param("s", $userEmail);
+$stmt->execute();
+$stmt->bind_result($user_id, $firstName, $lastName, $date_of_birth, $address, $balance, $is_verified);
+$stmt->fetch();
+$stmt->close();
+$userQuery = $conn->prepare("
+    SELECT id, firstName, lastName, email, phone_number, date_of_birth, address
+    FROM users 
+    WHERE email = ?
+");
 $userQuery->bind_param("s", $userEmail);
 $userQuery->execute();
 $userResult = $userQuery->get_result();
 $userData = $userResult->fetch_assoc();
-
 
 // ------------------------------------------------------------
 // CARD SUBMISSION HANDLER (POST → REDIRECT)
@@ -53,11 +63,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_card'])) {
 
     // Insert record
     $stmt = $conn->prepare("
-        INSERT INTO credit_cards (email, full_name, age, phone_number, address, salary, valid_id, payslip)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO credit_cards (user_id, salary, valid_id, payslip)
+        VALUES (?, ?, ?, ?)
     ");
 
-    $stmt->bind_param("ssississ", $email, $full_name, $age, $phone_number, $address, $salary, $valid_id, $payslip);
+    $stmt->bind_param("idss", $userData['id'], $salary, $valid_id, $payslip);
 
     if ($stmt->execute()) {
         $_SESSION['flash'] = "Card application submitted successfully!";
@@ -156,7 +166,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_card'])) {
                             <p>See all fees and terms before you accept your credit card offer</p>
                         </div>
                         <div class="next_prev">
-                            <div><button class="next-btn" onclick="showApplicationForm()">Apply</button></div>
+                            <div>
+                                <?php
+                                if (is_null($is_verified) || $is_verified == 0) {
+                                    // User not verified or pending
+                                    echo '<button class="next-btn" onclick="openProfile(event)">Verify account</button>';
+                                } elseif ($is_verified == 1) {
+                                    // User verified
+                                    echo '<button type="button" class="next-btn" onclick="showLoanApplication()">Apply</button>';
+                                }
+                                ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -203,11 +223,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_card'])) {
                 <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
             <div class="profile-btn">
-                <button class="next-btn" onclick="showverifyID()">Verify account</button>
+                <?php
+                if (is_null($is_verified)) {
+                    echo '<button class="next-btn" onclick="showverifyID()">Verify account</button>';
+                } elseif ($is_verified == 0) {
+                    echo '<button class="next-btn" disabled>PENDING</button>';
+                } elseif ($is_verified == 1) {
+                    echo '<button class="next-btn" disabled>VERIFIED</button>';
+                }
+                ?>
                 <button class="close-btn" onclick="closeProfile()">Close</button>
             </div>
         </div>
-
         <script src="script.js"></script>
         <script>
             window.addEventListener('pageshow', function (event) {
@@ -217,12 +244,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_card'])) {
             });
         </script>
         <script>
-            // Pass PHP values to JS
+            const dob = new Date("<?php echo $userData['date_of_birth']; ?>");
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+
             const userData = {
-                fullName: "<?php echo $userData['firstName'] . ' ' . $userData['lastName']; ?>",
-                email: "<?php echo $userData['email']; ?>",
-                phoneNumber: "<?php echo $userData['phone_number']; ?>"
+                fullName: "<?= $userData['firstName'] . ' ' . $userData['lastName'] ?>",
+                email: "<?= $userData['email'] ?>",
+                phoneNumber: "<?= $userData['phone_number'] ?>",
+                address: "<?= addslashes($userData['address']) ?>",  // handle quotes
+                age: age
             };
+
+            const USER_ID = "<?= $user_id ?>";
+            const USER_NAME = "<?= $firstName . ' ' . $lastName ?>";
+            const USER_DOB = "<?= $date_of_birth ?>";
+            const USER_ADDRESS = "<?= $address ?>";
         </script>
 
 </body>

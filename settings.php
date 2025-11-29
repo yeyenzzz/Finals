@@ -16,6 +16,19 @@ if (!isset($_SESSION['email'])) {
 
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
+
+$connectDB = connectDB();
+
+// Fetch user info including balance
+$email = $_SESSION['email'];
+$stmt = $connectDB->prepare("SELECT id, firstName, lastName, date_of_birth, address, balance, is_verified FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($user_id, $firstName, $lastName, $date_of_birth, $address, $balance, $is_verified);
+$stmt->fetch();
+$stmt->close();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -168,7 +181,8 @@ header("Pragma: no-cache");
             <h2>Profile</h2>
             <div class="profile-section" style="display: flex; flex-direction: column; text-align: start;">
                 Name
-                <p class="items"><?= htmlspecialchars($_SESSION['firstName'] ?? '') ?>
+                <p class="items">
+                    <?= htmlspecialchars($_SESSION['firstName'] ?? '') ?>
                     <?= htmlspecialchars($_SESSION['lastName'] ?? '') ?>
                 </p>
                 Phone Number
@@ -179,50 +193,63 @@ header("Pragma: no-cache");
                 <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
             <div class="profile-btn">
-                <button class="next-btn" onclick="showverifyID()">Verify account</button>
+                <?php
+                if (is_null($is_verified)) {
+                    echo '<button class="next-btn" onclick="showverifyID()">Verify account</button>';
+                } elseif ($is_verified == 0) {
+                    echo '<button class="next-btn" disabled>PENDING</button>';
+                } elseif ($is_verified == 1) {
+                    echo '<button class="next-btn" disabled>VERIFIED</button>';
+                }
+                ?>
                 <button class="close-btn" onclick="closeProfile()">Close</button>
             </div>
         </div>
-    </div>
 
-    <!-- JS -->
-    <script>
-        // Handle Save button
-        document.querySelectorAll('.btn-edit').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const item = btn.closest('.setting-item');
-                const fields = item.querySelectorAll('.setting-value');
-                let data = {};
+        <!-- JS -->
+        <script>
+            // Handle Save button
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const item = btn.closest('.setting-item');
+                    const fields = item.querySelectorAll('.setting-value');
+                    let data = {};
 
-                fields.forEach(el => {
-                    const field = el.dataset.field;
-                    if (!field) return;
+                    fields.forEach(el => {
+                        const field = el.dataset.field;
+                        if (!field) return;
 
-                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                        data[field] = el.value.trim();
-                    } else {
-                        data[field] = el.innerText.trim();
-                    }
-                });
-
-                fetch('update_settings.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                })
-                    .then(res => res.json())
-                    .then(resp => {
-                        if (resp.success) {
-                            alert('Updated successfully!');
+                        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                            data[field] = el.value.trim();
                         } else {
-                            alert('Update failed: ' + resp.message);
+                            data[field] = el.innerText.trim();
                         }
+                    });
+
+                    fetch('update_settings.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
                     })
-                    .catch(err => console.error(err));
+                        .then(res => res.json())
+                        .then(resp => {
+                            if (resp.success) {
+                                alert('Updated successfully!');
+                            } else {
+                                alert('Update failed: ' + resp.message);
+                            }
+                        })
+                        .catch(err => console.error(err));
+                });
             });
-        });
-    </script>
-    <script src="script.js"></script>
+        </script>
+        <script src="script.js"></script>
+        <script>
+            const USER_ID = "<?= $user_id ?>";
+            const USER_NAME = "<?= $firstName . ' ' . $lastName ?>";
+            const USER_DOB = "<?= $date_of_birth ?>";
+            const USER_ADDRESS = "<?= $address ?>";
+        </script>
 </body>
 
 </html>

@@ -1,17 +1,54 @@
+<?php
+session_start();
+include 'db.php';
+$conn = connectDB();
+
+// Handle inline status update
+
+if (isset($_POST['action']) && isset($_POST['card_id'])) {
+    $cardId = intval($_POST['card_id']);
+    $action = $_POST['action'];
+
+    if ($action === 'approve') {
+        $stmt = $conn->prepare("UPDATE credit_cards SET status='approved' WHERE id=?");
+        $stmt->bind_param("i", $cardId);
+        $stmt->execute();
+        header("Location: cardrequest.php");
+    } elseif ($action === 'reject' || $action === 'deactivate') {
+        $stmt = $conn->prepare("DELETE FROM credit_cards WHERE id=?");
+        $stmt->bind_param("i", $cardId);
+        $stmt->execute();
+        $_SESSION['flash'] = $action === 'reject' ?
+            "Card request rejected and deleted!" : "Card deactivated and deleted!";
+    }
+}
+// Fetch all card requests with user info
+$query = "
+    SELECT cc.id AS card_id, cc.status, cc.created_at,
+           u.firstName, u.lastName, u.phone_number, u.email, u.is_verified
+    FROM credit_cards cc
+    JOIN users u ON cc.user_id = u.id
+    ORDER BY cc.created_at DESC
+";
+$result = $conn->query($query);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Banking</title>
+    <title>Card Requests | Admin</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@latest/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="admin.css">
 </head>
 
-
 <body>
+    <?php if (!empty($message)): ?>
+        <script>alert("<?= $message ?>");</script>
+    <?php endif; ?>
+
     <div class="whole">
         <div class="nav-section">
             <div class="logo">
@@ -37,10 +74,10 @@
 
         <div class="page">
             <div class="profile" id="profile">
-                <a href="#" onclick="openModal3(event)"><i class="bi bi-box-arrow-right" title="Logout"
-                        style="font-size: 25px; color;"></i></a>
+                <a href="#" onclick="openModal3(event)">
+                    <i class="bi bi-box-arrow-right" title="Logout" style="font-size: 25px;"></i>
+                </a>
             </div>
-
 
             <div class="content-section">
                 <h2>Card Registration Requests</h2>
@@ -57,7 +94,6 @@
                 </div>
 
                 <!-- Requests Table -->
-
                 <table class="data-table">
                     <thead>
                         <tr>
@@ -71,39 +107,61 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Juan Dela Cruz</td>
-                            <td>No</td>
-                            <td>0918663069</td>
-                            <td>juan@gmail.com</td>
-                            <td>Nov 10, 2025</td>
-                            <td><span class="badge pending">Pending</span></td>
-                            <td>
-                                <button class="approve-btn">Approve</button>
-                                <button class="reject-btn">Reject</button>
-                            </td>
-                        </tr>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($row['firstName'] . ' ' . $row['lastName']) ?></td>
+                                <td><?= $row['is_verified'] ? 'Yes' : 'No' ?></td>
+                                <td><?= htmlspecialchars($row['phone_number']) ?></td>
+                                <td><?= htmlspecialchars($row['email']) ?></td>
+                                <td><?= date("M d, Y", strtotime($row['created_at'])) ?></td>
+                                <td>
+                                    <span
+                                        class="badge <?= strtolower($row['status']) ?>"><?= ucfirst($row['status']) ?></span>
+                                </td>
+                                <td>
+                                    <?php if ($row['status'] == 'pending'): ?>
+                                        <form method="post" style="display:inline;">
+                                            <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
+                                            <input type="hidden" name="action" value="approve">
+                                            <button type="submit" class="approve-btn">Approve</button>
+                                        </form>
+                                        <form method="post" style="display:inline;">
+                                            <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
+                                            <input type="hidden" name="action" value="reject">
+                                            <button type="submit" class="reject-btn">Reject</button>
+                                        </form>
+                                    <?php elseif ($row['status'] == 'approved'): ?>
+                                        <form method="post" style="display:inline;">
+                                            <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
+                                            <input type="hidden" name="action" value="deactivate">
+                                            <button type="submit" class="reject-btn">Deactivate</button>
+                                        </form>
+                                    <?php else: ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+
+                            </tr>
+                        <?php endwhile; ?>
                     </tbody>
                 </table>
+
             </div>
         </div>
+    </div>
 
-
-        <div id="logoutModal" class="modal">
-            <div class="modal-content">
-                <h2>Logout</h2>
-                <div class="scrollable">
-                    <p>
-                        Logout your accout?
-                    </p>
-                </div>
-                <button class="confirm-btn" onclick="confirmLogout()">Logout</button>
-                <button class="close-btn" onclick="closeModal3()">Close</button>
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h2>Logout</h2>
+            <div class="scrollable">
+                <p>Logout your account?</p>
             </div>
+            <button class="confirm-btn" onclick="confirmLogout()">Logout</button>
+            <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
+    </div>
 
-
-        <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

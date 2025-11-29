@@ -19,6 +19,18 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
+include 'db.php';
+$connectDB = connectDB();
+
+// Fetch user info including balance
+$email = $_SESSION['email'];
+$stmt = $connectDB->prepare("SELECT id, firstName, lastName, date_of_birth, address, balance, is_verified FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->bind_result($user_id, $firstName, $lastName, $date_of_birth, $address, $balance, $is_verified);
+$stmt->fetch();
+$stmt->close();
+
 
 ?>
 
@@ -129,19 +141,32 @@ if (!isset($_SESSION['email'])) {
                 <p class="items"><?= htmlspecialchars($_SESSION['address'] ?? '') ?></p>
             </div>
             <div class="profile-btn">
-                <button class="next-btn" onclick="showverifyID()">Verify account</button>
+                <?php
+                if (is_null($is_verified)) {
+                    echo '<button class="next-btn" onclick="showverifyID()">Verify account</button>';
+                } elseif ($is_verified == 0) {
+                    echo '<button class="next-btn" disabled>PENDING</button>';
+                } elseif ($is_verified == 1) {
+                    echo '<button class="next-btn" disabled>VERIFIED</button>';
+                }
+                ?>
                 <button class="close-btn" onclick="closeProfile()">Close</button>
             </div>
         </div>
-    </div>
-    <script src="script.js"></script>
-    <script>
-        window.addEventListener('pageshow', function (event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
-                window.location.reload();
-            }
-        });
-    </script>
+        <script src="script.js"></script>
+        <script>
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                    window.location.reload();
+                }
+            });
+        </script>
+        <script>
+            const USER_ID = "<?= $user_id ?>";
+            const USER_NAME = "<?= $firstName . ' ' . $lastName ?>";
+            const USER_DOB = "<?= $date_of_birth ?>";
+            const USER_ADDRESS = "<?= $address ?>";
+        </script>
 
 
 </body>
