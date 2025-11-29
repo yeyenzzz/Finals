@@ -4,24 +4,63 @@ include 'db.php';
 $conn = connectDB();
 
 // Handle inline status update
-
 if (isset($_POST['action']) && isset($_POST['card_id'])) {
     $cardId = intval($_POST['card_id']);
     $action = $_POST['action'];
+
+    // Fetch the user ID associated with the card
+    $stmt = $conn->prepare("SELECT user_id FROM credit_cards WHERE id = ?");
+    $stmt->bind_param("i", $cardId);
+    $stmt->execute();
+    $stmt->bind_result($userId);
+    if (!$stmt->fetch()) {
+        $stmt->close();
+        die("Invalid card ID");
+    }
+    $stmt->close();
 
     if ($action === 'approve') {
         $stmt = $conn->prepare("UPDATE credit_cards SET status='approved' WHERE id=?");
         $stmt->bind_param("i", $cardId);
         $stmt->execute();
-        header("Location: cardrequest.php");
-    } elseif ($action === 'reject' || $action === 'deactivate') {
+        $stmt->close();
+
+        $notif_title = "Card Request Approved";
+        $notif_msg = "Your credit card request has been approved. You can now use your eTapPay card.";
+    } elseif ($action === 'reject') {
         $stmt = $conn->prepare("DELETE FROM credit_cards WHERE id=?");
         $stmt->bind_param("i", $cardId);
         $stmt->execute();
-        $_SESSION['flash'] = $action === 'reject' ?
-            "Card request rejected and deleted!" : "Card deactivated and deleted!";
+        $stmt->close();
+
+        $notif_title = "Card Request Rejected";
+        $notif_msg = "We regret to inform you that your credit card request has been rejected. Please contact support for more information.";
+    } elseif ($action === 'deactivate') {
+        $stmt = $conn->prepare("DELETE FROM credit_cards WHERE id=?");
+        $stmt->bind_param("i", $cardId);
+        $stmt->execute();
+        $stmt->close();
+
+        $notif_title = "Card Deactivated";
+        $notif_msg = "Your eTapPay credit card has been deactivated. If you have any questions, please contact support.";
     }
+
+    // Insert notification
+    $notif_senderName = "eTapPay Admin";
+    $notif_type = "updates";
+    $stmt = $conn->prepare("
+        INSERT INTO notifications (user_id, title, message, sender_name, type, created_at)
+        VALUES (?, ?, ?, ?, ?, NOW())
+    ");
+    $stmt->bind_param("issss", $userId, $notif_title, $notif_msg, $notif_senderName, $notif_type);
+    $stmt->execute();
+    $stmt->close();
+
+    header("Location: cardrequest.php");
+    exit();
 }
+
+
 // Fetch all card requests with user info
 $query = "
     SELECT cc.id AS card_id, cc.status, cc.created_at,

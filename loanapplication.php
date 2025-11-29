@@ -17,7 +17,6 @@ $result = $conn->query($query);
 
 
 if (isset($_POST['approve'])) {
-
     $loan_id = $_POST['loan_id'];
 
     // fetch loan details
@@ -26,6 +25,7 @@ if (isset($_POST['approve'])) {
     $loanQuery->bind_param("i", $loan_id);
     $loanQuery->execute();
     $loanData = $loanQuery->get_result()->fetch_assoc();
+    $loanQuery->close();
 
     $user_id = $loanData['user_id'];
     $loan_amount = $loanData['loan_amount'];
@@ -33,23 +33,40 @@ if (isset($_POST['approve'])) {
     $loan_term = $loanData['loan_term'];
     $payment_frequency = $loanData['payment_frequency'];
 
-    // 1. Update loan status
+    // Update loan status
     $updateStatus = $conn->prepare("UPDATE loanrequest SET status='Approved' WHERE id=?");
     $updateStatus->bind_param("i", $loan_id);
     $updateStatus->execute();
+    $updateStatus->close();
 
-    // 2. Add loan amount to user balance
+    // Add loan amount to user balance
     $updateBalance = $conn->prepare("UPDATE users SET balance = balance + ? WHERE id=?");
     $updateBalance->bind_param("di", $loan_amount, $user_id);
     $updateBalance->execute();
+    $updateBalance->close();
 
-    // 3. Insert into activeloan table
+    // Insert into activeloan table
     $insertLoan = $conn->prepare("
         INSERT INTO activeloan (user_id, loan_id, loan_type, loan_amount, loan_term, payment_frequency, created_at) 
         VALUES (?, ?, ?, ?, ?, ?, NOW())
     ");
     $insertLoan->bind_param("iisdis", $user_id, $loan_id, $loan_type, $loan_amount, $loan_term, $payment_frequency);
     $insertLoan->execute();
+    $insertLoan->close();
+
+    // Insert notification
+    $notif_title = "Loan Approved";
+    $notif_msg = "Your loan application for ₱" . number_format($loan_amount, 2) . " has been approved.";
+    $notif_type = "updates";
+    $notif_senderName = "eTapPay Admin";
+
+    $stmt = $conn->prepare("
+        INSERT INTO notifications (user_id, title, message, sender_name, type, created_at)
+        VALUES (?, ?, ?, ?, ?, NOW())
+    ");
+    $stmt->bind_param("issss", $user_id, $notif_title, $notif_msg, $notif_senderName, $notif_type);
+    $stmt->execute();
+    $stmt->close();
 
     header("Location: loanapplication.php");
     exit();
@@ -57,16 +74,39 @@ if (isset($_POST['approve'])) {
 
 // REJECT LOAN
 if (isset($_POST['reject'])) {
-
     $loan_id = $_POST['loan_id'];
+
+    // fetch user_id before deleting
+    $loanQuery = $conn->prepare("SELECT user_id FROM loanrequest WHERE id = ?");
+    $loanQuery->bind_param("i", $loan_id);
+    $loanQuery->execute();
+    $loanData = $loanQuery->get_result()->fetch_assoc();
+    $loanQuery->close();
+
+    $user_id = $loanData['user_id'];
 
     $delete = $conn->prepare("DELETE FROM loanrequest WHERE id=?");
     $delete->bind_param("i", $loan_id);
     $delete->execute();
+    $delete->close();
+
+    $notif_title = "Loan Rejected";
+    $notif_msg = "Your loan application has been rejected. Please contact support for more information.";
+    $notif_type = "updates";
+    $notif_senderName = "eTapPay Admin";
+
+    $stmt = $conn->prepare("
+        INSERT INTO notifications (user_id, title, message, sender_name, type, created_at)
+        VALUES (?, ?, ?, ?, ?, NOW())
+    ");
+    $stmt->bind_param("issss", $user_id, $notif_title, $notif_msg, $notif_senderName, $notif_type);
+    $stmt->execute();
+    $stmt->close();
 
     header("Location: loanapplication.php");
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>

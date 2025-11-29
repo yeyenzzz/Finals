@@ -173,7 +173,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_card'])) {
                                     echo '<button class="next-btn" onclick="openProfile(event)">Verify account</button>';
                                 } elseif ($is_verified == 1) {
                                     // User verified
-                                    echo '<button type="button" class="next-btn" onclick="showLoanApplication()">Apply</button>';
+                                    echo '<button type="button" class="next-btn" onclick="showApplicationForm()">Apply</button>';
                                 }
                                 ?>
                             </div>

@@ -25,7 +25,6 @@ $stmt->fetch();
 $stmt->close();
 
 
-
 if (isset($_POST['transfer'])) {
     $recipient_email = trim($_POST['recipient_email']);
     $amount = floatval($_POST['amount']);
@@ -33,60 +32,88 @@ if (isset($_POST['transfer'])) {
 
     if ($amount <= 0) {
         $error = "Invalid amount.";
-    } elseif ($recipient_email === $user_email) {
+    } elseif ($recipient_email === $email) {
         $error = "You cannot send money to yourself.";
     } else {
+
         // Start transaction
         $connectDB->begin_transaction();
 
         try {
-            // Get sender balance
-            $stmt = $connectDB->prepare("SELECT id, balance FROM users WHERE email = ?");
-            $stmt->bind_param("s", $user_email);
+            // Fetch sender info
+            $stmt = $connectDB->prepare("
+                SELECT id, balance, firstName, lastName 
+                FROM users 
+                WHERE email = ?
+            ");
+            $stmt->bind_param("s", $email);
             $stmt->execute();
-            $result = $stmt->get_result();
-            $sender = $result->fetch_assoc();
+            $sender = $stmt->get_result()->fetch_assoc();
 
-            if (!$sender)
+            if (!$sender) {
                 throw new Exception("Sender not found.");
-            if ($sender['balance'] < $amount)
-                throw new Exception("Insufficient balance.");
+            }
 
-            // Get recipient
-            $stmt = $connectDB->prepare("SELECT id, balance FROM users WHERE email = ?");
+            if ($sender['balance'] < $amount) {
+                throw new Exception("Insufficient balance.");
+            }
+
+            // Fetch recipient info
+            $stmt = $connectDB->prepare("
+                SELECT id, balance, firstName, lastName 
+                FROM users 
+                WHERE email = ?
+            ");
             $stmt->bind_param("s", $recipient_email);
             $stmt->execute();
-            $result = $stmt->get_result();
-            $recipient = $result->fetch_assoc();
+            $recipient = $stmt->get_result()->fetch_assoc();
 
-            if (!$recipient)
+            if (!$recipient) {
                 throw new Exception("Recipient not found.");
+            }
 
-            // Deduct from sender
+            // Update balances
             $new_sender_balance = $sender['balance'] - $amount;
+            $new_recipient_balance = $recipient['balance'] + $amount;
+
+            // Update sender balance
             $stmt = $connectDB->prepare("UPDATE users SET balance = ? WHERE id = ?");
             $stmt->bind_param("di", $new_sender_balance, $sender['id']);
             $stmt->execute();
 
-            // Add to recipient
-            $new_recipient_balance = $recipient['balance'] + $amount;
+            // Update recipient balance
             $stmt = $connectDB->prepare("UPDATE users SET balance = ? WHERE id = ?");
             $stmt->bind_param("di", $new_recipient_balance, $recipient['id']);
             $stmt->execute();
 
-            // Optional: log the transaction in another table
-            $stmt = $connectDB->prepare("INSERT INTO transactions (sender_id, recipient_id, amount, message, created_at) VALUES (?, ?, ?, ?, NOW())");
-            $stmt2 = $connectDB->prepare("INSERT INTO notifications (user_id, title, message) VALUES (?, ?, ?)");
-            $notif_title = "You received ₱$amount";
-            $notif_msg = "You got ₱$amount from $user_email. Message: $message";
+            // Insert transaction log
+            $stmt = $connectDB->prepare("
+                INSERT INTO transactions (sender_id, recipient_id, amount, message, created_at)
+                VALUES (?, ?, ?, ?, NOW())
+            ");
             $stmt->bind_param("iids", $sender['id'], $recipient['id'], $amount, $message);
-            $stmt2->bind_param("iss", $recipient['id'], $notif_title, $notif_msg);
             $stmt->execute();
-            $stmt2->execute();
 
+            // Create Notification with sender's name
+            $sender_fullname = $sender['firstName'] . " " . $sender['lastName'];
+            $notif_title = "You received ₱$amount";
+            $notif_msg = "Message: $message";
+            $notif_type = "transfer";
+            $notif_senderName = $sender_fullname;
+
+            $stmt = $connectDB->prepare("
+                INSERT INTO notifications (user_id, title, message, sender_name, type, created_at)
+                VALUES (?, ?, ?, ?, ?, NOW())
+            ");
+            $stmt->bind_param("isss", $recipient['id'], $notif_title, $notif_msg, $notif_senderName, $notif_type);
+            $stmt->execute();
+
+            // Commit
             $connectDB->commit();
             $success = "Transfer successful!";
+
         } catch (Exception $e) {
+
             $connectDB->rollback();
             $error = $e->getMessage();
         }

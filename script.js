@@ -64,10 +64,6 @@ function closeCashin() {
 
 const card = document.getElementById("cardModal");
 
-function openCard() {
-  card.style.display = "flex";
-}
-
 function closeCard() {
   card.style.display = "none";
 }
@@ -94,38 +90,91 @@ function showApplicationForm() {
       <h1>| Credit Card Application</h1>
     </div>
     <div class="Personal"> Full Name
-      <input type="text" name="full_name" value="${userData.fullName}" required readonly>
-    </div>
-    <div class="Personal"> Age (21+)
-      <input type="number" name="age" value="${userData.age}" required readonly>
-    </div>
-    <div class="Personal"> Email Address
-      <input type="email" name="email" value="${userData.email}" required readonly>
-    </div>
-    <div class="Personal"> Phone Number
-      <input type="text" name="phone_number" value="${userData.phoneNumber}" required readonly>
-    </div>
-    <div class="Personal"> Address
-      <input type="text" name="address" value="${userData.address}" required>
-    </div>
-    <div class="Personal"> Monthly Salary (₱)
-      <input type="number" name="salary" placeholder="Monthly Salary" required>
-    </div>
-    <div class="Personal"> Upload Valid ID
-      <input type="file" name="valid_id" required>
-    </div>
-    <div class="Personal"> Upload PaySlip (3 Months)
-      <input type="file" name="payslip" required>
-    </div>
+  <input type="text" name="full_name" value="${userData.fullName}" required readonly>
+  <span class="error-msg"></span>
+</div>
+<div class="Personal"> Age (21+)
+  <input type="number" name="age" value="${userData.age}" required readonly>
+  <span class="error-msg"></span>
+</div>
+<div class="Personal"> Email Address
+  <input type="email" name="email" value="${userData.email}" required readonly>
+  <span class="error-msg"></span>
+</div>
+<div class="Personal"> Phone Number
+  <input type="text" name="phone_number" value="${userData.phoneNumber}" required readonly>
+  <span class="error-msg"></span>
+</div>
+<div class="Personal"> Address
+  <input type="text" name="address" value="${userData.address}" required>
+  <span class="error-msg"></span>
+</div>
+<div class="Personal"> Monthly Salary (₱)
+  <input type="number" name="salary" placeholder="Monthly Salary" required>
+  <span class="error-msg"></span>
+</div>
+<div class="Personal"> Upload Valid ID
+  <input type="file" name="valid_id" required>
+  <span class="error-msg"></span>
+</div>
+<div class="Personal"> Upload PaySlip (3 Months)
+  <input type="file" name="payslip" required>
+  <span class="error-msg"></span>
+</div>
+
     <input type="hidden" name="confirm_card" value="1">
 
-    <div class="next_prev">
-      <div><button type="button" class="prev-btn" onclick="location.reload()">Cancel</button></div>
-      <div><button type="button" class="next-btn" onclick="openCard()">Submit</button></div>
-    </div>
+   <div class="next_prev">
+  <div><button type="button" class="prev-btn" onclick="location.reload()">Cancel</button></div>
+  <div><button type="button" class="next-btn" onclick="validateCardForm()">Submit</button></div>
+</div>
+
   </form>
 </div>
   `;
+}
+function validateCardForm() {
+  const form = document.getElementById("cardForm");
+  if (!form) return;
+
+  const inputs = form.querySelectorAll("input");
+  let valid = true;
+
+  // Clear previous errors
+  form
+    .querySelectorAll(".error-msg")
+    .forEach((span) => (span.textContent = ""));
+
+  inputs.forEach((input) => {
+    const errorSpan = input.nextElementSibling;
+
+    // Check empty fields
+    if (
+      (input.type !== "file" && input.value.trim() === "") ||
+      (input.type === "file" && input.files.length === 0)
+    ) {
+      if (errorSpan) {
+        errorSpan.textContent = "This field is required";
+        errorSpan.style.color = "red";
+      }
+      valid = false;
+    }
+
+    // Age validation
+    if (input.name === "age" && parseInt(input.value) < 21) {
+      if (errorSpan) {
+        errorSpan.textContent = "You must be at least 21 years old";
+        errorSpan.style.color = "red";
+      }
+      valid = false;
+    }
+  });
+
+  // Only show modal if all fields are valid
+  if (!valid) return; // do NOT show modal if any field is invalid
+
+  const modal = document.getElementById("cardModal");
+  if (modal) modal.style.display = "flex"; // show modal centered
 }
 
 function showLoanApplication() {
@@ -335,38 +384,35 @@ document.querySelectorAll(".filter-btn").forEach((btn) => {
 });
 
 // --- NOTIFICATION MODAL ---
-const notifModal = document.getElementById("notifModal");
-const modalTitle = document.getElementById("modalTitle");
-const modalMessage = document.getElementById("modalMessage");
-const modalTime = document.getElementById("modalTime");
+document.addEventListener("DOMContentLoaded", () => {
+  const notifModal = document.getElementById("notifModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalMessage = document.getElementById("modalMessage");
+  const modalTime = document.getElementById("modalTime");
+  const modalSender = document.getElementById("modalSender"); // NEW
 
-document.querySelectorAll(".notif-card").forEach((card) => {
-  card.addEventListener("click", () => {
-    const notifId = card.dataset.id;
+  document.querySelectorAll(".notif-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const notifId = card.dataset.id;
 
-    modalTitle.textContent = card.dataset.title;
-    modalMessage.textContent = card.dataset.message;
-    modalTime.textContent = card.dataset.created;
-    notifModal.style.display = "flex";
+      modalTitle.textContent = card.dataset.title;
+      modalMessage.textContent = card.dataset.message;
+      modalTime.textContent = card.dataset.created;
+      modalSender.textContent = card.dataset.sender || "Unknown"; // NEW
 
-    if (card.classList.contains("unread")) {
-      card.classList.remove("unread");
-      card.classList.add("read");
+      notifModal.style.display = "flex";
 
-      // Send AJAX POST to the same page
-      fetch("transaction.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `mark_read_id=${notifId}`,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.status !== "success") {
-            console.error("Failed to mark as read");
-          }
-        })
-        .catch((err) => console.error(err));
-    }
+      if (card.classList.contains("unread")) {
+        card.classList.remove("unread");
+        card.classList.add("read");
+
+        fetch("transaction.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `mark_read_id=${encodeURIComponent(notifId)}`,
+        });
+      }
+    });
   });
 });
 

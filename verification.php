@@ -9,12 +9,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userId = intval($_POST['approve_id']);
         $connectDB->query("UPDATE users SET is_verified = 1 WHERE id = $userId");
         header("Location: " . $_SERVER['PHP_SELF']);
+
+
+        $notif_title = "Verification Approved";
+        $notif_msg = "Your ID has been approved. You are now a verified user.";
+        $notif_senderName = "eTapPay Admin";
+        $stmt = $connectDB->prepare("
+                INSERT INTO notifications (user_id, title, message, sender_name, created_at)
+                VALUES (?, ?, ?, ?, NOW())
+            ");
+        $stmt->bind_param("isss", $userId, $notif_title, $notif_msg, $notif_senderName);
+        $stmt->execute();
+
         exit;
+
     } elseif (isset($_POST['reject_id'])) {
         $userId = intval($_POST['reject_id']);
         $connectDB->query("DELETE FROM usersvalidID WHERE user_id = $userId");
         $connectDB->query("UPDATE users SET is_verified = NULL WHERE id = $userId");
         header("Location: " . $_SERVER['PHP_SELF']);
+
+        $notif_title = "Verification Rejected";
+        $notif_msg = "Your ID has been rejected. Please upload a valid ID to get verified or make sure the details are matched.";
+        $notif_senderName = "eTapPay Admin";
+        $stmt = $connectDB->prepare("
+                INSERT INTO notifications (user_id, title, message, sender_name, created_at)
+                VALUES (?, ?, ?, ?, NOW())
+            ");
+        $stmt->bind_param("isss", $userId, $notif_title, $notif_msg, $notif_senderName);
+        $stmt->execute();
+
         exit;
     }
 }
