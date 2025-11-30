@@ -76,10 +76,12 @@ $query = "
     SELECT u.id, u.firstName, u.lastName, u.phone_number, u.date_of_birth,
            u.email, uv.id_image, u.is_verified, uv.uploaded_at
     FROM users u
-    LEFT JOIN usersvalidID uv ON u.id = uv.user_id
-    $statusFilter $searchFilter
+    INNER JOIN usersvalidID uv ON u.id = uv.user_id
+    $statusFilter
+    $searchFilter
     ORDER BY uv.uploaded_at DESC
 ";
+
 
 $result = $connectDB->query($query);
 ?>
@@ -139,7 +141,6 @@ $result = $connectDB->query($query);
                             Pending</option>
                         <option value="1" <?= (isset($_GET['status']) && $_GET['status'] == "1") ? "selected" : "" ?>>
                             Approved</option>
-                        <option value="rejected" <?= (isset($_GET['status']) && $_GET['status'] == "rejected") ? "selected" : "" ?>>No ID/Rejected</option>
                     </select>
 
                     <button type="submit" style="display:none;"></button>
@@ -170,8 +171,6 @@ $result = $connectDB->query($query);
                                     <?php
                                     if ($row['is_verified'] == 1) {
                                         echo '<span class="badge approved">Approved</span>';
-                                    } elseif ($row['is_verified'] === NULL) {
-                                        echo '<span class="badge rejected">No ID/Rejected</span>';
                                     } else {
                                         echo '<span class="badge pending">Pending</span>';
                                     }

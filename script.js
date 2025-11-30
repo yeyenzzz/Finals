@@ -133,6 +133,49 @@ function showApplicationForm() {
 </div>
   `;
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const content = document.getElementById("cardContent");
+
+  if (CARD_STATUS === "Pending") {
+    content.innerHTML = `
+            <h1>Credit Card</h1>
+            <div class="applycard"><img src="images/credit-card.png" class="credit-card"></div>
+            <h2 style="color:#00226f;">Your application is currently under review.</h2>
+            <p>Please wait while our team verifies your information.</p>
+        `;
+  } else if (CARD_STATUS === "Approved") {
+    content.innerHTML = `
+            <h1>Credit Card</h1>
+            <div class="card-container">
+              <div class="credit-cards">
+                <div class="card-top">
+                  <div class="card-chip"></div>
+                  <div class="card-logo">eTapPay</div>
+                </div>
+                <div class="card-number">1234 5678 9012 3456</div>
+                <div class="card-holder">
+                  <span>Card Holder</span>
+                  <div>${userData.fullName}</div>
+                </div>
+                <div class="card-expiry">
+                  <span>Expires</span>
+                  <div>12/26</div>
+              </div>
+            </div>
+        `;
+  } else if (CARD_STATUS === "Rejected") {
+    content.innerHTML = `
+            <h1>Credit Card</h1>
+            <div class="applycard"><img src="images/credit-card.png" class="credit-card"></div>
+            <h2 style="color:red;">Your application was rejected.</h2>
+            <p>You may re-apply or contact support for more details.</p>
+        `;
+  }
+
+  // If no application → keep the default page showing "Apply"
+});
+
 function validateCardForm() {
   const form = document.getElementById("cardForm");
   if (!form) return;
@@ -185,7 +228,7 @@ function showLoanApplication() {
     <form id="loanForm" class="inputs" method="POST" enctype="multipart/form-data">
       <!-- Step 1 -->
       <div id="loanStep1" class="inputs">
-        <h2>1. Personal Information</h2>
+        <h1 style=: width: 100%;>1. Personal Information</h1>
         <div class="Personal">Full Name
             <input type="text" name="fullName" value="${userData.fullName}" readonly>
         </div>
@@ -205,13 +248,13 @@ function showLoanApplication() {
             <input type="file" name="payslip" accept=".jpg,.jpeg,.png,.pdf" required>
         </div>
         <div class="next_prev">
-            <button type="button" class="next-btn" onclick="showStep2()">Next</button>
+            <div><button type="button" class="next-btn" onclick="showStep2()">Next</button></div>
         </div>
       </div>
 
       <!-- Step 2 -->
       <div id="loanStep2" class="inputs" style="display:none;">
-        <h2>2. Loan Details</h2>
+        <h1 style=: width: 100%;>2. Loan Details</h2>
         <div class="Personal">Loan Type
             <select name="loan_type" required>
                 <option value="" disabled selected>Select Loan Type</option>
@@ -248,8 +291,8 @@ function showLoanApplication() {
         </div>
         <input type="hidden" name="submitLoan" value="1">
         <div class="next_prev">
-          <button type="button" class="prev-btn" onclick="showStep1()">Previous</button>
-          <button type="submit" class="next-btn" name="submitLoan">Submit</button>
+          <div><button type="button" class="prev-btn" onclick="showStep1()">Previous</button></div>
+          <div><button type="submit" class="next-btn" name="submitLoan">Submit</button></div>
         </div>
       </div>
     </form>

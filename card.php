@@ -40,6 +40,20 @@ $userQuery->execute();
 $userResult = $userQuery->get_result();
 $userData = $userResult->fetch_assoc();
 
+// Fetch latest credit card request (if any)
+$statusQuery = $conn->prepare("
+    SELECT status 
+    FROM credit_cards 
+    WHERE user_id = ?
+    ORDER BY created_at DESC 
+    LIMIT 1
+");
+$statusQuery->bind_param("i", $userData['id']);
+$statusQuery->execute();
+$statusResult = $statusQuery->get_result();
+$cardStatus = $statusResult->fetch_assoc()['status'] ?? null;
+
+
 // ------------------------------------------------------------
 // CARD SUBMISSION HANDLER (POST → REDIRECT)
 // ------------------------------------------------------------
@@ -264,6 +278,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_card'])) {
             const USER_NAME = "<?= $firstName . ' ' . $lastName ?>";
             const USER_DOB = "<?= $date_of_birth ?>";
             const USER_ADDRESS = "<?= $address ?>";
+            const CARD_STATUS = "<?= $cardStatus ?>"; 
         </script>
 
 </body>

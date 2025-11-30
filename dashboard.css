@@ -1014,3 +1014,66 @@ td.amount-received {
     font-size: 13px;
   }
 }
+
+.card-container {
+  perspective: 1000px;
+}
+
+.credit-cards {
+  width: 350px;
+  height: 200px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #00226f, #0056b3);
+  color: #fff;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-chip {
+  width: 50px;
+  height: 35px;
+  background: gold;
+  border-radius: 5px;
+}
+
+.card-logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.card-number {
+  font-size: 22px;
+  letter-spacing: 3px;
+  margin-top: 20px;
+}
+
+.card-holder,
+.card-expiry {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.card-holder span,
+.card-expiry span {
+  font-size: 10px;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.card-holder div,
+.card-expiry div {
+  margin-top: 5px;
+  font-size: 16px;
+  letter-spacing: 1px;
+}

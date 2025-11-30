@@ -125,8 +125,8 @@ while ($row = $notifications->fetch_assoc()) {
                 <div class="content">
                     <h1>All Inbox</h1>
                     <div class="inbox">
-                        <a href="inbox.php" style="margin-right: 75px; padding: 7px;">All</a>
-                        <a href="updates.php" class="notif-active" style="margin-right: 75px; padding: 7px;">Updates</a>
+                        <a href="inbox.php" style="margin-right: 50px; padding: 7px; ">All</a>
+                        <a href="updates.php" style="margin-right: 50px; padding: 7px;" class="notif-active">Updates</a>
                         <a href="transaction.php" style="padding: 7px;">Transactions</a>
                     </div>
 

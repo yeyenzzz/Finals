@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Credit Card Preview</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f2f5;
+        font-family: Arial, sans-serif;
+      }
+
+      .card-container {
+        perspective: 1000px;
+      }
+
+      .credit-card {
+        width: 350px;
+        height: 200px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #00226f, #0056b3);
+        color: #fff;
+        padding: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .card-chip {
+        width: 50px;
+        height: 35px;
+        background: gold;
+        border-radius: 5px;
+      }
+
+      .card-logo {
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .card-number {
+        font-size: 22px;
+        letter-spacing: 3px;
+        margin-top: 20px;
+      }
+
+      .card-holder,
+      .card-expiry {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+      }
+
+      .card-holder span,
+      .card-expiry span {
+        font-size: 10px;
+        text-transform: uppercase;
+        opacity: 0.7;
+      }
+
+      .card-holder div,
+      .card-expiry div {
+        margin-top: 5px;
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card-container">
+      <div class="credit-card">
+        <div class="card-top">
+          <div class="card-chip"></div>
+          <div class="card-logo">eTapPay</div>
+        </div>
+        <div class="card-number">1234 5678 9012 3456</div>
+        <div class="card-holder">
+          <span>Card Holder</span>
+          <div>John Doe</div>
+        </div>
+        <div class="card-expiry">
+          <span>Expires</span>
+          <div>12/26</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

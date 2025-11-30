@@ -234,15 +234,15 @@ if (isset($_POST['transfer'])) {
     <div id="reviewModal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
             <h2>Review Transaction</h2>
-            <div class="scrollable" style="display: flex; flex-direction: column; text-align: start;">
+            <div class="scrollable" style="display: flex; flex-direction: column; text-align: start; width: 100%;">
                 <label>Send to</label>
-                <input type="text" id="review_email" disabled>
+                <input type="text" id="review_email" disabled style="width: 100%;">
 
                 <label>Amount (₱)</label>
-                <input type="text" id="review_amount" disabled>
+                <input type="text" id="review_amount" disabled style="width: 100%;">
 
                 <label>Message</label>
-                <input type="text" id="review_message" disabled>
+                <input type="text" id="review_message" disabled style="width: 100%;">
             </div>
 
             <div style="margin-top:15px;">
