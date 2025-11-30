@@ -3,6 +3,26 @@ session_start();
 include 'db.php';
 $conn = connectDB();
 
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
+
+// Redirect to login if not logged in
+if (!isset($_SESSION['id'])) {
+    header("Location: adminlogin.php", true, 303);
+    exit();
+}
+
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+    $_SESSION = array();
+    session_destroy();
+    header("Location: adminlogin.php", true, 303);
+    exit();
+}
+
+
 
 // Fetch loan applications
 $query = "
@@ -151,10 +171,10 @@ if (isset($_POST['reject'])) {
         <!-- Page Content -->
         <div class="page">
             <div class="profile" id="profile">
-                <a href="#" onclick="openModalLogout()"><i class="bi bi-box-arrow-right" title="Logout"
-                        style="font-size:25px;"></i></a>
+                <a href="#" onclick="openModal3(event)">
+                    <i class="bi bi-box-arrow-right" title="Logout"></i>
+                </a>
             </div>
-
             <div class="content-section">
                 <h2>Loan Application Requests</h2>
 
@@ -216,6 +236,7 @@ if (isset($_POST['reject'])) {
                                     data-paymentfrequency="<?= $row['payment_frequency'] ?>"
                                     data-paymenttype="<?= $row['payment_type'] ?>">
                                 </td>
+
                             </tr>
                         <?php endwhile; ?>
                     </tbody>
@@ -224,51 +245,45 @@ if (isset($_POST['reject'])) {
         </div>
     </div>
 
-    <!-- Logout Modal -->
-    <div id="logoutModal" class="modal">
-        <div class="modal-content">
-            <h2>Logout</h2>
-            <p>Are you sure you want to logout?</p>
-            <button onclick="window.location.href='?action=logout'">Logout</button>
-            <button onclick="closeModalLogout()">Close</button>
+    <!-- VIEW LOAN APPLICATION MODAL -->
+    <div id="viewmodal" class="modalLoanReq">
+        <div class="modal-content-loan">
+            <h2>Loan Application Documents</h2>
+
+            <div class="modal-body">
+                <h3>Valid ID</h3>
+                <img id="viewValidID" src="" alt="Valid ID" class="modal-img">
+
+                <h3>Payslip</h3>
+                <img id="viewPayslip" src="" alt="Payslip" class="modal-img">
+            </div>
+
+            <button class="close-btn" onclick="closeViewModal()">Close</button>
         </div>
     </div>
 
-    <!-- View Modal -->
-    <!-- View Modal -->
-    <!-- View Modal -->
-    <!-- View Modal -->
-    <div id="viewmodal" class="modalLoanReq">
-        <div class="modal1-content">
-            <h2>Documents</h2>
-            <div class="modal-documents">
-                <div class="document">
-                    <h4>Valid ID:</h4>
-                    <img id="modalValidID" src="" alt="Valid ID">
-                </div>
-                <div class="document">
-                    <h4>Payslip:</h4>
-                    <img id="modalPayslip" src="" alt="Payslip">
-                </div>
-            </div>
-            <button class="close-btn" onclick="closeModalView()">Close</button>
-        </div>
-    </div>
-    <!-- Logout Modal -->
+
     <div id="logoutModal" class="modal">
         <div class="modal-content">
             <h2>Logout</h2>
             <div class="scrollable">
                 <p>Logout your account?</p>
             </div>
-            <button class="confirm-btn" onclick="confirmLogout()">Logout</button>
+            <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
-
-
+    <script>
+        // Ensure page reload on back navigation
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                window.location.reload();
+            }
+        });
+    </script>
 
     <script src="script.js"></script>
+
 </body>
 
 </html>

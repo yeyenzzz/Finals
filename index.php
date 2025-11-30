@@ -10,6 +10,10 @@ if (isset($_SESSION['email'])) {
   header("Location: dashboard.php");
   exit();
 }
+if (isset($_SESSION['id'])) {
+  header("Location: admin.php");
+  exit();
+}
 
 
 $email = "";
@@ -46,7 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
       if (password_verify($password, $hashedPassword)) {
         $_SESSION['email'] = $email;
-        $_SESSION['id'] = $id;
         $_SESSION['firstName'] = $firstName;
         $_SESSION['lastName'] = $lastName;
         $_SESSION['phone_number'] = $phone_number;

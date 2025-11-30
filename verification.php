@@ -1,7 +1,26 @@
 <?php
 session_start();
+
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
 include 'db.php';
 $connectDB = connectDB();
+
+// Redirect to login if not logged in
+if (!isset($_SESSION['id'])) {
+    header("Location: adminlogin.php", true, 303);
+    exit();
+}
+
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+    $_SESSION = array();
+    session_destroy();
+    header("Location: adminlogin.php", true, 303);
+    exit();
+}
 
 // Handle Approve / Reject
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -121,8 +140,9 @@ $result = $connectDB->query($query);
 
         <div class="page">
             <div class="profile" id="profile">
-                <a href="#" onclick="openModal3(event)"><i class="bi bi-box-arrow-right" title="Logout"
-                        style="font-size: 25px;"></i></a>
+                <a href="#" onclick="openModal3(event)">
+                    <i class="bi bi-box-arrow-right" title="Logout"></i>
+                </a>
             </div>
 
             <div class="content-section">
@@ -211,7 +231,7 @@ $result = $connectDB->query($query);
             <div class="scrollable">
                 <p>Logout your account?</p>
             </div>
-            <button class="confirm-btn" onclick="confirmLogout()">Logout</button>
+            <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
             <button class="close-btn" onclick="closeModal3()">Close</button>
         </div>
     </div>
@@ -235,6 +255,14 @@ $result = $connectDB->query($query);
         function closeModal4() {
             document.getElementById('viewmodal').style.display = 'none';
         }
+    </script>
+    <script>
+        // Ensure page reload on back navigation
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+                window.location.reload();
+            }
+        });
     </script>
 
     <script src="script.js"></script>

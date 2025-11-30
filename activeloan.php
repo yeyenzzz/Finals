@@ -3,6 +3,24 @@ session_start();
 include 'db.php';
 $conn = connectDB();
 
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
+// Redirect to login if not logged in
+if (!isset($_SESSION['id'])) {
+  header("Location: adminlogin.php", true, 303);
+  exit();
+}
+
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+  $_SESSION = array();
+  session_destroy();
+  header("Location: adminlogin.php", true, 303);
+  exit();
+}
+
 // Fetch active loans with user and loan request details
 $query = "
     SELECT al.id AS activeLoanId, al.user_id, al.loan_id, al.loan_amount AS remaining_balance, al.created_at,
@@ -55,8 +73,9 @@ $result = $conn->query($query);
     <!-- MAIN PAGE -->
     <div class="page">
       <div class="profile" id="profile">
-        <a href="#" onclick="openModal3(event)"><i class="bi bi-box-arrow-right" title="Logout"
-            style="font-size: 25px;"></i></a>
+        <a href="#" onclick="openModal3(event)">
+          <i class="bi bi-box-arrow-right" title="Logout"></i>
+        </a>
       </div>
 
       <div class="content-section">
@@ -102,7 +121,7 @@ $result = $conn->query($query);
                 <td><?= $nextDue; ?></td>
                 <td><?= $status; ?></td>
                 <td>
-                  <button class="view-btn" onclick="openModalView(<?= $row['activeLoanId'] ?>)">View</button>
+                  <button class="view-btn" onclick="openModalView2(<?= $row['activeLoanId'] ?>)">View</button>
                 </td>
 
                 <!-- Hidden data for modal (loan request details) -->
@@ -152,10 +171,18 @@ $result = $conn->query($query);
       <div class="scrollable">
         <p>Logout your account?</p>
       </div>
-      <button class="confirm-btn" onclick="confirmLogout()">Logout</button>
+      <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
       <button class="close-btn" onclick="closeModal3()">Close</button>
     </div>
   </div>
+  <script>
+    // Ensure page reload on back navigation
+    window.addEventListener('pageshow', function (event) {
+      if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+        window.location.reload();
+      }
+    });
+  </script>
 
   <script src="script.js"></script>
 </body>

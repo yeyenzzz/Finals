@@ -51,6 +51,9 @@ function closeProfile() {
 function confirmLogout() {
   window.location.href = "index.php";
 }
+function confirmLogoutAdmin() {
+  window.location.href = "admin.php?action=logout";
+}
 
 const cashin = document.getElementById("cashinModal");
 
@@ -228,11 +231,7 @@ function showLoanApplication() {
     <form id="loanForm" class="inputs" method="POST" enctype="multipart/form-data">
       <!-- Step 1 -->
       <div id="loanStep1" class="inputs">
-<<<<<<< HEAD
-        <h1 style=: width: 100%;>1. Personal Information</h1>
-=======
         <h1 style="width:100%;">| Personal Information</h1>
->>>>>>> 34350cf (Changes)
         <div class="Personal">Full Name
             <input type="text" name="fullName" value="${userData.fullName}" readonly>
         </div>
@@ -258,11 +257,7 @@ function showLoanApplication() {
 
       <!-- Step 2 -->
       <div id="loanStep2" class="inputs" style="display:none;">
-<<<<<<< HEAD
-        <h1 style=: width: 100%;>2. Loan Details</h2>
-=======
         <h1>| Loan Details</h1>
->>>>>>> 34350cf (Changes)
         <div class="Personal">Loan Type
             <select name="loan_type" required>
                 <option value="" disabled selected>Select Loan Type</option>
@@ -474,22 +469,21 @@ function closeNotifModal() {
 function openModalView(loanId) {
   const dataRow = document.getElementById("data-" + loanId);
 
-  const validID = dataRow.getAttribute("data-validid");
-  const payslip = dataRow.getAttribute("data-payslip");
-
-  // Set images
-  document.getElementById("modalValidID").src = validID;
-  document.getElementById("modalPayslip").src = payslip;
+  // Set image sources only
+  document.getElementById("viewValidID").src =
+    dataRow.getAttribute("data-validid");
+  document.getElementById("viewPayslip").src =
+    dataRow.getAttribute("data-payslip");
 
   // Show modal
   document.getElementById("viewmodal").style.display = "flex";
 }
 
-function closeModalView() {
+function closeViewModal() {
   document.getElementById("viewmodal").style.display = "none";
 }
 
-function openModalView(activeLoanId) {
+function openModalView2(activeLoanId) {
   const dataRow = document.getElementById("data-" + activeLoanId);
 
   document.getElementById("modalLoanType").innerText =

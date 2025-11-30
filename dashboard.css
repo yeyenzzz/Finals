@@ -722,6 +722,7 @@ td.amount-received {
   background-color: #cacaca;
   border-radius: 20px;
   padding: 10px;
+  overflow-x: hidden;
 }
 
 .notif-card {
@@ -733,8 +734,11 @@ td.amount-received {
   cursor: pointer;
   width: 100%;
   max-width: 770px;
+
+  height: 57px;
+  overflow: hidden;
+  flex-shrink: 0;
   transition: background 0.2s, transform 0.1s;
-  max-height: 57px;
 }
 
 .notif-card.unread {
