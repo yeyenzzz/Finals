@@ -14,11 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $notif_title = "Verification Approved";
         $notif_msg = "Your ID has been approved. You are now a verified user.";
         $notif_senderName = "eTapPay Admin";
+        $notif_type = "updates";
         $stmt = $connectDB->prepare("
-                INSERT INTO notifications (user_id, title, message, sender_name, created_at)
-                VALUES (?, ?, ?, ?, NOW())
+                INSERT INTO notifications (user_id, title, message, sender_name, type, created_at)
+                VALUES (?, ?, ?, ?, ?, NOW())
             ");
-        $stmt->bind_param("isss", $userId, $notif_title, $notif_msg, $notif_senderName);
+        $stmt->bind_param("issss", $userId, $notif_title, $notif_msg, $notif_senderName, $notif_type);
         $stmt->execute();
 
         exit;
@@ -32,13 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $notif_title = "Verification Rejected";
         $notif_msg = "Your ID has been rejected. Please upload a valid ID to get verified or make sure the details are matched.";
         $notif_senderName = "eTapPay Admin";
+        $notif_type = "updates";
         $stmt = $connectDB->prepare("
-                INSERT INTO notifications (user_id, title, message, sender_name, created_at)
-                VALUES (?, ?, ?, ?, NOW())
+                INSERT INTO notifications (user_id, title, message, sender_name, type,created_at)
+                VALUES (?, ?, ?, ?, ?, NOW())
             ");
-        $stmt->bind_param("isss", $userId, $notif_title, $notif_msg, $notif_senderName);
+        $stmt->bind_param("isss", $userId, $notif_title, $notif_msg, $notif_senderName, $notif_type);
         $stmt->execute();
-
         exit;
     }
 }
