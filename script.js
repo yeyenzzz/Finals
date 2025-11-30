@@ -228,7 +228,11 @@ function showLoanApplication() {
     <form id="loanForm" class="inputs" method="POST" enctype="multipart/form-data">
       <!-- Step 1 -->
       <div id="loanStep1" class="inputs">
+<<<<<<< HEAD
         <h1 style=: width: 100%;>1. Personal Information</h1>
+=======
+        <h1 style="width:100%;">| Personal Information</h1>
+>>>>>>> 34350cf (Changes)
         <div class="Personal">Full Name
             <input type="text" name="fullName" value="${userData.fullName}" readonly>
         </div>
@@ -254,7 +258,11 @@ function showLoanApplication() {
 
       <!-- Step 2 -->
       <div id="loanStep2" class="inputs" style="display:none;">
+<<<<<<< HEAD
         <h1 style=: width: 100%;>2. Loan Details</h2>
+=======
+        <h1>| Loan Details</h1>
+>>>>>>> 34350cf (Changes)
         <div class="Personal">Loan Type
             <select name="loan_type" required>
                 <option value="" disabled selected>Select Loan Type</option>
