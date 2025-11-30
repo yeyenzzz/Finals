@@ -20,7 +20,7 @@ if (isset($_POST['action']) && isset($_POST['card_id'])) {
     $stmt->close();
 
     if ($action === 'approve') {
-        $stmt = $conn->prepare("UPDATE credit_cards SET status='approved' WHERE id=?");
+        $stmt = $conn->prepare("UPDATE credit_cards SET status='Approved' WHERE id=?");
         $stmt->bind_param("i", $cardId);
         $stmt->execute();
         $stmt->close();
@@ -158,7 +158,7 @@ $result = $conn->query($query);
                                         class="badge <?= strtolower($row['status']) ?>"><?= ucfirst($row['status']) ?></span>
                                 </td>
                                 <td>
-                                    <?php if ($row['status'] == 'pending'): ?>
+                                    <?php if ($row['status'] == 'Pending'): ?>
                                         <form method="post" style="display:inline;">
                                             <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
                                             <input type="hidden" name="action" value="approve">
@@ -169,7 +169,7 @@ $result = $conn->query($query);
                                             <input type="hidden" name="action" value="reject">
                                             <button type="submit" class="reject-btn">Reject</button>
                                         </form>
-                                    <?php elseif ($row['status'] == 'approved'): ?>
+                                    <?php elseif ($row['status'] == 'Approved'): ?>
                                         <form method="post" style="display:inline;">
                                             <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
                                             <input type="hidden" name="action" value="deactivate">

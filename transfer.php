@@ -105,7 +105,7 @@ if (isset($_POST['transfer'])) {
                 INSERT INTO notifications (user_id, title, message, sender_name, type, created_at)
                 VALUES (?, ?, ?, ?, ?, NOW())
             ");
-            $stmt->bind_param("isss", $recipient['id'], $notif_title, $notif_msg, $notif_senderName, $notif_type);
+            $stmt->bind_param("issss", $recipient['id'], $notif_title, $notif_msg, $notif_senderName, $notif_type);
             $stmt->execute();
 
             // Commit
