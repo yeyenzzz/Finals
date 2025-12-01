@@ -159,7 +159,6 @@ $result = $connectDB->query($query);
                             Pending</option>
                         <option value="1" <?= (isset($_GET['status']) && $_GET['status'] == "1") ? "selected" : "" ?>>
                             Approved</option>
-                        <option value="rejected" <?= (isset($_GET['status']) && $_GET['status'] == "rejected") ? "selected" : "" ?>>No ID/Rejected</option>
                     </select>
 
                     <button type="submit" style="display:none;"></button>
@@ -178,47 +177,49 @@ $result = $connectDB->query($query);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result->fetch_assoc()): ?>
+                        <?php if ($result->num_rows > 0): ?>
+                            <?php while ($row = $result->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['firstName'] . ' ' . $row['lastName']) ?></td>
+                                    <td><?= htmlspecialchars($row['phone_number']) ?></td>
+                                    <td><?= htmlspecialchars($row['date_of_birth']) ?></td>
+                                    <td><?= htmlspecialchars($row['email']) ?></td>
+                                    <td><?= date("M d, Y", strtotime($row['uploaded_at'])) ?></td>
+                                    <td>
+                                        <?php
+                                        if ($row['is_verified'] == 1) {
+                                            echo '<span class="badge approved">Approved</span>';
+                                        } elseif ($row['is_verified'] === NULL) {
+                                            echo '<span class="badge rejected">No ID/Rejected</span>';
+                                        } else {
+                                            echo '<span class="badge pending">Pending</span>';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <button class="view-btn"
+                                            onclick="openModalWithID('<?= htmlspecialchars($row['id_image'], ENT_QUOTES) ?>')">View
+                                            ID</button>
+                                        <?php if ($row['is_verified'] == 0): ?>
+                                            <form method="post" style="display:inline">
+                                                <input type="hidden" name="approve_id" value="<?= $row['id'] ?>">
+                                                <button type="submit" class="approve-btn">Approve</button>
+                                            </form>
+                                            <form method="post" style="display:inline">
+                                                <input type="hidden" name="reject_id" value="<?= $row['id'] ?>">
+                                                <button type="submit" class="reject-btn">Reject</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
                             <tr>
-                                <td><?= htmlspecialchars($row['firstName'] . ' ' . $row['lastName']) ?></td>
-                                <td><?= htmlspecialchars($row['phone_number']) ?></td>
-                                <td><?= htmlspecialchars($row['date_of_birth']) ?></td>
-                                <td><?= htmlspecialchars($row['email']) ?></td>
-                                <td><?= date("M d, Y", strtotime($row['uploaded_at'])) ?></td>
-
-                                <td>
-                                    <?php
-                                    if ($row['is_verified'] == 1) {
-                                        echo '<span class="badge approved">Approved</span>';
-                                    } elseif ($row['is_verified'] === NULL) {
-                                        echo '<span class="badge rejected">No ID/Rejected</span>';
-                                    } else {
-                                        echo '<span class="badge pending">Pending</span>';
-                                    }
-                                    ?>
-                                </td>
-
-                                <td>
-                                    <button class="view-btn"
-                                        onclick="openModalWithID('<?= htmlspecialchars($row['id_image'], ENT_QUOTES) ?>')">
-                                        View ID
-                                    </button>
-
-                                    <?php if ($row['is_verified'] == 0): ?>
-                                        <form method="post" style="display:inline">
-                                            <input type="hidden" name="approve_id" value="<?= $row['id'] ?>">
-                                            <button type="submit" class="approve-btn">Approve</button>
-                                        </form>
-
-                                        <form method="post" style="display:inline">
-                                            <input type="hidden" name="reject_id" value="<?= $row['id'] ?>">
-                                            <button type="submit" class="reject-btn">Reject</button>
-                                        </form>
-                                    <?php endif; ?>
-                                </td>
+                                <td colspan="7" style="text-align:center;">No users found.</td>
                             </tr>
-                        <?php endwhile; ?>
+                        <?php endif; ?>
                     </tbody>
+
                 </table>
             </div>
         </div>
@@ -231,8 +232,10 @@ $result = $connectDB->query($query);
             <div class="scrollable">
                 <p>Logout your account?</p>
             </div>
-            <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
-            <button class="close-btn" onclick="closeModal3()">Close</button>
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
+                <button class="close-btn" onclick="closeModal3()">Close</button>
+            </div>
         </div>
     </div>
 
@@ -248,7 +251,7 @@ $result = $connectDB->query($query);
     <script>
         function openModalWithID(imageName) {
             const modal = document.getElementById('viewmodal');
-            modal.style.display = 'block';
+            modal.style.display = 'flex';
             document.getElementById('idPreview').innerHTML =
                 `<img src="uploads/valid_ids/${imageName}" style="max-width:100%;">`;
         }

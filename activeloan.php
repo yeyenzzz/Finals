@@ -21,6 +21,29 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
   exit();
 }
 
+$search = "";
+$searchFilter = "";
+
+if (!empty($_GET['search'])) {
+  $search = $conn->real_escape_string($_GET['search']);
+  $verifiedFilter = "";
+
+  if (strtolower($search) === "yes") {
+    $verifiedFilter = "u.is_verified = 1";
+  } elseif (strtolower($search) === "no") {
+    $verifiedFilter = "u.is_verified = 0";
+  }
+
+  $searchFilter = " AND (
+        u.firstName LIKE '%$search%' OR
+        u.lastName LIKE '%$search%' OR
+        CONCAT(u.firstName, ' ', u.lastName) LIKE '%$search%' OR
+        lr.loan_type LIKE '%$search%' OR
+        lr.loan_term LIKE '%$search%' " .
+    ($verifiedFilter ? " OR $verifiedFilter" : "") .
+    ")";
+}
+
 // Fetch active loans with user and loan request details
 $query = "
     SELECT al.id AS activeLoanId, al.user_id, al.loan_id, al.loan_amount AS remaining_balance, al.created_at,
@@ -30,6 +53,7 @@ $query = "
     FROM activeloan al
     JOIN users u ON al.user_id = u.id
     JOIN loanrequest lr ON al.loan_id = lr.id
+    $searchFilter
     ORDER BY al.created_at DESC
 ";
 $result = $conn->query($query);
@@ -81,6 +105,14 @@ $result = $conn->query($query);
       <div class="content-section">
         <h2>Active Loans</h2>
 
+        <div class="filter-bar" style="margin: 0px">
+          <form method="GET" class="filter-bar" style="width: 100%;">
+            <input type="text" name="search" placeholder="Search user or account..." class="search-box"
+              value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+            <button type="submit" style="display:none;"></button>
+          </form>
+        </div>
+
         <table class="data-table">
           <thead>
             <tr>
@@ -93,49 +125,52 @@ $result = $conn->query($query);
             </tr>
           </thead>
           <tbody>
-            <?php while ($row = $result->fetch_assoc()):
-              // Determine the next due date based on payment frequency
-              $createdAt = strtotime($row['created_at']);
-              switch (strtolower($row['payment_frequency'])) {
-                case 'bi-weekly':
-                  $nextDue = date('M d, Y', strtotime('+14 days', $createdAt));
-                  break;
-                case 'quarterly':
-                  $nextDue = date('M d, Y', strtotime('+90 days', $createdAt));
-                  break;
-                case 'monthly':
-                default:
-                  $nextDue = date('M d, Y', strtotime('+30 days', $createdAt));
-                  break;
-              }
+            <?php if ($result->num_rows > 0): ?>
+              <?php while ($row = $result->fetch_assoc()):
+                // Determine the next due date based on payment frequency
+                $createdAt = strtotime($row['created_at']);
+                switch (strtolower($row['payment_frequency'])) {
+                  case 'bi-weekly':
+                    $nextDue = date('M d, Y', strtotime('+14 days', $createdAt));
+                    break;
+                  case 'quarterly':
+                    $nextDue = date('M d, Y', strtotime('+90 days', $createdAt));
+                    break;
+                  case 'monthly':
+                  default:
+                    $nextDue = date('M d, Y', strtotime('+30 days', $createdAt));
+                    break;
+                }
 
-              $today = date('Y-m-d');
-              $isOverdue = strtotime($today) > strtotime($nextDue);
-              $status = $isOverdue ? 'Overdue' : 'On-time';
-              ?>
+                $today = date('Y-m-d');
+                $isOverdue = strtotime($today) > strtotime($nextDue);
+                $status = $isOverdue ? 'Overdue' : 'On-time';
+                ?>
+                <tr>
+                  <td><?= htmlspecialchars($row['firstName'] . " " . $row['lastName']); ?></td>
+                  <td><?= htmlspecialchars($row['user_id']); ?></td>
+                  <td>₱<?= number_format($row['remaining_balance'], 2); ?></td>
+                  <td><?= $nextDue; ?></td>
+                  <td><?= $status; ?></td>
+                  <td>
+                    <button class="view-btn" onclick="openModalView2(<?= $row['activeLoanId'] ?>)">View</button>
+                  </td>
+                  <td id="data-<?= $row['activeLoanId'] ?>" style="display:none;"
+                    data-loantype="<?= htmlspecialchars($row['loan_type']); ?>"
+                    data-loanamount="<?= htmlspecialchars(number_format($row['requested_amount'], 2)); ?>"
+                    data-loanterm="<?= htmlspecialchars($row['loan_term']); ?>"
+                    data-paymenttype="<?= htmlspecialchars($row['payment_type']); ?>"
+                    data-paymentfrequency="<?= htmlspecialchars($row['payment_frequency']); ?>"
+                    data-validid="<?= htmlspecialchars($row['valid_id']); ?>"
+                    data-payslip="<?= htmlspecialchars($row['payslip']); ?>">
+                  </td>
+                </tr>
+              <?php endwhile; ?>
+            <?php else: ?>
               <tr>
-                <!-- Active loan info for table -->
-                <td><?= htmlspecialchars($row['firstName'] . " " . $row['lastName']); ?></td>
-                <td><?= htmlspecialchars($row['user_id']); ?></td>
-                <td>₱<?= number_format($row['remaining_balance'], 2); ?></td>
-                <td><?= $nextDue; ?></td>
-                <td><?= $status; ?></td>
-                <td>
-                  <button class="view-btn" onclick="openModalView2(<?= $row['activeLoanId'] ?>)">View</button>
-                </td>
-
-                <!-- Hidden data for modal (loan request details) -->
-                <td id="data-<?= $row['activeLoanId'] ?>" style="display:none;"
-                  data-loantype="<?= htmlspecialchars($row['loan_type']); ?>"
-                  data-loanamount="<?= htmlspecialchars(number_format($row['requested_amount'], 2)); ?>"
-                  data-loanterm="<?= htmlspecialchars($row['loan_term']); ?>"
-                  data-paymenttype="<?= htmlspecialchars($row['payment_type']); ?>"
-                  data-paymentfrequency="<?= htmlspecialchars($row['payment_frequency']); ?>"
-                  data-validid="<?= htmlspecialchars($row['valid_id']); ?>"
-                  data-payslip="<?= htmlspecialchars($row['payslip']); ?>">
-                </td>
+                <td colspan="6" style="text-align:center;">No account found.</td>
               </tr>
-            <?php endwhile; ?>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>
@@ -171,8 +206,10 @@ $result = $conn->query($query);
       <div class="scrollable">
         <p>Logout your account?</p>
       </div>
-      <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
-      <button class="close-btn" onclick="closeModal3()">Close</button>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+        <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
+        <button class="close-btn" onclick="closeModal3()">Close</button>
+      </div>
     </div>
   </div>
   <script>

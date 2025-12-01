@@ -175,6 +175,11 @@ a {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
 }
 
+.profile i:hover {
+  background-color: #00226f;
+  color: white;
+}
+
 .data-table td {
   text-align: center;
   padding: 14px 16px;

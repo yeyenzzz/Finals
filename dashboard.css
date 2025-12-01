@@ -1019,15 +1019,11 @@ td.amount-received {
   }
 }
 
-.card-container {
-  perspective: 1000px;
-}
-
 .credit-cards {
   width: 350px;
   height: 200px;
   border-radius: 20px;
-  background: linear-gradient(135deg, #00226f, #0056b3);
+  background: linear-gradient(135deg, #0739ac, #021a33);
   color: #fff;
   padding: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);

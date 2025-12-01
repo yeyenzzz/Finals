@@ -52,6 +52,8 @@ $statusQuery->bind_param("i", $userData['id']);
 $statusQuery->execute();
 $statusResult = $statusQuery->get_result();
 $cardStatus = $statusResult->fetch_assoc()['status'] ?? null;
+$cardQuery = $conn->query("SELECT card_number, expiry_date FROM credit_cards WHERE status='Approved' ORDER BY id DESC LIMIT 1");
+$cardData = $cardQuery->fetch_assoc();
 
 
 // ------------------------------------------------------------
@@ -278,7 +280,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['confirm_card'])) {
             const USER_NAME = "<?= $firstName . ' ' . $lastName ?>";
             const USER_DOB = "<?= $date_of_birth ?>";
             const USER_ADDRESS = "<?= $address ?>";
-            const CARD_STATUS = "<?= $cardStatus ?>"; 
+            const CARD_STATUS = "<?= $cardStatus ?>";
+            const CARD_NUMBER = "<?= $cardData['card_number'] ?? 'XXXX XXXX XXXX XXXX' ?>";
+            const CARD_EXPIRY = "<?= $cardData['expiry_date'] ?? 'MM/YY' ?>";
         </script>
 
 </body>
