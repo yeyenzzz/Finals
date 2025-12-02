@@ -39,7 +39,7 @@ $loanQuery = $connectDB->prepare("
     SELECT al.id AS activeLoanId, lr.loan_amount, lr.payment_frequency, lr.payment_type, lr.status, al.created_at, lr.loan_term
     FROM activeloan al
     JOIN loanrequest lr ON al.loan_id = lr.id
-    WHERE al.user_id = ? AND lr.status = 'approved' AND lr.payment_type = 'Automatic'
+    WHERE al.user_id = ? AND lr.status = 'Approved' AND lr.payment_type = 'Automatic'
 ");
 $loanQuery->bind_param("i", $user_id);
 $loanQuery->execute();

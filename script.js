@@ -186,43 +186,122 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // If no application → keep the default page showing "Apply"
 });
+function payNow() {
+  const amountInput = document.getElementById("payAmount");
+  const amount = parseFloat(amountInput ? amountInput.value : NaN);
+  if (isNaN(amount) || amount <= 0) {
+    alert("Enter a valid amount.");
+    return;
+  }
+
+  // disable button to prevent double submit
+  const btn = document.getElementById("payNowBtn");
+  if (btn) btn.disabled = true;
+
+  fetch("loan4.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `makePayment=1&user_id=${USER_ID}&amount=${encodeURIComponent(
+      amount
+    )}`,
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "success") {
+        alert(data.message);
+
+        // Update displayed loan amount
+        const loanAmountElem = document.getElementById("loanAmountDisplay");
+        if (loanAmountElem)
+          loanAmountElem.textContent = `₱${Number(
+            data.remaining
+          ).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}`;
+
+        // Update remaining payments
+        const paymentCountElem = document.getElementById("paymentsRemaining");
+        if (paymentCountElem)
+          paymentCountElem.textContent = `Payments Remaining: ${data.paymentsRemaining}`;
+
+        // If fully paid, reload page to refresh UI
+        if (data.remaining <= 0) {
+          location.reload();
+        }
+      } else {
+        alert(data.message || "Payment failed.");
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("There was an error processing the payment.");
+    })
+    .finally(() => {
+      if (btn) btn.disabled = false;
+    });
+}
 
 document.addEventListener("DOMContentLoaded", function () {
   const content = document.getElementById("loanContent");
 
   if (LOAN_STATUS === "Pending") {
     content.innerHTML = `
-        <h1>Loan Application</h1>
-        <div class="applycard"><img src="images/save.png" alt="" class="credit-card "></div>
-        <h1>Loan Status: Pending Review</h1>
-        <p style="margin-bottom: 20px;"> <i class="bi bi-check-circle-fill" style="color: #00226f;"></i>  Your loan request is currently under evaluation. Please wait for admin approval.</p>
-        <p><strong>Loan Type:</strong> ${LOAN_TYPE}</p>
-        <p><strong>Loan Amount:</strong> ₱${Number(
-          LOAN_AMOUNT
-        ).toLocaleString()}</p>
-        <p><strong>Loan Term:</strong> ${LOAN_TERM} months</p>
-        `;
+      <h1>Loan Application</h1>
+      <div class="applycard"><img src="images/save.png" alt="" class="credit-card "></div>
+      <h1>Loan Status: Pending Review</h1>
+      <p style="margin-bottom: 20px;">
+        <i class="bi bi-check-circle-fill" style="color: #00226f;"></i>
+        Your loan request is currently under evaluation. Please wait for admin approval.
+      </p>
+      <p><strong>Loan Type:</strong> ${LOAN_TYPE}</p>
+      <p><strong>Loan Amount:</strong> ₱${Number(
+        LOAN_AMOUNT
+      ).toLocaleString()}</p>
+      <p><strong>Loan Term:</strong> ${LOAN_TERM} months</p>
+    `;
   } else if (LOAN_STATUS === "Approved") {
-    content.innerHTML = `
+    let html = `
       <h1>Loan Approved</h1>
-      <p style="margin-bottom: 20px;"><i class="bi bi-check-circle-fill" style="color: #00226f;"></i> Your loan application has been successfully approved. The approved amount has <br>been credited to your available account balance.</p>
+      <p style="margin-bottom: 20px;">
+        <i class="bi bi-check-circle-fill" style="color: #00226f;"></i>
+        Your loan application has been successfully approved.
+      </p>
       <p><strong>Approved Amount:</strong> ₱${Number(
         LOAN_AMOUNT
       ).toLocaleString()}</p>
       <p><strong>Loan Type:</strong> ${LOAN_TYPE}</p>
+    `;
 
-      <p style="margin-top: 20px;">You may submit another loan application once your current loan term has been fully completed.</p>
-        `;
+    if (PAYMENT_TYPE === "Manual") {
+      html += `
+   <p><strong>Remaining Balance:</strong> 
+      <span id="loanAmountDisplay">₱${Number(
+        ACTIVE_LOAN_REMAINING
+      ).toLocaleString()}</span>
+    </p>
+    <p id="paymentsRemaining">Payments Remaining: ${ACTIVE_PAYMENTS_REMAINING}</p>
+    <input type="number" id="payAmount" placeholder="Enter amount" style="padding:10px;width:200px;margin-top:15px;" />
+    <button class="pay-btn" style="margin-top:15px;" onclick="payNow()">Pay Now</button>
+`;
+    } else {
+      html += `
+        <p>The approved amount has been credited to your available account balance.</p>
+        <p style="margin-top: 20px;">
+          You may submit another loan application once your current loan term has been fully completed.
+        </p>
+      `;
+    }
+
+    content.innerHTML = html;
   } else if (LOAN_STATUS === "Rejected") {
     content.innerHTML = `
-            <h1>Credit Card</h1>
-            <div class="applycard"><img src="images/credit-card.png" class="credit-card"></div>
-            <h2 style="color:red;">Your application was rejected.</h2>
-            <p>You may re-apply or contact support for more details.</p>
-        `;
+      <h1>Credit Card</h1>
+      <div class="applycard"><img src="images/credit-card.png" class="credit-card"></div>
+      <h2 style="color:red;">Your application was rejected.</h2>
+      <p>You may re-apply or contact support for more details.</p>
+    `;
   }
-
-  // If no application → keep the default page showing "Apply"
 });
 
 function validateCardForm() {
