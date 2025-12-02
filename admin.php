@@ -22,6 +22,22 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     exit();
 }
 
+// SEARCH FILTER
+$search = "";
+$searchFilter = "";
+
+if (isset($_GET['search']) && $_GET['search'] !== "") {
+    $search = $connectDB->real_escape_string($_GET['search']);
+    $searchFilter = " AND (
+        u.firstName LIKE '%$search%' OR
+        u.lastName LIKE '%$search%' OR
+        CONCAT(u.firstName, ' ', u.lastName) LIKE '%$search%' OR
+        u.email LIKE '%$search%' OR
+        u.id LIKE '%$search%' OR
+        u.phone_number LIKE '%$search%'
+    )";
+}
+
 // Fetch only active users
 $query = "
     SELECT u.id, u.firstName, u.lastName, u.phone_number, u.date_of_birth, u.email, 
@@ -29,6 +45,7 @@ $query = "
     FROM users u
     JOIN usersvalidID uv ON u.id = uv.user_id
     WHERE u.is_verified = 1
+    $searchFilter
     ORDER BY u.created_at DESC
 ";
 $result = $connectDB->query($query);
@@ -82,14 +99,12 @@ $result = $connectDB->query($query);
                 <h2>Active Users</h2>
 
                 <!-- Search and Filter -->
-                <div class="filter-bar">
-                    <input type="text" placeholder="Search user or account..." class="search-box">
-                    <select>
-                        <option>Status (All)</option>
-                        <option>Pending</option>
-                        <option>Active</option>
-                        <option>Deactivate</option>
-                    </select>
+                <div class="filter-bar" style="margin: 0px">
+                    <form method="GET" class="filter-bar" style="width: 100%;">
+                        <input type="text" name="search" placeholder="Search user or account..." class="search-box"
+                            value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                        <button type="submit" style="display:none;"></button>
+                    </form>
                 </div>
 
                 <!-- Users Table -->
@@ -102,7 +117,6 @@ $result = $connectDB->query($query);
                             <th>Email Address</th>
                             <th>Date Registered</th>
                             <th>Status</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -123,10 +137,6 @@ $result = $connectDB->query($query);
                                         <td>{$email}</td>
                                         <td>{$dateRegistered}</td>
                                         <td>{$status}</td>
-                                        <td>
-                                            <button class='approve-btn'>Activate</button>
-                                            <button class='reject-btn'>Deactivate</button>
-                                        </td>
                                       </tr>";
                             }
                         } else {
@@ -144,8 +154,10 @@ $result = $connectDB->query($query);
                     <div class="scrollable">
                         <p>Logout your account?</p>
                     </div>
-                    <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
-                    <button class="close-btn" onclick="closeModal3()">Close</button>
+                    <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                        <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
+                        <button class="close-btn" onclick="closeModal3()">Close</button>
+                    </div>
                 </div>
             </div>
         </div>

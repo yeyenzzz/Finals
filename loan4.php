@@ -30,6 +30,23 @@ $userQuery->execute();
 $userResult = $userQuery->get_result();
 $userData = $userResult->fetch_assoc();
 
+$loanQuery = $conn->prepare("
+    SELECT id, status, loan_amount, loan_type, loan_term 
+    FROM loanrequest 
+    WHERE user_id = ? 
+    ORDER BY id DESC LIMIT 1
+");
+$loanQuery->bind_param("i", $user_id);
+$loanQuery->execute();
+$loanResult = $loanQuery->get_result();
+$loanData = $loanResult->fetch_assoc();
+
+$loanStatus = $loanData['status'] ?? null;
+$loanType = $loanData['loan_type'] ?? null;
+$loanAmount = $loanData['loan_amount'] ?? null;
+$loanTerm = $loanData['loan_term'] ?? null;
+
+
 // Handle loan submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitLoan'])) {
 
@@ -270,6 +287,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitLoan'])) {
             const USER_NAME = "<?= $firstName . ' ' . $lastName ?>";
             const USER_DOB = "<?= $date_of_birth ?>";
             const USER_ADDRESS = "<?= $address ?>";
+            const LOAN_STATUS = "<?= $loanStatus ?>";
+            const LOAN_AMOUNT = "<?= $loanAmount ?>";
+            const LOAN_TERM = "<?= $loanTerm ?>";
+            const LOAN_TYPE = "<?= $loanType ?>"
         </script>
 
 </body>

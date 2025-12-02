@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <h1>Credit Card</h1>
             <div class="applycard"><img src="images/credit-card.png" class="credit-card"></div>
             <h2 style="color:#00226f;">Your application is currently under review.</h2>
-            <p>Please wait while our team verifies your information.</p>
+            <p><i class="bi bi-check-circle-fill" style="color: #00226f;"></i> Please wait while our team verifies your information.</p>
         `;
   } else if (CARD_STATUS === "Approved") {
     content.innerHTML = `
@@ -156,18 +156,64 @@ document.addEventListener("DOMContentLoaded", function () {
                   <div class="card-chip"></div>
                   <div class="card-logo">eTapPay</div>
                 </div>
-                <div class="card-number">1234 5678 9012 3456</div>
+                <div class="card-number">${CARD_NUMBER}</div>
                 <div class="card-holder">
                   <span>Card Holder</span>
                   <div>${userData.fullName}</div>
                 </div>
                 <div class="card-expiry">
                   <span>Expires</span>
-                  <div>12/26</div>
+                  <div>${CARD_EXPIRY}</div>
+                </div>
               </div>
+            </div>
+            <div style="text-align: center; margin: 50px 100px 50px 100px;">
+              <p class="card-info">
+                  <i class="bi bi-check-circle-fill" style="color: #00226f;"></i> Your eTapPay credit card is ready to use!
+                  Enjoy seamless payments at partner stores, online shopping, and contactless transactions.
+                  Manage your spending, track transactions in real-time, and take advantage of exclusive offers and rewards with your new card.
+              </p>
             </div>
         `;
   } else if (CARD_STATUS === "Rejected") {
+    content.innerHTML = `
+            <h1>Credit Card</h1>
+            <div class="applycard"><img src="images/credit-card.png" class="credit-card"></div>
+            <h2 style="color:red;">Your application was rejected.</h2>
+            <p>You may re-apply or contact support for more details.</p>
+        `;
+  }
+
+  // If no application → keep the default page showing "Apply"
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const content = document.getElementById("loanContent");
+
+  if (LOAN_STATUS === "Pending") {
+    content.innerHTML = `
+        <h1>Loan Application</h1>
+        <div class="applycard"><img src="images/save.png" alt="" class="credit-card "></div>
+        <h1>Loan Status: Pending Review</h1>
+        <p style="margin-bottom: 20px;"> <i class="bi bi-check-circle-fill" style="color: #00226f;"></i>  Your loan request is currently under evaluation. Please wait for admin approval.</p>
+        <p><strong>Loan Type:</strong> ${LOAN_TYPE}</p>
+        <p><strong>Loan Amount:</strong> ₱${Number(
+          LOAN_AMOUNT
+        ).toLocaleString()}</p>
+        <p><strong>Loan Term:</strong> ${LOAN_TERM} months</p>
+        `;
+  } else if (LOAN_STATUS === "Approved") {
+    content.innerHTML = `
+      <h1>Loan Approved</h1>
+      <p style="margin-bottom: 20px;"><i class="bi bi-check-circle-fill" style="color: #00226f;"></i> Your loan application has been successfully approved. The approved amount has <br>been credited to your available account balance.</p>
+      <p><strong>Approved Amount:</strong> ₱${Number(
+        LOAN_AMOUNT
+      ).toLocaleString()}</p>
+      <p><strong>Loan Type:</strong> ${LOAN_TYPE}</p>
+
+      <p style="margin-top: 20px;">You may submit another loan application once your current loan term has been fully completed.</p>
+        `;
+  } else if (LOAN_STATUS === "Rejected") {
     content.innerHTML = `
             <h1>Credit Card</h1>
             <div class="applycard"><img src="images/credit-card.png" class="credit-card"></div>

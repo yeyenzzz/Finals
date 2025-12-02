@@ -45,6 +45,18 @@ if (isset($_POST['action']) && isset($_POST['card_id'])) {
         $stmt->execute();
         $stmt->close();
 
+        $prefix = "414200";
+        $cardNumber = $prefix . str_pad($cardId, 10, "0", STR_PAD_LEFT); // pad user ID to 10 digits
+
+        $expiryMonth = date("m");
+        $expiryYear = date("y", strtotime("+5 years"));
+        $expiryDate = $expiryMonth . "/" . $expiryYear;
+
+        $stmt = $conn->prepare("UPDATE credit_cards SET card_number=?, expiry_date=? WHERE id=?");
+        $stmt->bind_param("ssi", $cardNumber, $expiryDate, $cardId);
+        $stmt->execute();
+        $stmt->close();
+
         $notif_title = "Card Request Approved";
         $notif_msg = "Your credit card request has been approved. You can now use your eTapPay card.";
     } elseif ($action === 'reject') {
@@ -80,6 +92,34 @@ if (isset($_POST['action']) && isset($_POST['card_id'])) {
     exit();
 }
 
+// STATUS FILTER
+$statusFilter = "";
+if (isset($_GET['status']) && $_GET['status'] !== "") {
+    if ($_GET['status'] === "0") {         // Pending
+        $statusFilter = "WHERE cc.status = 'Pending'";
+    } elseif ($_GET['status'] === "1") {   // Approved
+        $statusFilter = "WHERE cc.status = 'Approved'";
+    } elseif ($_GET['status'] === "rejected") {
+        $statusFilter = "WHERE cc.status = 'Rejected'";
+    }
+}
+
+
+// SEARCH FILTER
+$search = "";
+$searchFilter = "";
+
+if (isset($_GET['search']) && $_GET['search'] !== "") {
+    $search = $conn->real_escape_string($_GET['search']);
+    $searchFilter = " AND (
+        u.firstName LIKE '%$search%' OR
+        u.lastName LIKE '%$search%' OR
+        CONCAT(u.firstName, ' ', u.lastName) LIKE '%$search%' OR
+        u.email LIKE '%$search%' OR
+        u.phone_number LIKE '%$search%'
+    )";
+}
+
 
 // Fetch all card requests with user info
 $query = "
@@ -87,6 +127,7 @@ $query = "
            u.firstName, u.lastName, u.phone_number, u.email, u.is_verified
     FROM credit_cards cc
     JOIN users u ON cc.user_id = u.id
+    $statusFilter $searchFilter
     ORDER BY cc.created_at DESC
 ";
 $result = $conn->query($query);
@@ -142,15 +183,21 @@ $result = $conn->query($query);
                 <h2>Card Registration Requests</h2>
 
                 <!-- Search and Filter -->
-                <div class="filter-bar">
-                    <input type="text" placeholder="Search user or account..." class="search-box">
-                    <select>
-                        <option>Status (All)</option>
-                        <option>Pending</option>
-                        <option>Approved</option>
-                        <option>Rejected</option>
+                <form method="GET" class="filter-bar">
+                    <input type="text" name="search" placeholder="Search user or account..." class="search-box"
+                        value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="">Status (All)</option>
+                        <option value="0" <?= (isset($_GET['status']) && $_GET['status'] === "0") ? "selected" : "" ?>>
+                            Pending</option>
+                        <option value="1" <?= (isset($_GET['status']) && $_GET['status'] === "1") ? "selected" : "" ?>>
+                            Approved</option>
                     </select>
-                </div>
+
+
+                    <button type="submit" style="display:none;"></button>
+                </form>
 
                 <!-- Requests Table -->
                 <table class="data-table">
@@ -166,42 +213,47 @@ $result = $conn->query($query);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result->fetch_assoc()): ?>
+                        <?php if ($result->num_rows > 0): ?>
+                            <?php while ($row = $result->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['firstName'] . ' ' . $row['lastName']) ?></td>
+                                    <td><?= $row['is_verified'] ? 'Yes' : 'No' ?></td>
+                                    <td><?= htmlspecialchars($row['phone_number']) ?></td>
+                                    <td><?= htmlspecialchars($row['email']) ?></td>
+                                    <td><?= date("M d, Y", strtotime($row['created_at'])) ?></td>
+                                    <td>
+                                        <span
+                                            class="badge <?= strtolower($row['status']) ?>"><?= ucfirst($row['status']) ?></span>
+                                    </td>
+                                    <td>
+                                        <?php if ($row['status'] == 'Pending'): ?>
+                                            <form method="post" style="display:inline;">
+                                                <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
+                                                <input type="hidden" name="action" value="approve">
+                                                <button type="submit" class="approve-btn">Approve</button>
+                                            </form>
+                                            <form method="post" style="display:inline;">
+                                                <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
+                                                <input type="hidden" name="action" value="reject">
+                                                <button type="submit" class="reject-btn">Reject</button>
+                                            </form>
+                                        <?php elseif ($row['status'] == 'Approved'): ?>
+                                            <form method="post" style="display:inline;">
+                                                <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
+                                                <input type="hidden" name="action" value="deactivate">
+                                                <button type="submit" class="reject-btn">Deactivate</button>
+                                            </form>
+                                        <?php else: ?>
+                                            -
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
                             <tr>
-                                <td><?= htmlspecialchars($row['firstName'] . ' ' . $row['lastName']) ?></td>
-                                <td><?= $row['is_verified'] ? 'Yes' : 'No' ?></td>
-                                <td><?= htmlspecialchars($row['phone_number']) ?></td>
-                                <td><?= htmlspecialchars($row['email']) ?></td>
-                                <td><?= date("M d, Y", strtotime($row['created_at'])) ?></td>
-                                <td>
-                                    <span
-                                        class="badge <?= strtolower($row['status']) ?>"><?= ucfirst($row['status']) ?></span>
-                                </td>
-                                <td>
-                                    <?php if ($row['status'] == 'Pending'): ?>
-                                        <form method="post" style="display:inline;">
-                                            <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
-                                            <input type="hidden" name="action" value="approve">
-                                            <button type="submit" class="approve-btn">Approve</button>
-                                        </form>
-                                        <form method="post" style="display:inline;">
-                                            <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
-                                            <input type="hidden" name="action" value="reject">
-                                            <button type="submit" class="reject-btn">Reject</button>
-                                        </form>
-                                    <?php elseif ($row['status'] == 'Approved'): ?>
-                                        <form method="post" style="display:inline;">
-                                            <input type="hidden" name="card_id" value="<?= $row['card_id'] ?>">
-                                            <input type="hidden" name="action" value="deactivate">
-                                            <button type="submit" class="reject-btn">Deactivate</button>
-                                        </form>
-                                    <?php else: ?>
-                                        -
-                                    <?php endif; ?>
-                                </td>
-
+                                <td colspan="7" style="text-align:center;">No account found.</td>
                             </tr>
-                        <?php endwhile; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
 
@@ -215,8 +267,10 @@ $result = $conn->query($query);
             <div class="scrollable">
                 <p>Logout your account?</p>
             </div>
-            <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
-            <button class="close-btn" onclick="closeModal3()">Close</button>
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
+                <button class="close-btn" onclick="closeModal3()">Close</button>
+            </div>
         </div>
     </div>
     <script>

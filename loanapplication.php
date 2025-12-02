@@ -3,11 +3,11 @@ session_start();
 include 'db.php';
 $conn = connectDB();
 
+// Prevent caching
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 header("Expires: 0");
-
 
 // Redirect to login if not logged in
 if (!isset($_SESSION['id'])) {
@@ -15,6 +15,7 @@ if (!isset($_SESSION['id'])) {
     exit();
 }
 
+// Logout
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     $_SESSION = array();
     session_destroy();
@@ -22,26 +23,50 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     exit();
 }
 
+// Search filter
+$search = "";
+$searchFilter = "";
 
+if (!empty($_GET['search'])) {
+    $search = $conn->real_escape_string($_GET['search']);
+    $verifiedFilter = "";
+
+    if (strtolower($search) === "yes") {
+        $verifiedFilter = "u.is_verified = 1";
+    } elseif (strtolower($search) === "no") {
+        $verifiedFilter = "u.is_verified = 0";
+    }
+
+    $searchFilter = " AND (
+        u.firstName LIKE '%$search%' OR
+        u.lastName LIKE '%$search%' OR
+        CONCAT(u.firstName, ' ', u.lastName) LIKE '%$search%' OR
+        lr.loan_type LIKE '%$search%' OR
+        lr.loan_term LIKE '%$search%' " .
+        ($verifiedFilter ? " OR $verifiedFilter" : "") .
+        ")";
+}
 
 // Fetch loan applications
 $query = "
-    SELECT lr.id, u.firstName, u.lastName, u.is_verified, lr.loan_type, lr.loan_amount, 
+    SELECT lr.id, u.firstName, u.lastName, u.is_verified, lr.loan_type, lr.loan_amount,
            lr.loan_term, lr.payment_frequency, lr.payment_type, lr.status, lr.valid_id, lr.payslip, lr.created_at
     FROM loanrequest lr
-    JOIN users u ON lr.user_id = u.id  WHERE lr.status = 'Pending'
+    JOIN users u ON lr.user_id = u.id
+    WHERE lr.status = 'Pending' $searchFilter
     ORDER BY lr.created_at DESC
 ";
 
 $result = $conn->query($query);
+if (!$result) {
+    die("Query failed: " . $conn->error);
+}
 
-
+// Approve loan
 if (isset($_POST['approve'])) {
     $loan_id = $_POST['loan_id'];
 
-    // fetch loan details
-    $loanQuery = $conn->prepare("SELECT user_id, loan_amount, loan_type, loan_term, payment_frequency 
-                                 FROM loanrequest WHERE id = ?");
+    $loanQuery = $conn->prepare("SELECT user_id, loan_amount, loan_type, loan_term, payment_frequency FROM loanrequest WHERE id = ?");
     $loanQuery->bind_param("i", $loan_id);
     $loanQuery->execute();
     $loanData = $loanQuery->get_result()->fetch_assoc();
@@ -59,15 +84,15 @@ if (isset($_POST['approve'])) {
     $updateStatus->execute();
     $updateStatus->close();
 
-    // Add loan amount to user balance
+    // Update user balance
     $updateBalance = $conn->prepare("UPDATE users SET balance = balance + ? WHERE id=?");
     $updateBalance->bind_param("di", $loan_amount, $user_id);
     $updateBalance->execute();
     $updateBalance->close();
 
-    // Insert into activeloan table
+    // Insert into activeloan
     $insertLoan = $conn->prepare("
-        INSERT INTO activeloan (user_id, loan_id, loan_type, loan_amount, loan_term, payment_frequency, created_at) 
+        INSERT INTO activeloan (user_id, loan_id, loan_type, loan_amount, loan_term, payment_frequency, created_at)
         VALUES (?, ?, ?, ?, ?, ?, NOW())
     ");
     $insertLoan->bind_param("iisdis", $user_id, $loan_id, $loan_type, $loan_amount, $loan_term, $payment_frequency);
@@ -92,11 +117,10 @@ if (isset($_POST['approve'])) {
     exit();
 }
 
-// REJECT LOAN
+// Reject loan
 if (isset($_POST['reject'])) {
     $loan_id = $_POST['loan_id'];
 
-    // fetch user_id before deleting
     $loanQuery = $conn->prepare("SELECT user_id FROM loanrequest WHERE id = ?");
     $loanQuery->bind_param("i", $loan_id);
     $loanQuery->execute();
@@ -126,7 +150,6 @@ if (isset($_POST['reject'])) {
     header("Location: loanapplication.php");
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -138,9 +161,6 @@ if (isset($_POST['reject'])) {
     <title>Admin - Loan Applications</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@latest/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="admin.css">
-    <style>
-
-    </style>
 </head>
 
 <body>
@@ -171,22 +191,17 @@ if (isset($_POST['reject'])) {
         <!-- Page Content -->
         <div class="page">
             <div class="profile" id="profile">
-                <a href="#" onclick="openModal3(event)">
-                    <i class="bi bi-box-arrow-right" title="Logout"></i>
-                </a>
+                <a href="#" onclick="openModal3(event)"><i class="bi bi-box-arrow-right" title="Logout"></i></a>
             </div>
             <div class="content-section">
                 <h2>Loan Application Requests</h2>
 
-                <!-- Search and Filter -->
-                <div class="filter-bar">
-                    <input type="text" placeholder="Search applicant..." class="search-box" onkeyup="filterTable()">
-                    <select id="statusFilter" onchange="filterTable()">
-                        <option value="">Status (All)</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Rejected">Rejected</option>
-                    </select>
+                <div class="filter-bar" style="margin: 0px">
+                    <form method="GET" class="filter-bar" style="width: 100%;">
+                        <input type="text" name="search" placeholder="Search user or account..." class="search-box"
+                            value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                        <button type="submit" style="display:none;"></button>
+                    </form>
                 </div>
 
                 <!-- Requests Table -->
@@ -204,42 +219,44 @@ if (isset($_POST['reject'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while ($row = $result->fetch_assoc()): ?>
+                        <?php if ($result->num_rows > 0): ?>
+                            <?php while ($row = $result->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($row['firstName'] . ' ' . $row['lastName']) ?></td>
+                                    <td><?= $row['is_verified'] == 1 ? 'Yes' : 'No' ?></td>
+                                    <td><?= htmlspecialchars($row['loan_type']) ?></td>
+                                    <td>₱<?= number_format($row['loan_amount'], 2) ?></td>
+                                    <td><?= htmlspecialchars($row['loan_term']) ?> months</td>
+                                    <td><?= date("M d, Y", strtotime($row['created_at'])) ?></td>
+                                    <td>
+                                        <span
+                                            class="badge <?= strtolower($row['status']) ?>"><?= htmlspecialchars($row['status']) ?></span>
+                                    </td>
+                                    <td>
+                                        <button class="view-btn" onclick="openModalView(<?= $row['id'] ?>)">View</button>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="loan_id" value="<?= $row['id'] ?>">
+                                            <button type="submit" name="approve" class="approve-btn">Approve</button>
+                                        </form>
+                                        <form method="POST" style="display:inline;">
+                                            <input type="hidden" name="loan_id" value="<?= $row['id'] ?>">
+                                            <button type="submit" name="reject" class="reject-btn">Reject</button>
+                                        </form>
+                                    </td>
+                                    <!-- Hidden data for modal -->
+                                    <td style="display:none;" id="data-<?= $row['id'] ?>" data-validid="<?= $row['valid_id'] ?>"
+                                        data-payslip="<?= $row['payslip'] ?>"
+                                        data-paymentfrequency="<?= $row['payment_frequency'] ?>"
+                                        data-paymenttype="<?= $row['payment_type'] ?>"></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
                             <tr>
-                                <td><?= htmlspecialchars($row['firstName'] . ' ' . $row['lastName']) ?></td>
-                                <td><?= $row['is_verified'] ? 'Yes' : 'No' ?></td>
-                                <td><?= htmlspecialchars($row['loan_type']) ?></td>
-                                <td>₱<?= number_format($row['loan_amount'], 2) ?></td>
-                                <td><?= htmlspecialchars($row['loan_term']) ?> months</td>
-                                <td><?= date("M d, Y", strtotime($row['created_at'])) ?></td>
-                                <td>
-                                    <span
-                                        class="badge <?= strtolower($row['status']) ?>"><?= htmlspecialchars($row['status']) ?></span>
-                                </td>
-                                <td>
-                                    <button class="view-btn" onclick="openModalView(<?= $row['id'] ?>)">View</button>
-
-                                    <form method="POST" style="display:inline;">
-                                        <input type="hidden" name="loan_id" value="<?= $row['id'] ?>">
-                                        <button type="submit" name="approve" class="approve-btn">Approve</button>
-                                    </form>
-
-                                    <form method="POST" style="display:inline;">
-                                        <input type="hidden" name="loan_id" value="<?= $row['id'] ?>">
-                                        <button type="submit" name="reject" class="reject-btn">Reject</button>
-                                    </form>
-                                </td>
-
-                                <!-- Hidden data for modal -->
-                                <td style="display:none;" id="data-<?= $row['id'] ?>" data-validid="<?= $row['valid_id'] ?>"
-                                    data-payslip="<?= $row['payslip'] ?>"
-                                    data-paymentfrequency="<?= $row['payment_frequency'] ?>"
-                                    data-paymenttype="<?= $row['payment_type'] ?>">
-                                </td>
-
+                                <td colspan="8" style="text-align:center;">No account found.</td>
                             </tr>
-                        <?php endwhile; ?>
+                        <?php endif; ?>
                     </tbody>
+
                 </table>
             </div>
         </div>
@@ -249,41 +266,39 @@ if (isset($_POST['reject'])) {
     <div id="viewmodal" class="modalLoanReq">
         <div class="modal-content-loan">
             <h2>Loan Application Documents</h2>
-
             <div class="modal-body">
                 <h3>Valid ID</h3>
                 <img id="viewValidID" src="" alt="Valid ID" class="modal-img">
-
                 <h3>Payslip</h3>
                 <img id="viewPayslip" src="" alt="Payslip" class="modal-img">
             </div>
-
             <button class="close-btn" onclick="closeViewModal()">Close</button>
         </div>
     </div>
 
-
+    <!-- LOGOUT MODAL -->
     <div id="logoutModal" class="modal">
         <div class="modal-content">
             <h2>Logout</h2>
             <div class="scrollable">
                 <p>Logout your account?</p>
             </div>
-            <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
-            <button class="close-btn" onclick="closeModal3()">Close</button>
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                <button class="confirm-btn" onclick="confirmLogoutAdmin()">Logout</button>
+                <button class="close-btn" onclick="closeModal3()">Close</button>
+            </div>
         </div>
     </div>
+
     <script>
         // Ensure page reload on back navigation
         window.addEventListener('pageshow', function (event) {
-            if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+            if (event.persisted) {
                 window.location.reload();
             }
         });
     </script>
-
     <script src="script.js"></script>
-
 </body>
 
 </html>
