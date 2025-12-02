@@ -186,6 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // If no application → keep the default page showing "Apply"
 });
+
 function payNow() {
   const amountInput = document.getElementById("payAmount");
   const amount = parseFloat(amountInput ? amountInput.value : NaN);
@@ -210,25 +211,9 @@ function payNow() {
       if (data.status === "success") {
         alert(data.message);
 
-        // Update displayed loan amount
-        const loanAmountElem = document.getElementById("loanAmountDisplay");
-        if (loanAmountElem)
-          loanAmountElem.textContent = `₱${Number(
-            data.remaining
-          ).toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}`;
-
-        // Update remaining payments
-        const paymentCountElem = document.getElementById("paymentsRemaining");
-        if (paymentCountElem)
-          paymentCountElem.textContent = `Payments Remaining: ${data.paymentsRemaining}`;
-
-        // If fully paid, reload page to refresh UI
-        if (data.remaining <= 0) {
-          location.reload();
-        }
+        // If fully paid or partial payment successful, reload page to refresh UI
+        // This ensures the PHP logic recalculates the next due date and projected balance
+        location.reload();
       } else {
         alert(data.message || "Payment failed.");
       }
@@ -275,14 +260,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (PAYMENT_TYPE === "Manual") {
       html += `
-   <p><strong>Remaining Balance:</strong> 
-      <span id="loanAmountDisplay">₱${Number(
-        ACTIVE_LOAN_REMAINING
-      ).toLocaleString()}</span>
-    </p>
-    <p id="paymentsRemaining">Payments Remaining: ${ACTIVE_PAYMENTS_REMAINING}</p>
-    <input type="number" id="payAmount" placeholder="Enter amount" style="padding:10px;width:200px;margin-top:15px;" />
-    <button class="pay-btn" style="margin-top:15px;" onclick="payNow()">Pay Now</button>
+        <h2>Loan Details</h2>
+        <p><strong>Remaining Principal:</strong> 
+          <span id="loanAmountDisplay" style="font-size: 1.2em; color: #00226f; font-weight: bold;">₱${Number(
+            ACTIVE_LOAN_REMAINING
+          ).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}</span>
+        </p>
+        <p id="paymentsRemaining"><strong>Payments Remaining:</strong> ${ACTIVE_PAYMENTS_REMAINING}</p>
+        ---
+        <p><strong>Next Due Date:</strong> <span style="font-weight:bold; color:#d9534f;">${NEXT_DUE_DATE}</span></p>
+        <p><strong>Required Payment Per Due:</strong> ₱${Number(
+          NEXT_PAYMENT_AMOUNT
+        ).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}</p>
+        <p><strong>Balance after next payment:</strong> ₱${Number(
+          PROJECTED_REMAINING_BALANCE
+        ).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}</p>
+        ---
+        <input type="number" id="payAmount" placeholder="Enter amount to pay" style="padding:10px;width:250px;margin-top:15px;" />
+        <button class="pay-btn" id="payNowBtn" style="margin-top:15px;" onclick="payNow()">Pay Now</button>
 `;
     } else {
       html += `
