@@ -158,6 +158,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['forgot'])) {
         <h1>digital banking</h1>
         <h1>experience</h1>
         <p>Secure. Seamless. Smart</p>
+        <div class="img">
+          <img class="card" src="images/card.png" alt="" />
+          <img class="atm" src="images/atm.png" alt="" />
+        </div>
       </div>
     </div>
 
