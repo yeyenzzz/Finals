@@ -226,7 +226,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['forgot'])) {
     </div>
 
   </div>
-
+  <script>
+    // Ensure page reload on back navigation
+    window.addEventListener('pageshow', function (event) {
+      if (event.persisted || (window.performance && window.performance.getEntriesByType('navigation')[0].type === 'back_forward')) {
+        window.location.reload();
+      }
+    });
+  </script>
   <script>
     function openModal() {
       document.getElementById("forgotModal").style.display = "flex";

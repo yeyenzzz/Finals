@@ -2,8 +2,8 @@
 // Example admin credentials
 $firstName = "Limuel";
 $lastName = "Maala";
-$email = "limuelm09@gmail.com";
-$password = "pogi123";
+$email = "23-62769@g.batstate-u.edu.ph";
+$password = "superpogi123";
 
 // Hash the password
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
